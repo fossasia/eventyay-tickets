@@ -933,10 +933,15 @@ def test_talk_dashboard_statistics(use_tracks, slot, other_slot, orga_client):
     content = response.content.decode()
     assert "Analytics" in content
     assert "All sessions" in content
-    assert "Accepted sessions" in content
+    assert "Accepted" in content
+    assert "Not accepted" in content
     assert 'id="stats-payload"' in content
     assert 'type="application/json"' in content
     assert "Sessions by type" in content or "Sessions by state" in content
+    assert "data-stats-dim" in content
+    if use_tracks:
+        assert "All tracks" in content
+        assert "Sessions by track" in content
 
 
 @pytest.mark.django_db

@@ -1,0 +1,109 @@
+{% load i18n %}
+{# Expects: card_name #}
+<div class="td-analytics-filter-bar" data-stats-filters="{{ card_name }}">
+  <div class="td-analytics-filter-grid" role="group" aria-label="{% translate 'Card filters' %}">
+    <div class="td-analytics-filter-unit" data-stats-filter-wrap="status">
+      <div class="td-analytics-multi"
+           data-stats-dim="status"
+           data-stats-card="{{ card_name }}"
+           data-empty-label="{% translate 'All status' %}">
+        <button type="button"
+                class="td-analytics-filter-select is-kind-status is-scope-all td-analytics-multi-toggle"
+                aria-haspopup="listbox"
+                aria-expanded="false">
+          {% translate "All status" %}
+        </button>
+        <div class="td-analytics-multi-menu" hidden role="listbox" aria-multiselectable="true">
+          <label class="td-analytics-multi-option">
+            <input type="checkbox" value="accepted">
+            <span>{% translate "Accepted" %}</span>
+          </label>
+          <label class="td-analytics-multi-option">
+            <input type="checkbox" value="not_accepted">
+            <span>{% translate "Not accepted" %}</span>
+          </label>
+        </div>
+      </div>
+    </div>
+
+    {% if show_tracks %}
+    <div class="td-analytics-filter-unit" data-stats-filter-wrap="track">
+      <div class="td-analytics-multi"
+           data-stats-dim="track"
+           data-stats-card="{{ card_name }}"
+           data-empty-label="{% translate 'All tracks' %}">
+        <button type="button"
+                class="td-analytics-filter-select is-kind-track td-analytics-multi-toggle"
+                aria-haspopup="listbox"
+                aria-expanded="false">
+          {% translate "All tracks" %}
+        </button>
+        <div class="td-analytics-multi-menu" hidden role="listbox" aria-multiselectable="true">
+          {% for track in stats_filter_tracks %}
+          <label class="td-analytics-multi-option">
+            <input type="checkbox" value="{{ track.id }}" data-color="{{ track.color }}">
+            <span>{{ track.label }}</span>
+          </label>
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+    {% endif %}
+
+    {% if show_tags %}
+    <div class="td-analytics-filter-unit" data-stats-filter-wrap="tag">
+      <div class="td-analytics-multi"
+           data-stats-dim="tag"
+           data-stats-card="{{ card_name }}"
+           data-empty-label="{% translate 'All tags' %}">
+        <button type="button"
+                class="td-analytics-filter-select is-kind-tag td-analytics-multi-toggle"
+                aria-haspopup="listbox"
+                aria-expanded="false">
+          {% translate "All tags" %}
+        </button>
+        <div class="td-analytics-multi-menu" hidden role="listbox" aria-multiselectable="true">
+          {% for tag in stats_filter_tags %}
+          <label class="td-analytics-multi-option">
+            <input type="checkbox" value="{{ tag.id }}" data-color="{{ tag.color }}">
+            <span>{{ tag.label }}</span>
+          </label>
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+    {% endif %}
+
+    <div class="td-analytics-filter-unit" data-stats-filter-wrap="schedule">
+      <div class="td-analytics-multi"
+           data-stats-dim="schedule"
+           data-stats-card="{{ card_name }}"
+           data-empty-label="{% translate 'All schedule' %}">
+        <button type="button"
+                class="td-analytics-filter-select is-kind-schedule td-analytics-multi-toggle"
+                aria-haspopup="listbox"
+                aria-expanded="false">
+          {% translate "All schedule" %}
+        </button>
+        <div class="td-analytics-multi-menu" hidden role="listbox" aria-multiselectable="true">
+          <label class="td-analytics-multi-option">
+            <input type="checkbox" value="scheduled">
+            <span>{% translate "Scheduled" %}</span>
+          </label>
+          <label class="td-analytics-multi-option">
+            <input type="checkbox" value="unscheduled">
+            <span>{% translate "Unscheduled" %}</span>
+          </label>
+        </div>
+      </div>
+    </div>
+
+    <button type="button"
+            class="td-analytics-filter-reset"
+            data-stats-reset="{{ card_name }}"
+            title="{% translate 'Clear filters on this card' %}"
+            hidden>
+      {% translate "Clear" %}
+    </button>
+  </div>
+</div>

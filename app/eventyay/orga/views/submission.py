@@ -933,6 +933,13 @@ class SubmissionStatsMixin:
         return bool(self.request.event.get_feature_flag('use_tracks'))
 
     @context
+    @cached_property
+    def show_tags(self):
+        if not self.can_view_submission_stats:
+            return False
+        return self.request.event.tags.exists()
+
+    @context
     def id_mapping(self):
         if not self.can_view_submission_stats:
             return '{}'
@@ -945,6 +952,8 @@ class SubmissionStatsMixin:
         }
         if self.show_tracks:
             data['track'] = {str(track): track.id for track in self.request.event.tracks.all()}
+        if self.show_tags:
+            data['tag'] = {tag.tag: tag.id for tag in self.request.event.tags.all()}
         locales_dict = dict(self.request.event.named_content_locales)
         data['language'] = {locales_dict.get(code, code): code for code in self.request.event.content_locales}
         return json.dumps(data)
@@ -1026,6 +1035,107 @@ class SubmissionStatsMixin:
             return None
         return sorted(payload, key=itemgetter('label'))
 
+    def _stats_base_qs(self, scope='all'):
+        qs = (
+            Submission.all_objects
+            .exclude(state=SubmissionStates.DRAFT)
+            .filter(event=self.request.event)
+        )
+        if scope == 'accepted':
+            return qs.filter(state__in=SubmissionStates.accepted_states)
+        if scope == 'not_accepted':
+            return qs.exclude(state__in=SubmissionStates.accepted_states).exclude(
+                state=SubmissionStates.DELETED
+            )
+        return qs.exclude(state=SubmissionStates.DELETED)
+
+    def _timeline_for_qs(self, qs):
+        rows = (
+            qs.filter(created__isnull=False)
+            .annotate(date=TruncDate('created', tzinfo=self.request.event.tz))
+            .values('date')
+            .annotate(count=DbCount('id'))
+            .order_by('date')
+        )
+        if not rows:
+            return None
+        data = {row['date'].isoformat(): row['count'] for row in rows if row['date']}
+        if not data:
+            return None
+        if self.raw_submission_timeline_data:
+            return [
+                {'x': point['x'], 'y': data.get(point['x'][:10], 0)}
+                for point in self.raw_submission_timeline_data
+            ]
+        return [{'x': date, 'y': count} for date, count in sorted(data.items())]
+
+    def _type_for_qs(self, qs):
+        rows = qs.values('submission_type_id').annotate(count=DbCount('id'))
+        types_dict = {st.id: str(st) for st in self.request.event.submission_types.all()}
+        counter = {
+            types_dict[row['submission_type_id']]: row['count']
+            for row in rows
+            if row['submission_type_id'] in types_dict and row['count']
+        }
+        return self._sorted_label_value_rows(counter)
+
+    def _track_for_qs(self, qs):
+        if not self.request.event.get_feature_flag('use_tracks'):
+            return None
+        rows = (
+            qs.filter(track__isnull=False)
+            .values('track_id', 'track__color')
+            .annotate(count=DbCount('id'))
+        )
+        tracks_dict = {tr.id: str(tr.name) for tr in self.request.event.tracks.all()}
+        payload = [
+            {
+                'label': tracks_dict[row['track_id']],
+                'value': row['count'],
+                'color': row['track__color'] or '#2185d0',
+            }
+            for row in rows
+            if row['track_id'] in tracks_dict and row['count']
+        ]
+        if not payload:
+            return None
+        return sorted(payload, key=itemgetter('label'))
+
+    def _tag_for_qs(self, qs):
+        if not self.request.event.tags.exists():
+            return None
+        rows = (
+            qs.filter(tags__isnull=False)
+            .values('tags__id', 'tags__tag', 'tags__color')
+            .annotate(count=DbCount('id', distinct=True))
+        )
+        payload = [
+            {
+                'label': row['tags__tag'],
+                'value': row['count'],
+                'color': row['tags__color'] or '#2185d0',
+            }
+            for row in rows
+            if row['tags__id'] and row['count']
+        ]
+        if not payload:
+            return None
+        return sorted(payload, key=itemgetter('label'))
+
+    def _language_for_qs(self, qs):
+        locales_dict = dict(self.request.event.named_content_locales)
+        rows = qs.values('content_locale').annotate(count=DbCount('id'))
+        counter = {
+            str(locales_dict.get(row['content_locale'], row['content_locale'])): row['count']
+            for row in rows
+            if row['content_locale'] and row['count']
+        }
+        return self._sorted_label_value_rows(counter)
+
+    def _state_for_qs(self, qs):
+        rows = qs.values('state').annotate(count=DbCount('id'))
+        return self._sorted_state_rows(rows)
+
     @context
     def submission_timeline_data(self):
         if self.raw_submission_timeline_data:
@@ -1037,169 +1147,89 @@ class SubmissionStatsMixin:
     def submission_state_data(self):
         if not self.can_view_submission_stats:
             return None
-        rows = (
-            Submission.all_objects
-            .exclude(state=SubmissionStates.DRAFT)
-            .filter(event=self.request.event)
-            .values('state')
-            .annotate(count=DbCount('id'))
-        )
-        return self._sorted_state_rows(rows)
+        return self._state_for_qs(self._stats_base_qs('all'))
 
     @context
     def submission_type_data(self):
         if not self.can_view_submission_stats:
             return None
-        rows = (
-            Submission.objects
-            .filter(event=self.request.event)
-            .values('submission_type_id')
-            .annotate(count=DbCount('id'))
-        )
-        types_dict = {
-            st.id: str(st)
-            for st in self.request.event.submission_types.all()
-        }
-        counter = {
-            types_dict[row['submission_type_id']]: row['count']
-            for row in rows if row['submission_type_id'] in types_dict and row['count']
-        }
-        return self._sorted_label_value_rows(counter)
+        return self._type_for_qs(self._stats_base_qs('all'))
 
     @context
     def submission_track_data(self):
         if not self.can_view_submission_stats:
             return None
-        if self.request.event.get_feature_flag('use_tracks'):
-            rows = (
-                Submission.objects
-                .filter(event=self.request.event, track__isnull=False)
-                .values('track_id')
-                .annotate(count=DbCount('id'))
-            )
-            tracks_dict = {
-                tr.id: str(tr.name)
-                for tr in self.request.event.tracks.all()
-            }
-            counter = {
-                tracks_dict[row['track_id']]: row['count']
-                for row in rows if row['track_id'] in tracks_dict and row['count']
-            }
-            return self._sorted_label_value_rows(counter)
-        return None
+        return self._track_for_qs(self._stats_base_qs('all'))
+
+    @context
+    def submission_tag_data(self):
+        if not self.can_view_submission_stats:
+            return None
+        return self._tag_for_qs(self._stats_base_qs('all'))
 
     @context
     def submission_language_data(self):
         if not self.can_view_submission_stats:
             return None
-        locales_dict = dict(self.request.event.named_content_locales)
-        rows = (
-            Submission.objects
-            .filter(event=self.request.event)
-            .values('content_locale')
-            .annotate(count=DbCount('id'))
-        )
-        counter = {
-            str(locales_dict.get(row['content_locale'], row['content_locale'])): row['count']
-            for row in rows if row['content_locale'] and row['count']
-        }
-        return self._sorted_label_value_rows(counter)
+        return self._language_for_qs(self._stats_base_qs('all'))
 
     @context
     def talk_timeline_data(self):
         if not self.can_view_submission_stats:
             return None
-        rows = (
-            self.request.event.submissions
-            .filter(state__in=SubmissionStates.accepted_states, created__isnull=False)
-            .annotate(date=TruncDate('created', tzinfo=self.request.event.tz))
-            .values('date')
-            .annotate(count=DbCount('id'))
-            .order_by('date')
-        )
-        if not rows:
-            return None
-
-        data = {row['date'].isoformat(): row['count'] for row in rows if row['date']}
-        if not data:
-            return None
-        if self.raw_submission_timeline_data:
-            return [
-                {'x': point['x'], 'y': data.get(point['x'][:10], 0)}
-                for point in self.raw_submission_timeline_data
-            ]
-        return [{'x': date, 'y': count} for date, count in sorted(data.items())]
+        return self._timeline_for_qs(self._stats_base_qs('accepted'))
 
     @context
     def talk_state_data(self):
         if not self.can_view_submission_stats:
             return None
-        rows = (
-            self.request.event.submissions
-            .filter(state__in=SubmissionStates.accepted_states)
-            .values('state')
-            .annotate(count=DbCount('id'))
-        )
-        return self._sorted_state_rows(rows)
+        return self._state_for_qs(self._stats_base_qs('accepted'))
 
     @context
     def talk_type_data(self):
         if not self.can_view_submission_stats:
             return None
-        rows = (
-            self.request.event.submissions
-            .filter(state__in=SubmissionStates.accepted_states)
-            .values('submission_type_id')
-            .annotate(count=DbCount('id'))
-        )
-        types_dict = {
-            st.id: str(st)
-            for st in self.request.event.submission_types.all()
-        }
-        counter = {
-            types_dict[row['submission_type_id']]: row['count']
-            for row in rows if row['submission_type_id'] in types_dict and row['count']
-        }
-        return self._sorted_label_value_rows(counter)
+        return self._type_for_qs(self._stats_base_qs('accepted'))
 
     @context
     def talk_track_data(self):
         if not self.can_view_submission_stats:
             return None
-        if self.request.event.get_feature_flag('use_tracks'):
-            rows = (
-                self.request.event.submissions
-                .filter(state__in=SubmissionStates.accepted_states, track__isnull=False)
-                .values('track_id')
-                .annotate(count=DbCount('id'))
-            )
-            tracks_dict = {
-                tr.id: str(tr.name)
-                for tr in self.request.event.tracks.all()
-            }
-            counter = {
-                tracks_dict[row['track_id']]: row['count']
-                for row in rows if row['track_id'] in tracks_dict and row['count']
-            }
-            return self._sorted_label_value_rows(counter)
-        return None
+        return self._track_for_qs(self._stats_base_qs('accepted'))
 
     @context
     def talk_language_data(self):
         if not self.can_view_submission_stats:
             return None
-        locales_dict = dict(self.request.event.named_content_locales)
-        rows = (
-            self.request.event.submissions
-            .filter(state__in=SubmissionStates.accepted_states)
-            .values('content_locale')
-            .annotate(count=DbCount('id'))
-        )
-        counter = {
-            str(locales_dict.get(row['content_locale'], row['content_locale'])): row['count']
-            for row in rows if row['content_locale'] and row['count']
-        }
-        return self._sorted_label_value_rows(counter)
+        return self._language_for_qs(self._stats_base_qs('accepted'))
+
+    @context
+    @cached_property
+    def stats_filter_tracks(self):
+        if not self.show_tracks:
+            return []
+        return [
+            {
+                'id': track.id,
+                'label': str(track.name),
+                'color': track.color or '#2185d0',
+            }
+            for track in self.request.event.tracks.all()
+        ]
+
+    @context
+    @cached_property
+    def stats_filter_tags(self):
+        if not self.show_tags:
+            return []
+        return [
+            {
+                'id': tag.id,
+                'label': tag.tag,
+                'color': tag.color or '#2185d0',
+            }
+            for tag in self.request.event.tags.all()
+        ]
 
     @context
     def stats_payload(self):
@@ -1207,30 +1237,76 @@ class SubmissionStatsMixin:
         if not self.can_view_submission_stats:
             return None
 
-        def resolve(value):
-            # Plain @context methods are callables on the view; cached_property values are not.
-            return value() if callable(value) else value
+        qs = (
+            self._stats_base_qs('all')
+            .select_related('submission_type', 'track')
+            .prefetch_related('tags')
+        )
+        state_labels = dict(SubmissionStates.get_choices())
+        locales_dict = dict(self.request.event.named_content_locales)
+        accepted_states = set(SubmissionStates.accepted_states)
+        event_tz = self.request.event.tz
+
+        scheduled_ids = set()
+        wip_schedule = getattr(self.request.event, 'wip_schedule', None)
+        if wip_schedule is not None:
+            scheduled_ids = set(
+                wip_schedule.talks.filter(
+                    submission__isnull=False,
+                    start__isnull=False,
+                )
+                .values_list('submission_id', flat=True)
+                .distinct()
+            )
+
+        records = []
+        for submission in qs:
+            created = None
+            if submission.created:
+                created = submission.created.astimezone(event_tz).date().isoformat()
+            track = submission.track
+            records.append(
+                {
+                    'date': created,
+                    'type': str(submission.submission_type) if submission.submission_type_id else None,
+                    'track_id': track.id if track else None,
+                    'track': str(track.name) if track else None,
+                    'track_color': (track.color if track else None) or '#2185d0',
+                    'tags': [
+                        {
+                            'id': tag.id,
+                            'label': tag.tag,
+                            'color': tag.color or '#2185d0',
+                        }
+                        for tag in submission.tags.all()
+                    ],
+                    'state': submission.state,
+                    'state_label': str(state_labels.get(submission.state, submission.state)),
+                    'language': str(
+                        locales_dict.get(submission.content_locale, submission.content_locale)
+                    )
+                    if submission.content_locale
+                    else None,
+                    'accepted': submission.state in accepted_states,
+                    'scheduled': submission.id in scheduled_ids,
+                }
+            )
+
+        date_axis = []
+        if self.raw_submission_timeline_data:
+            date_axis = [point['x'] for point in self.raw_submission_timeline_data]
 
         return {
+            'records': records,
+            'dateAxis': date_axis,
+            'meta': {
+                'tracks': self.stats_filter_tracks,
+                'tags': self.stats_filter_tags,
+            },
             'titles': {
                 'all': str(_('Submissions over time')),
-                'accepted': str(_('Sessions over time')),
-            },
-            'all': {
-                'timeline': resolve(self.submission_timeline_data),
-                'timelineLabel': str(_('Proposals')),
-                'type': resolve(self.submission_type_data),
-                'track': resolve(self.submission_track_data),
-                'language': resolve(self.submission_language_data),
-                'state': resolve(self.submission_state_data),
-            },
-            'accepted': {
-                'timeline': resolve(self.talk_timeline_data),
-                'timelineLabel': str(phrases.schedule.sessions),
-                'type': resolve(self.talk_type_data),
-                'track': resolve(self.talk_track_data),
-                'language': resolve(self.talk_language_data),
-                'state': resolve(self.talk_state_data),
+                'accepted': str(_('Accepted sessions over time')),
+                'not_accepted': str(_('Not accepted over time')),
             },
         }
 
@@ -1277,8 +1353,11 @@ class SubmissionStatsMixin:
                 .distinct()
             )
 
-        published = len(assigned_ids & published_ids)
-        not_published = len(assigned_ids - published_ids)
+        # Published = on current visible schedule with a room.
+        # Not published = room assigned in WIP but missing from published schedule
+        # (includes the case where no current schedule exists yet).
+        published = len(assigned_ids & published_ids) if current_schedule is not None else 0
+        not_published = len(assigned_ids - published_ids) if current_schedule is not None else len(assigned_ids)
         not_assigned = max(0, total - len(assigned_ids))
 
         def pct(count):
@@ -1287,22 +1366,22 @@ class SubmissionStatsMixin:
         return {
             'rows': [
                 {
-                    'label': _('Assigned to room'),
+                    'label': _('Room published'),
                     'count': published,
                     'pct': pct(published),
                     'status': 'success',
                 },
                 {
-                    'label': _('Room not assigned'),
-                    'count': not_assigned,
-                    'pct': pct(not_assigned),
-                    'status': 'warning' if not_assigned else 'success',
-                },
-                {
                     'label': _('Room not published'),
                     'count': not_published,
                     'pct': pct(not_published),
-                    'status': 'warning' if not_published else 'success',
+                    'status': 'info' if not_published else 'neutral',
+                },
+                {
+                    'label': _('Room not assigned'),
+                    'count': not_assigned,
+                    'pct': pct(not_assigned),
+                    'status': 'warning' if not_assigned else 'neutral',
                 },
             ],
             'total': total,

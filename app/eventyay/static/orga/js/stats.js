@@ -9,8 +9,6 @@ const L_PEAK_DAY = (statsRoot && statsRoot.dataset.labelPeakDay) || "Peak day"
 const L_ACCEPTED_RATE = (statsRoot && statsRoot.dataset.labelAcceptedRate) || "Accepted rate"
 const L_TOP_TYPE = (statsRoot && statsRoot.dataset.labelTopType) || "Top type"
 const L_TOTAL_TYPES = (statsRoot && statsRoot.dataset.labelTotalTypes) || "Total types"
-const L_TOP_TRACK = (statsRoot && statsRoot.dataset.labelTopTrack) || "Top track"
-const L_TOTAL_TRACKS = (statsRoot && statsRoot.dataset.labelTotalTracks) || "Total tracks"
 const L_NAME = (statsRoot && statsRoot.dataset.labelName) || "Name"
 const L_COUNT = (statsRoot && statsRoot.dataset.labelCount) || "Count"
 const L_NO_DATA = (statsRoot && statsRoot.dataset.labelNoData) || "No data for this status"
@@ -29,10 +27,16 @@ try {
 const chartInstances = {
     timeline: null,
     type: null,
-    track: null,
 }
 
-const ACCEPTED_STATES = new Set(["accepted", "confirmed"])
+const SCOPE_COLORS = {
+    all: "#2185d0",
+    accepted: "#16a34a",
+    not_accepted: "#ea580c",
+}
+const PALETTE = ["#2185d0", "#f97316", "#22c55e", "#8b5cf6", "#ef4444", "#06b6d4", "#f59e0b", "#ec4899", "#10b981", "#a78bfa"]
+const MIN_STATS_ROWS = 3
+const STATUS_SCOPE_CLASSES = ["is-scope-all", "is-scope-accepted", "is-scope-not-accepted"]
 
 const escapeHtml = (value) => String(value)
     .replace(/&/g, "&amp;")
@@ -49,15 +53,6 @@ const loadPayload = () => {
     } catch (error) {
         console.error("Failed to parse analytics payload", error)
         return null
-    }
-}
-
-const toChartData = (rows) => {
-    if (!rows || !rows.length) return null
-    return {
-        series: rows.map((row) => row.value),
-        labels: rows.map((row) => row.label),
-        states: rows.map((row) => row.state || null),
     }
 }
 
@@ -81,26 +76,455 @@ const clearSummary = (elementId) => {
     if (slot) slot.innerHTML = ""
 }
 
-const getScopeBundle = (payload, scope) => {
-    if (!payload) return null
-    return payload[scope] || null
+const getMultiMenu = (multi) => {
+    if (!multi) return null
+    const local = multi.querySelector(".td-analytics-multi-menu")
+    if (local) return local
+    const key = `${multi.getAttribute("data-stats-card")}-${multi.getAttribute("data-stats-dim")}`
+    return document.querySelector(`.td-analytics-multi-menu[data-stats-menu-for="${key}"]`)
 }
 
-/* ─── Timeline (area chart) ─────────────────────────────────────────────── */
-const drawTimeline = (targetId, timelineRows, label, stateRows) => {
-    const targetElement = document.getElementById(targetId)
-    if (!targetElement || !timelineRows || !timelineRows.length) return null
-    if (typeof ApexCharts === "undefined") {
-        console.error("ApexCharts is not available for timeline rendering")
-        return null
+const getCheckedOptions = (multi) => {
+    const menu = getMultiMenu(multi)
+    if (!menu) return []
+    return Array.from(menu.querySelectorAll('input[type="checkbox"]:checked')).map((input) => ({
+        value: input.value,
+        label: (input.closest("label") && input.closest("label").querySelector("span")
+            ? input.closest("label").querySelector("span").textContent
+            : input.value).trim(),
+        color: input.getAttribute("data-color") || null,
+    }))
+}
+
+const getMultiValues = (multi) => getCheckedOptions(multi).map((item) => item.value)
+
+const clearMultiValues = (multi) => {
+    const menu = getMultiMenu(multi)
+    if (!menu) return
+    menu.querySelectorAll('input[type="checkbox"]').forEach((input) => {
+        input.checked = false
+    })
+}
+
+const setMultiValues = (multi, values) => {
+    const menu = getMultiMenu(multi)
+    if (!menu) return
+    const wanted = new Set((values || []).map(String))
+    menu.querySelectorAll('input[type="checkbox"]').forEach((input) => {
+        input.checked = wanted.has(String(input.value))
+    })
+}
+
+const closeAllMultiMenus = (except) => {
+    document.querySelectorAll(".td-analytics-multi").forEach((multi) => {
+        if (except && multi === except) return
+        const menu = getMultiMenu(multi)
+        const toggle = multi.querySelector(".td-analytics-multi-toggle")
+        if (menu) {
+            menu.hidden = true
+            menu.classList.remove("is-ported")
+            menu.style.removeProperty("top")
+            menu.style.removeProperty("left")
+            menu.style.removeProperty("min-width")
+            if (menu.parentElement !== multi) multi.appendChild(menu)
+        }
+        if (toggle) toggle.setAttribute("aria-expanded", "false")
+        multi.classList.remove("is-open")
+    })
+}
+
+const positionMultiMenu = (multi, menu, toggle) => {
+    const rect = toggle.getBoundingClientRect()
+    const menuWidth = Math.max(rect.width, 168)
+    let left = rect.left
+    if (left + menuWidth > window.innerWidth - 8) {
+        left = Math.max(8, window.innerWidth - menuWidth - 8)
+    }
+    menu.classList.add("is-ported")
+    menu.hidden = false
+    const estimatedHeight = Math.min(240, Math.max(menu.scrollHeight, 120))
+    let top = rect.bottom + 4
+    if (top + estimatedHeight > window.innerHeight - 8) {
+        top = Math.max(8, rect.top - estimatedHeight - 4)
+    }
+    menu.style.top = `${Math.round(top)}px`
+    menu.style.left = `${Math.round(left)}px`
+    menu.style.minWidth = `${Math.round(menuWidth)}px`
+}
+
+const openMultiMenu = (multi) => {
+    const toggle = multi.querySelector(".td-analytics-multi-toggle")
+    const menu = getMultiMenu(multi)
+    if (!toggle || !menu || toggle.disabled) return
+    closeAllMultiMenus(multi)
+    menu.setAttribute(
+        "data-stats-menu-for",
+        `${multi.getAttribute("data-stats-card")}-${multi.getAttribute("data-stats-dim")}`,
+    )
+    document.body.appendChild(menu)
+    positionMultiMenu(multi, menu, toggle)
+    toggle.setAttribute("aria-expanded", "true")
+    multi.classList.add("is-open")
+}
+
+const styleMultiToggle = (multi) => {
+    if (!multi) return
+    const toggle = multi.querySelector(".td-analytics-multi-toggle")
+    if (!toggle) return
+    const dim = multi.getAttribute("data-stats-dim")
+    const emptyLabel = multi.getAttribute("data-empty-label") || "All"
+    const checked = getCheckedOptions(multi)
+
+    let label = emptyLabel
+    if (checked.length === 1) label = checked[0].label
+    else if (checked.length === 2) label = `${checked[0].label}, ${checked[1].label}`
+    else if (checked.length > 2) label = `${checked.length} selected`
+    toggle.textContent = label
+    toggle.title = checked.length ? checked.map((item) => item.label).join(", ") : emptyLabel
+
+    if (dim === "status") {
+        let scope = "all"
+        if (checked.length === 1) scope = checked[0].value
+        setStatusSelectClass(toggle, scope)
+        toggle.style.removeProperty("--filter-accent")
+        toggle.classList.remove("has-accent")
+        return
     }
 
-    let deadlines = []
+    if (checked.length === 1 && checked[0].color) {
+        toggle.style.setProperty("--filter-accent", checked[0].color)
+        toggle.classList.add("has-accent")
+    } else {
+        toggle.style.removeProperty("--filter-accent")
+        toggle.classList.remove("has-accent")
+    }
+}
+
+const normalizeExclusivePair = (values, pair) => {
+    const selected = (values || []).map(String).filter((value) => pair.includes(value))
+    if (selected.length >= pair.length) return []
+    return selected
+}
+
+const readCardFilters = (cardName) => {
+    const root = document.querySelector(`[data-stats-filters="${cardName}"]`)
+    if (!root) {
+        return { statuses: [], trackIds: [], tagIds: [], schedules: [] }
+    }
+    const statusEl = root.querySelector('[data-stats-dim="status"]')
+    const trackEl = root.querySelector('[data-stats-dim="track"]')
+    const tagEl = root.querySelector('[data-stats-dim="tag"]')
+    const scheduleEl = root.querySelector('[data-stats-dim="schedule"]')
+    return {
+        statuses: normalizeExclusivePair(getMultiValues(statusEl), ["accepted", "not_accepted"]),
+        trackIds: getMultiValues(trackEl).map(String),
+        tagIds: getMultiValues(tagEl).map(String),
+        schedules: normalizeExclusivePair(getMultiValues(scheduleEl), ["scheduled", "unscheduled"]),
+    }
+}
+
+const isFilterActive = (filters) => (
+    Boolean(filters.statuses.length)
+    || Boolean(filters.trackIds.length)
+    || Boolean(filters.tagIds.length)
+    || Boolean(filters.schedules.length)
+)
+
+const updateResetButton = (cardName) => {
+    const resetBtn = document.querySelector(`[data-stats-reset="${cardName}"]`)
+    if (!resetBtn) return
+    resetBtn.hidden = !isFilterActive(readCardFilters(cardName))
+}
+
+const resetCardFilters = (cardName) => {
+    const root = document.querySelector(`[data-stats-filters="${cardName}"]`)
+    if (!root) return
+    root.querySelectorAll("[data-stats-dim]").forEach((multi) => {
+        clearMultiValues(multi)
+        styleMultiToggle(multi)
+    })
+    updateResetButton(cardName)
+}
+
+const filterRecords = (records, filters) => {
+    const trackIds = new Set((filters.trackIds || []).map(String))
+    const tagIds = new Set((filters.tagIds || []).map(String))
+    const statuses = filters.statuses || []
+    const schedules = filters.schedules || []
+    const wantAccepted = statuses.includes("accepted")
+    const wantNotAccepted = statuses.includes("not_accepted")
+    const wantScheduled = schedules.includes("scheduled")
+    const wantUnscheduled = schedules.includes("unscheduled")
+
+    return (records || []).filter((row) => {
+        if (wantAccepted && !wantNotAccepted && !row.accepted) return false
+        if (wantNotAccepted && !wantAccepted && row.accepted) return false
+        if (trackIds.size && !trackIds.has(String(row.track_id || ""))) return false
+        if (tagIds.size && !(row.tags || []).some((tag) => tagIds.has(String(tag.id)))) return false
+        if (wantScheduled && !wantUnscheduled && !row.scheduled) return false
+        if (wantUnscheduled && !wantScheduled && row.scheduled) return false
+        return true
+    })
+}
+
+const countBy = (rows, keyFn, colorFn) => {
+    const map = new Map()
+    rows.forEach((row) => {
+        const key = keyFn(row)
+        if (!key) return
+        const current = map.get(key) || { label: key, value: 0, color: null }
+        current.value += 1
+        if (!current.color && colorFn) current.color = colorFn(row)
+        map.set(key, current)
+    })
+    return Array.from(map.values()).sort((a, b) => a.label.localeCompare(b.label))
+}
+
+const buildTypeRows = (rows) => countBy(rows, (row) => row.type)
+
+const buildTrackRows = (rows) => countBy(
+    rows,
+    (row) => row.track,
+    (row) => row.track_color || "#2185d0",
+)
+
+const buildTagRows = (rows) => {
+    const map = new Map()
+    rows.forEach((row) => {
+        ;(row.tags || []).forEach((tag) => {
+            const key = tag.label
+            if (!key) return
+            const current = map.get(key) || { label: key, value: 0, color: tag.color || "#2185d0" }
+            current.value += 1
+            map.set(key, current)
+        })
+    })
+    return Array.from(map.values()).sort((a, b) => a.label.localeCompare(b.label))
+}
+
+const buildLanguageRows = (rows) => countBy(rows, (row) => row.language)
+
+const buildStateRows = (rows) => countBy(
+    rows,
+    (row) => row.state_label || row.state,
+    null,
+).map((item) => {
+    const match = rows.find((row) => (row.state_label || row.state) === item.label)
+    return { ...item, state: match ? match.state : null }
+})
+
+const buildTimelinePoints = (rows, dateAxis) => {
+    const counts = {}
+    rows.forEach((row) => {
+        if (!row.date) return
+        counts[row.date] = (counts[row.date] || 0) + 1
+    })
+    const axis = (dateAxis && dateAxis.length)
+        ? dateAxis
+        : Object.keys(counts).sort()
+    if (!axis.length) return []
+    return axis.map((date) => ({ x: date, y: counts[date] || 0 }))
+}
+
+const seriesFromGroups = (groups, rows, dateAxis, matchFn) => {
+    const series = groups.map((group) => ({
+        label: group.label,
+        color: group.color || "#2185d0",
+        filterDim: group.filterDim || null,
+        filterValue: group.filterValue == null ? "" : String(group.filterValue),
+        data: buildTimelinePoints(rows.filter((row) => matchFn(row, group)), dateAxis),
+    }))
+    return series.filter((item) => item.data.some((point) => point.y > 0))
+}
+
+const singleSeries = (label, color, filterDim, filterValue, rows, dateAxis) => ({
+    mode: "single",
+    series: [{
+        label,
+        color,
+        filterDim,
+        filterValue: filterValue == null ? "" : String(filterValue),
+        data: buildTimelinePoints(rows, dateAxis),
+    }],
+})
+
+const buildTimelineSeries = (rows, dateAxis, filters, meta) => {
+    const trackIds = (filters.trackIds || []).map(String)
+    const tagIds = (filters.tagIds || []).map(String)
+    const schedules = filters.schedules || []
+    const statuses = filters.statuses || []
+
+    if (trackIds.length === 1) {
+        const track = (meta.tracks || []).find((item) => String(item.id) === trackIds[0])
+        return singleSeries(
+            (track && track.label) || "Track",
+            (track && track.color) || "#2185d0",
+            "track",
+            trackIds[0],
+            rows,
+            dateAxis,
+        )
+    }
+    if (trackIds.length > 1) {
+        const selectedTracks = (meta.tracks || []).filter((track) => trackIds.includes(String(track.id)))
+        const series = seriesFromGroups(
+            selectedTracks.map((track) => ({
+                label: track.label,
+                color: track.color || "#2185d0",
+                filterDim: "track",
+                filterValue: track.id,
+            })),
+            rows,
+            dateAxis,
+            (row, group) => String(row.track_id || "") === String(group.filterValue),
+        )
+        if (series.length) return { mode: "track", series }
+    }
+
+    if (tagIds.length === 1) {
+        const tag = (meta.tags || []).find((item) => String(item.id) === tagIds[0])
+        return singleSeries(
+            (tag && tag.label) || "Tag",
+            (tag && tag.color) || "#2185d0",
+            "tag",
+            tagIds[0],
+            rows,
+            dateAxis,
+        )
+    }
+    if (tagIds.length > 1) {
+        const selectedTags = (meta.tags || []).filter((tag) => tagIds.includes(String(tag.id)))
+        const series = seriesFromGroups(
+            selectedTags.map((tag) => ({
+                label: tag.label,
+                color: tag.color || "#2185d0",
+                filterDim: "tag",
+                filterValue: tag.id,
+            })),
+            rows,
+            dateAxis,
+            (row, group) => (row.tags || []).some((tag) => String(tag.id) === String(group.filterValue)),
+        )
+        if (series.length) return { mode: "tag", series }
+    }
+
+    if (schedules.length === 1) {
+        return singleSeries(
+            schedules[0] === "scheduled" ? "Scheduled" : "Unscheduled",
+            schedules[0] === "scheduled" ? "#16a34a" : "#64748b",
+            "schedule",
+            schedules[0],
+            rows,
+            dateAxis,
+        )
+    }
+
+    if (statuses.length === 1) {
+        return singleSeries(
+            statuses[0] === "accepted" ? "Accepted" : "Not accepted",
+            SCOPE_COLORS[statuses[0]],
+            "status",
+            statuses[0],
+            rows,
+            dateAxis,
+        )
+    }
+
+    // No specific multi selection → multi mountains by Track, else Tag, else Schedule, else Status.
+    if ((meta.tracks || []).length) {
+        const trackGroups = (meta.tracks || []).map((track) => ({
+            label: track.label,
+            color: track.color || "#2185d0",
+            filterDim: "track",
+            filterValue: track.id,
+        }))
+        if (rows.some((row) => !row.track_id)) {
+            trackGroups.push({
+                label: "No track",
+                color: "#94a3b8",
+                filterDim: "track",
+                filterValue: "",
+            })
+        }
+        const series = seriesFromGroups(
+            trackGroups,
+            rows,
+            dateAxis,
+            (row, group) => String(row.track_id || "") === String(group.filterValue),
+        )
+        if (series.length) return { mode: "track", series }
+    }
+
+    if ((meta.tags || []).length) {
+        const series = seriesFromGroups(
+            (meta.tags || []).map((tag) => ({
+                label: tag.label,
+                color: tag.color || "#2185d0",
+                filterDim: "tag",
+                filterValue: tag.id,
+            })),
+            rows,
+            dateAxis,
+            (row, group) => (row.tags || []).some((tag) => String(tag.id) === String(group.filterValue)),
+        )
+        if (series.length) return { mode: "tag", series }
+    }
+
+    const scheduleSeries = seriesFromGroups(
+        [
+            { label: "Scheduled", color: "#16a34a", filterDim: "schedule", filterValue: "scheduled" },
+            { label: "Unscheduled", color: "#64748b", filterDim: "schedule", filterValue: "unscheduled" },
+        ],
+        rows,
+        dateAxis,
+        (row, group) => (group.filterValue === "scheduled" ? row.scheduled : !row.scheduled),
+    )
+    if (scheduleSeries.length) return { mode: "schedule", series: scheduleSeries }
+
+    const statusSeries = seriesFromGroups(
+        [
+            { label: "Accepted", color: SCOPE_COLORS.accepted, filterDim: "status", filterValue: "accepted" },
+            { label: "Not accepted", color: SCOPE_COLORS.not_accepted, filterDim: "status", filterValue: "not_accepted" },
+        ],
+        rows,
+        dateAxis,
+        (row, group) => (group.filterValue === "accepted" ? row.accepted : !row.accepted),
+    )
+    if (statusSeries.length) return { mode: "status", series: statusSeries }
+
+    return singleSeries("Sessions", SCOPE_COLORS.all, null, "", rows, dateAxis)
+}
+
+const toChartData = (rows) => {
+    if (!rows || !rows.length) return null
+    return {
+        series: rows.map((row) => row.value),
+        labels: rows.map((row) => row.label),
+        states: rows.map((row) => row.state || null),
+        colors: rows.map((row) => row.color || null),
+    }
+}
+
+const padTimelinePoints = (timelineRows) => {
+    let parsedData = timelineRows.map((point) => ({
+        x: new Date(point.x).getTime(),
+        y: point.y,
+    }))
+    parsedData.sort((a, b) => a.x - b.x)
+    if (parsedData.length > 0) {
+        const ONE_DAY = 86400000
+        parsedData.unshift({ x: parsedData[0].x - ONE_DAY, y: 0 })
+        parsedData.push({ x: parsedData[parsedData.length - 1].x + ONE_DAY, y: 0 })
+    }
+    return parsedData
+}
+
+const loadDeadlineAnnotations = () => {
     try {
         const annotations = globalData && globalData.dataset.annotations
             ? globalData.dataset.annotations
             : '{"deadlines":[]}'
-        deadlines = JSON.parse(annotations).deadlines.map((element) => ({
+        return JSON.parse(annotations).deadlines.map((element) => ({
             x: new Date(element[0]).getTime(),
             borderColor: "#ff4560",
             strokeDashArray: 0,
@@ -117,93 +541,37 @@ const drawTimeline = (targetId, timelineRows, label, stateRows) => {
         }))
     } catch (error) {
         console.error("Failed to parse timeline annotations", error)
-        deadlines = []
+        return []
     }
+}
 
-    let parsedData = timelineRows.map((point) => ({
-        x: new Date(point.x).getTime(),
-        y: point.y,
-    }))
-    parsedData.sort((a, b) => a.x - b.x)
-
-    if (parsedData.length > 0) {
-        const ONE_DAY = 86400000
-        const firstTime = parsedData[0].x
-        parsedData.unshift({ x: firstTime - ONE_DAY, y: 0 })
-        const lastTime = parsedData[parsedData.length - 1].x
-        parsedData.push({ x: lastTime + ONE_DAY, y: 0 })
-    }
-
-    const options = {
-        series: [{ name: label, data: parsedData }],
-        xaxis: {
-            type: "datetime",
-            tooltip: { enabled: false },
-            labels: {
-                datetimeUTC: false,
-                format: "dd MMM",
-                datetimeFormatter: {
-                    year: "yyyy",
-                    month: "MMM yyyy",
-                    day: "dd MMM",
-                    hour: "HH:mm",
-                },
-                style: { fontWeight: 500, fontSize: "12.5px", colors: "#6b7280" },
-            },
-            axisBorder: { show: false },
-            axisTicks: { show: false },
-        },
-        yaxis: {
-            labels: {
-                style: { fontSize: "12.5px", colors: "#6b7280", fontWeight: 500 },
-            },
-        },
-        annotations: { xaxis: deadlines },
-        chart: {
-            redrawOnParentResize: true,
-            height: 200,
-            type: "area",
-            toolbar: { show: false },
-            sparkline: { enabled: false },
-        },
-        colors: ["#2185d0", "#22c55e", "#ef4444"],
-        fill: { type: ["gradient", "gradient", "gradient"] },
-        stroke: { width: 2, curve: "smooth" },
-        dataLabels: { enabled: false },
-        legend: {
-            formatter: function (val) {
-                if (val.length > 15) val = val.slice(0, 15) + "…"
-                return val
-            },
-            position: "top",
-            horizontalAlign: "left",
-            fontSize: "12px",
-            markers: { width: 8, height: 8, radius: 4 },
-        },
-        grid: {
-            borderColor: "#f3f4f6",
-            strokeDashArray: 3,
-            padding: { left: 4, right: 4 },
-        },
-        tooltip: {
-            enabled: true,
-            shared: true,
-            x: { show: true, format: "dd MMM yyyy" },
-            marker: { show: true },
-        },
-    }
-
-    const chart = new ApexCharts(targetElement, options)
-    chart.render()
-
+const writeTimelineSummary = (targetId, parsedSeries, stateRows, sourceRows) => {
     let totalCount = 0
     let peakCount = 0
     let peakDate = "-"
-    parsedData.forEach((point) => {
-        totalCount += point.y
-        if (point.y > peakCount) {
-            peakCount = point.y
-            peakDate = new Date(point.x).toLocaleDateString("en-US", {
+    const dayTotals = new Map()
+
+    // Prefer unique filtered records so overlapping tag series do not inflate totals.
+    if (sourceRows && sourceRows.length) {
+        sourceRows.forEach((row) => {
+            if (!row.date) return
+            totalCount += 1
+            dayTotals.set(row.date, (dayTotals.get(row.date) || 0) + 1)
+        })
+    } else {
+        parsedSeries.forEach((series) => {
+            if (series.hidden) return
+            series.data.forEach((point) => {
+                totalCount += point.y
+                dayTotals.set(point.x, (dayTotals.get(point.x) || 0) + point.y)
+            })
+        })
+    }
+    dayTotals.forEach((value, day) => {
+        if (value > peakCount) {
+            peakCount = value
+            const dayValue = typeof day === "number" ? day : new Date(day).getTime()
+            peakDate = new Date(dayValue).toLocaleDateString("en-US", {
                 month: "short",
                 day: "numeric",
             })
@@ -216,15 +584,17 @@ const drawTimeline = (targetId, timelineRows, label, stateRows) => {
         let total = 0
         stateRows.forEach((row) => {
             total += row.value
-            const stateCode = String(row.state || "").toLowerCase()
-            if (ACCEPTED_STATES.has(stateCode)) {
+            if (String(row.state || "").toLowerCase() === "accepted"
+                || String(row.state || "").toLowerCase() === "confirmed") {
                 accepted += row.value
             }
         })
         if (total > 0) acceptedRate = ((accepted / total) * 100).toFixed(1) + "%"
     }
 
-    const summaryHtml = `
+    const slot = document.querySelector(`[data-summary-for="${targetId}"]`)
+    if (!slot) return
+    slot.innerHTML = `
         <div class="td-ts-item">
             <div class="td-ts-label">${escapeHtml(L_TOTAL_SESSIONS)}</div>
             <div class="td-ts-value">${totalCount}</div>
@@ -238,17 +608,112 @@ const drawTimeline = (targetId, timelineRows, label, stateRows) => {
             <div class="td-ts-value">${acceptedRate}</div>
         </div>
     `
-    const slot = document.querySelector(`[data-summary-for="${targetId}"]`)
-    if (slot) {
-        slot.innerHTML = summaryHtml
-        slot.classList.add("td-timeline-summary")
-    }
+    slot.classList.add("td-timeline-summary")
+}
 
+const timelineChartOptions = (parsedSeries, { empty = false } = {}) => ({
+    series: parsedSeries.map((row) => ({ name: row.name, data: row.data })),
+    colors: parsedSeries.map((row) => row.color),
+    xaxis: {
+        type: "datetime",
+        tooltip: { enabled: false },
+        labels: {
+            datetimeUTC: false,
+            format: "dd MMM",
+            style: { fontWeight: 500, fontSize: "12.5px", colors: "#6b7280" },
+        },
+        axisBorder: { show: false },
+        axisTicks: { show: false },
+    },
+    yaxis: {
+        min: 0,
+        max: empty ? 1 : undefined,
+        tickAmount: empty ? 1 : undefined,
+        labels: {
+            style: { fontSize: "12.5px", colors: "#6b7280", fontWeight: 500 },
+            formatter: (val) => (empty ? "" : String(Math.round(Number(val)))),
+        },
+    },
+    annotations: { xaxis: empty ? [] : loadDeadlineAnnotations() },
+    chart: {
+        redrawOnParentResize: true,
+        height: 200,
+        type: "area",
+        stacked: false,
+        toolbar: { show: false },
+        zoom: { enabled: false },
+        animations: { enabled: !empty },
+    },
+    fill: empty
+        ? { type: "solid", opacity: 0 }
+        : {
+            type: "gradient",
+            gradient: {
+                shadeIntensity: 0.35,
+                opacityFrom: 0.45,
+                opacityTo: 0.05,
+            },
+        },
+    stroke: { width: empty ? 0 : 2, curve: "smooth" },
+    dataLabels: { enabled: false },
+    legend: { show: false },
+    grid: {
+        borderColor: "#f3f4f6",
+        strokeDashArray: 3,
+        padding: { left: 4, right: 4 },
+    },
+    tooltip: {
+        enabled: !empty,
+        shared: true,
+        x: { show: true, format: "dd MMM yyyy" },
+    },
+})
+
+const drawEmptyTimeline = (targetId, dateAxis) => {
+    const targetElement = document.getElementById(targetId)
+    if (!targetElement || typeof ApexCharts === "undefined") return null
+
+    const axis = (dateAxis && dateAxis.length)
+        ? dateAxis
+        : [new Date().toISOString().slice(0, 10)]
+    const parsedSeries = [{
+        name: " ",
+        color: "#e5e7eb",
+        hidden: false,
+        data: padTimelinePoints(axis.map((date) => ({ x: date, y: 0 }))),
+    }]
+
+    const chart = new ApexCharts(targetElement, timelineChartOptions(parsedSeries, { empty: true }))
+    chart.render()
+    writeTimelineSummary(targetId, [{ data: parsedSeries[0].data, hidden: false }], [], [])
     return chart
 }
 
-/* ─── Horizontal Bar Chart ──────────────────────────────────────────────── */
-const drawHBarChart = (data, elementId, clickType) => {
+const drawTimelineSeries = (targetId, seriesRows, stateRows, sourceRows) => {
+    const targetElement = document.getElementById(targetId)
+    if (!targetElement || !seriesRows || !seriesRows.length) return null
+    if (typeof ApexCharts === "undefined") {
+        console.error("ApexCharts is not available for timeline rendering")
+        return null
+    }
+
+    const parsedSeries = seriesRows.map((row) => ({
+        name: row.label,
+        color: row.color || "#2185d0",
+        filterDim: row.filterDim || null,
+        filterValue: row.filterValue == null ? "" : String(row.filterValue),
+        hidden: false,
+        data: padTimelinePoints(row.data || []),
+    })).filter((row) => row.data.length)
+    if (!parsedSeries.length) return null
+
+    const chart = new ApexCharts(targetElement, timelineChartOptions(parsedSeries))
+    chart.render()
+    writeTimelineSummary(targetId, parsedSeries, stateRows, sourceRows)
+    return chart
+}
+
+const drawHBarChart = (data, elementId, clickType, status, colorPalette) => {
     const element = document.getElementById(elementId)
     if (!element || !data || !data.series || !data.series.length) return null
     if (typeof ApexCharts === "undefined") {
@@ -256,18 +721,23 @@ const drawHBarChart = (data, elementId, clickType) => {
         return null
     }
 
-    const combined = data.labels.map((label, i) => ({ label, value: data.series[i] }))
+    const palette = (colorPalette && colorPalette.length) ? colorPalette : PALETTE
+    const combined = data.labels.map((label, i) => ({
+        label,
+        value: data.series[i],
+        color: (data.colors && data.colors[i]) || palette[i % palette.length],
+    }))
     combined.sort((a, b) => b.value - a.value)
 
-    const chartHeight = 200
     const maxVal = Math.max(...combined.map((d) => d.value), 1)
     const axisMax = Math.max(Math.ceil(maxVal * 1.25), 3)
+    const barColors = combined.map((d) => d.color)
 
-    const options = {
+    const chart = new ApexCharts(element, {
         series: [{ name: "Count", data: combined.map((d) => d.value) }],
         chart: {
             type: "bar",
-            height: chartHeight,
+            height: 200,
             width: "100%",
             redrawOnParentResize: true,
             toolbar: { show: false },
@@ -279,6 +749,7 @@ const drawHBarChart = (data, elementId, clickType) => {
                         type: "submission_type",
                         state: "state",
                         language: "content_locale",
+                        tag: "tags",
                     }
                     const label = combined[config.dataPointIndex].label
                     const searchValue = dataMapping[clickType][label]
@@ -286,12 +757,8 @@ const drawHBarChart = (data, elementId, clickType) => {
                         window.location.href = searchUrl + "&" + typeMapping[clickType] + "=" + searchValue
                     }
                 },
-                dataPointMouseEnter: () => {
-                    element.style.cursor = "pointer"
-                },
-                dataPointMouseLeave: () => {
-                    element.style.cursor = "inherit"
-                },
+                dataPointMouseEnter: () => { element.style.cursor = "pointer" },
+                dataPointMouseLeave: () => { element.style.cursor = "inherit" },
             },
         },
         plotOptions: {
@@ -299,6 +766,7 @@ const drawHBarChart = (data, elementId, clickType) => {
                 horizontal: true,
                 barHeight: "55%",
                 borderRadius: 3,
+                distributed: true,
                 dataLabels: { position: "top" },
             },
         },
@@ -314,7 +782,6 @@ const drawHBarChart = (data, elementId, clickType) => {
             min: 0,
             max: axisMax,
             tickAmount: 3,
-            forceNiceScale: false,
             labels: {
                 style: { fontSize: "12.5px", colors: "#6b7280", fontWeight: 500 },
                 formatter: (val) => String(Math.round(Number(val))),
@@ -328,7 +795,7 @@ const drawHBarChart = (data, elementId, clickType) => {
                 maxWidth: 130,
             },
         },
-        colors: ["#2185d0"],
+        colors: barColors,
         grid: {
             borderColor: "#f3f4f6",
             xaxis: { lines: { show: true } },
@@ -341,69 +808,54 @@ const drawHBarChart = (data, elementId, clickType) => {
             y: { formatter: (val) => val + " sessions" },
         },
         legend: { show: false },
-    }
-
-    const chart = new ApexCharts(element, options)
+    })
     chart.render()
 
     const totalCount = combined.reduce((a, b) => a + b.value, 0)
-    const uniqueCount = combined.length
     const topItem = combined[0] ? combined[0].label : "-"
-
-    let topLabel = "Top Item"
-    let totalLabel = "Total Items"
-    if (clickType === "type") {
-        totalLabel = L_TOTAL_TYPES
-        topLabel = L_TOP_TYPE
-    } else if (clickType === "track") {
-        totalLabel = L_TOTAL_TRACKS
-        topLabel = L_TOP_TRACK
-    }
-
     let shortTopItem = topItem
     if (shortTopItem.length > 20) shortTopItem = shortTopItem.substring(0, 17) + "..."
 
-    const summaryHtml = `
-        <div class="td-ts-item" title="${escapeHtml(topItem)}">
-            <div class="td-ts-label">${escapeHtml(topLabel)}</div>
-            <div class="td-ts-value" style="font-size: 13px;">${escapeHtml(shortTopItem)}</div>
-        </div>
-        <div class="td-ts-item">
-            <div class="td-ts-label">${escapeHtml(totalLabel)}</div>
-            <div class="td-ts-value">${uniqueCount}</div>
-        </div>
-        <div class="td-ts-item">
-            <div class="td-ts-label">${escapeHtml(L_TOTAL_SESSIONS)}</div>
-            <div class="td-ts-value">${totalCount}</div>
-        </div>
-    `
     const slot = document.querySelector(`[data-summary-for="${elementId}"]`)
     if (slot) {
-        slot.innerHTML = summaryHtml
+        slot.innerHTML = `
+            <div class="td-ts-item" title="${escapeHtml(topItem)}">
+                <div class="td-ts-label">${escapeHtml(L_TOP_TYPE)}</div>
+                <div class="td-ts-value" style="font-size: 13px;">${escapeHtml(shortTopItem)}</div>
+            </div>
+            <div class="td-ts-item">
+                <div class="td-ts-label">${escapeHtml(L_TOTAL_TYPES)}</div>
+                <div class="td-ts-value">${combined.length}</div>
+            </div>
+            <div class="td-ts-item">
+                <div class="td-ts-label">${escapeHtml(L_TOTAL_SESSIONS)}</div>
+                <div class="td-ts-value">${totalCount}</div>
+            </div>
+        `
         slot.classList.add("td-timeline-summary")
     }
-
     return chart
 }
 
-/* ─── Stats Table (language / state) ───────────────────────────────────── */
-const PALETTE = ["#2185d0", "#f97316", "#22c55e", "#8b5cf6", "#ef4444", "#06b6d4", "#f59e0b", "#ec4899", "#10b981", "#a78bfa"]
-const MIN_STATS_ROWS = 3
-
-const drawStatsTable = (data, elementId) => {
+const drawStatsTable = (data, elementId, options = {}) => {
     const element = document.getElementById(elementId)
     if (!element) return
 
     if (!data || !data.series || !data.series.length) {
-        element.innerHTML = `<p class="td-analytics-empty">${escapeHtml(L_NO_DATA)}</p>`
+        element.innerHTML = `<div class="td-analytics-empty-chart" aria-hidden="true"></div>`
         return
     }
 
-    const total = data.series.reduce((a, b) => a + b, 0)
-    const rows = data.labels.map((label, i) => ({ label, value: data.series[i] }))
+    const assignmentTotal = data.series.reduce((a, b) => a + b, 0)
+    const uniqueTotal = Number.isFinite(options.uniqueTotal) ? options.uniqueTotal : null
+    const total = uniqueTotal != null ? uniqueTotal : assignmentTotal
+    const rows = data.labels.map((label, i) => ({
+        label,
+        value: data.series[i],
+        color: (data.colors && data.colors[i]) || null,
+    }))
     rows.sort((a, b) => b.value - a.value)
 
-    // Data rows stay above Total; pad so every card has the same body height
     let html = `<table class="td-stats-table">
         <colgroup>
             <col class="td-col-dot" />
@@ -418,11 +870,11 @@ const drawStatsTable = (data, elementId) => {
         </tr></thead>
         <tbody>`
 
-    rows.forEach(({ label, value }, i) => {
+    rows.forEach(({ label, value, color }, i) => {
         const pct = total > 0 ? ((value / total) * 100).toFixed(1) : "0.0"
-        const color = PALETTE[i % PALETTE.length]
+        const dotColor = color || PALETTE[i % PALETTE.length]
         html += `<tr>
-            <td class="td-st-dot"><span style="background:${color}"></span></td>
+            <td class="td-st-dot"><span style="background:${escapeHtml(dotColor)}"></span></td>
             <td class="td-st-name">${escapeHtml(label)}</td>
             <td class="td-st-count">${value}</td>
             <td class="td-st-pct">${pct}%</td>
@@ -439,27 +891,24 @@ const drawStatsTable = (data, elementId) => {
         </tr>`
     }
 
+    const footerPct = uniqueTotal != null ? "" : "100%"
     html += `</tbody>
         <tfoot><tr>
             <td colspan="2"><strong>${escapeHtml(TOTAL_LABEL)}</strong></td>
             <td class="td-st-count"><strong>${total}</strong></td>
-            <td class="td-st-pct"><strong>100%</strong></td>
+            <td class="td-st-pct"><strong>${footerPct}</strong></td>
         </tr></tfoot>
     </table>`
-
     element.innerHTML = html
 }
 
-/** Pad every stats table body to the same row count so Total lines up. */
 const equalizeStatsTableRows = () => {
     const bodies = document.querySelectorAll(".td-analytics-bottom-row .td-stats-table tbody")
     if (!bodies.length) return
-
     let maxRows = MIN_STATS_ROWS
     bodies.forEach((tbody) => {
         maxRows = Math.max(maxRows, tbody.querySelectorAll("tr").length)
     })
-
     bodies.forEach((tbody) => {
         const current = tbody.querySelectorAll("tr").length
         for (let i = current; i < maxRows; i += 1) {
@@ -472,10 +921,35 @@ const equalizeStatsTableRows = () => {
     })
 }
 
-/* ─── Per-card render ───────────────────────────────────────────────────── */
-const renderCard = (payload, cardName, scope) => {
-    const bundle = getScopeBundle(payload, scope)
-    if (!bundle) return
+const setStatusSelectClass = (el, status) => {
+    STATUS_SCOPE_CLASSES.forEach((cls) => el.classList.remove(cls))
+    el.classList.add(`is-scope-${String(status || "all").replace(/_/g, "-")}`)
+}
+
+const statusScopeFromMulti = (multi) => {
+    const values = normalizeExclusivePair(getMultiValues(multi), ["accepted", "not_accepted"])
+    if (!values.length) return "all"
+    return values[0]
+}
+
+const syncGlobalButtons = () => {
+    const statusMultis = Array.from(document.querySelectorAll('[data-stats-dim="status"]'))
+    if (!statusMultis.length) return
+    const first = statusScopeFromMulti(statusMultis[0])
+    const allMatch = statusMultis.every((multi) => statusScopeFromMulti(multi) === first)
+    document.querySelectorAll("[data-stats-scope-global]").forEach((btn) => {
+        const value = btn.getAttribute("data-stats-scope-global")
+        const active = allMatch && value === first
+        btn.classList.toggle("is-active", active)
+        btn.setAttribute("aria-pressed", active ? "true" : "false")
+    })
+}
+
+const renderCard = (payload, cardName) => {
+    const filters = readCardFilters(cardName)
+    const rows = filterRecords(payload.records || [], filters)
+    const meta = payload.meta || { tracks: [], tags: [] }
+    updateResetButton(cardName)
 
     if (cardName === "timeline") {
         destroyChart("timeline")
@@ -483,19 +957,21 @@ const renderCard = (payload, cardName, scope) => {
         clearSummary("stats-timeline")
         const titleEl = document.querySelector("[data-stats-timeline-title]")
         if (titleEl && payload.titles) {
-            titleEl.textContent = payload.titles[scope] || payload.titles.all
+            const titleKey = filters.statuses.length === 1 ? filters.statuses[0] : "all"
+            titleEl.textContent = payload.titles[titleKey] || payload.titles.all
         }
-        if (bundle.timeline && bundle.timeline.length) {
-            chartInstances.timeline = drawTimeline(
+        const built = buildTimelineSeries(rows, payload.dateAxis || [], filters, meta)
+        const series = (built && built.series) || []
+        const hasData = series.some((item) => (item.data || []).some((point) => point.y > 0))
+        if (hasData) {
+            chartInstances.timeline = drawTimelineSeries(
                 "stats-timeline",
-                bundle.timeline,
-                bundle.timelineLabel || "Sessions",
-                bundle.state,
+                series,
+                buildStateRows(rows),
+                rows,
             )
         } else {
-            clearChartTarget("stats-timeline")
-            const slot = document.querySelector('[data-summary-for="stats-timeline"]')
-            if (slot) slot.innerHTML = `<p class="td-analytics-empty">${escapeHtml(L_NO_DATA)}</p>`
+            chartInstances.timeline = drawEmptyTimeline("stats-timeline", payload.dateAxis || [])
         }
         return
     }
@@ -504,38 +980,63 @@ const renderCard = (payload, cardName, scope) => {
         destroyChart("type")
         clearChartTarget("stats-type-chart")
         clearSummary("stats-type-chart")
-        const typeData = toChartData(bundle.type)
+        const typeData = toChartData(buildTypeRows(rows))
         if (typeData) {
-            chartInstances.type = drawHBarChart(typeData, "stats-type-chart", "type")
+            const mountainColors = (meta.tracks || []).map((track) => track.color).filter(Boolean)
+            chartInstances.type = drawHBarChart(
+                typeData,
+                "stats-type-chart",
+                "type",
+                filters.statuses.length === 1 ? filters.statuses[0] : "all",
+                mountainColors,
+            )
         } else {
+            clearSummary("stats-type-chart")
             const slot = document.querySelector('[data-summary-for="stats-type-chart"]')
-            if (slot) slot.innerHTML = `<p class="td-analytics-empty">${escapeHtml(L_NO_DATA)}</p>`
+            if (slot) {
+                slot.innerHTML = `<div class="td-analytics-empty-chart" aria-hidden="true"></div>`
+            }
         }
         return
     }
 
     if (cardName === "track") {
-        destroyChart("track")
-        clearChartTarget("stats-track-chart")
-        clearSummary("stats-track-chart")
-        const trackData = toChartData(bundle.track)
-        if (trackData) {
-            chartInstances.track = drawHBarChart(trackData, "stats-track-chart", "track")
-        } else {
-            const slot = document.querySelector('[data-summary-for="stats-track-chart"]')
-            if (slot) slot.innerHTML = `<p class="td-analytics-empty">${escapeHtml(L_NO_DATA)}</p>`
-        }
+        if (!document.getElementById("stats-track-table")) return
+        drawStatsTable(toChartData(buildTrackRows(rows)), "stats-track-table")
+        return
+    }
+
+    if (cardName === "tag") {
+        if (!document.getElementById("stats-tag-table")) return
+        drawStatsTable(toChartData(buildTagRows(rows)), "stats-tag-table", {
+            uniqueTotal: rows.length,
+        })
         return
     }
 
     if (cardName === "language") {
-        drawStatsTable(toChartData(bundle.language), "stats-language-table")
+        drawStatsTable(toChartData(buildLanguageRows(rows)), "stats-language-table")
         return
     }
 
     if (cardName === "state") {
-        drawStatsTable(toChartData(bundle.state), "stats-state-table")
+        drawStatsTable(toChartData(buildStateRows(rows)), "stats-state-table")
     }
+}
+
+const CARD_NAMES = ["timeline", "type", "track", "tag", "language", "state"]
+
+const renderAllCards = (payload) => {
+    CARD_NAMES.forEach((cardName) => renderCard(payload, cardName))
+    equalizeStatsTableRows()
+}
+
+const onMultiFilterChange = (payload, multi) => {
+    const cardName = multi.getAttribute("data-stats-card")
+    styleMultiToggle(multi)
+    renderCard(payload, cardName)
+    equalizeStatsTableRows()
+    syncGlobalButtons()
 }
 
 const initAnalyticsFilters = () => {
@@ -545,16 +1046,61 @@ const initAnalyticsFilters = () => {
         return
     }
 
-    const filters = document.querySelectorAll("[data-stats-filter]")
-    filters.forEach((filter) => {
-        const cardName = filter.getAttribute("data-stats-filter")
-        renderCard(payload, cardName, filter.value || "all")
-        filter.addEventListener("change", () => {
-            renderCard(payload, cardName, filter.value || "all")
+    renderAllCards(payload)
+    syncGlobalButtons()
+
+    document.querySelectorAll(".td-analytics-multi").forEach((multi) => {
+        styleMultiToggle(multi)
+        const toggle = multi.querySelector(".td-analytics-multi-toggle")
+        const menu = getMultiMenu(multi)
+        if (toggle) {
+            toggle.addEventListener("click", (event) => {
+                event.preventDefault()
+                event.stopPropagation()
+                if (toggle.disabled) return
+                const isOpen = multi.classList.contains("is-open")
+                if (isOpen) closeAllMultiMenus()
+                else openMultiMenu(multi)
+            })
+        }
+        if (menu) {
+            menu.addEventListener("click", (event) => event.stopPropagation())
+            menu.querySelectorAll('input[type="checkbox"]').forEach((input) => {
+                input.addEventListener("change", () => onMultiFilterChange(payload, multi))
+            })
+        }
+    })
+
+    document.addEventListener("click", () => closeAllMultiMenus())
+    document.addEventListener("keydown", (event) => {
+        if (event.key === "Escape") closeAllMultiMenus()
+    })
+    window.addEventListener("resize", () => closeAllMultiMenus())
+    window.addEventListener("scroll", () => closeAllMultiMenus(), true)
+
+    document.querySelectorAll("[data-stats-reset]").forEach((btn) => {
+        btn.addEventListener("click", () => {
+            const cardName = btn.getAttribute("data-stats-reset")
+            resetCardFilters(cardName)
+            closeAllMultiMenus()
+            renderCard(payload, cardName)
             equalizeStatsTableRows()
+            syncGlobalButtons()
         })
     })
-    equalizeStatsTableRows()
+
+    document.querySelectorAll("[data-stats-scope-global]").forEach((btn) => {
+        btn.addEventListener("click", () => {
+            const status = btn.getAttribute("data-stats-scope-global") || "all"
+            document.querySelectorAll('[data-stats-dim="status"]').forEach((multi) => {
+                setMultiValues(multi, status === "all" ? [] : [status])
+                styleMultiToggle(multi)
+            })
+            closeAllMultiMenus()
+            renderAllCards(payload)
+            syncGlobalButtons()
+        })
+    })
 }
 
 setTimeout(initAnalyticsFilters, 10)
