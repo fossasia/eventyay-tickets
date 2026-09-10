@@ -936,8 +936,10 @@ def test_talk_dashboard_statistics(use_tracks, slot, other_slot, orga_client):
     assert "Accepted" in content
     assert "Not accepted" in content
     assert "Pending" in content
+    assert "Not accepted" in content
     assert 'value="confirmed"' in content
     assert 'value="pending"' in content
+    assert 'value="not_accepted"' in content
     assert 'id="stats-payload"' in content
     assert 'type="application/json"' in content
     assert "Sessions by type" in content or "Sessions by state" in content

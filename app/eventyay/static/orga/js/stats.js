@@ -65,6 +65,7 @@ const STATUS_STATE_COLORS = {
     rejected: "#dc2626",
     withdrawn: "#64748b",
     canceled: "#78716c",
+    not_accepted: "#ea580c",
 }
 const ACCEPTED_STATUS_VALUES = ["accepted", "confirmed"]
 const NOT_ACCEPTED_STATUS_VALUES = ["pending", "rejected", "withdrawn", "canceled"]
@@ -91,6 +92,7 @@ const sameStringSet = (left, right) => {
 const resolveStatusScope = (values) => {
     const selected = (values || []).map(String)
     if (!selected.length) return "all"
+    if (selected.length === 1 && selected[0] === "not_accepted") return "not_accepted"
     if (sameStringSet(selected, ACCEPTED_STATUS_VALUES)) return "accepted"
     if (sameStringSet(selected, NOT_ACCEPTED_STATUS_VALUES)) return "not_accepted"
     if (selected.length === 1) return selected[0]
