@@ -358,11 +358,13 @@ class QuestionFieldsMixin:
             with language(get_babel_locale()):
                 default_country = guess_country(self.event)
                 default_prefix = None
-                for prefix, values in _COUNTRY_CODE_TO_REGION_CODE.items():
-                    if str(default_country) in values:
-                        default_prefix = prefix
+                if default_country:
+                    for prefix, values in _COUNTRY_CODE_TO_REGION_CODE.items():
+                        if str(default_country) in values:
+                            default_prefix = prefix
+                            break
                 try:
-                    initial_val = PhoneNumber().from_string(initial) if initial else f'+{default_prefix}.'
+                    initial_val = PhoneNumber().from_string(initial) if initial else (f'+{default_prefix}.' if default_prefix else None)
                 except NumberParseException:
                     initial_val = None
                 
