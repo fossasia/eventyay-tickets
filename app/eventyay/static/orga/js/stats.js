@@ -38,12 +38,45 @@ const PALETTE = ["#2185d0", "#f97316", "#22c55e", "#8b5cf6", "#ef4444", "#06b6d4
 const MIN_STATS_ROWS = 3
 const STATUS_SCOPE_CLASSES = ["is-scope-all", "is-scope-accepted", "is-scope-not-accepted"]
 
-const escapeHtml = (value) => String(value)
-    .replace(/&/g, "&amp;")
-    .replace(/</g, "&lt;")
-    .replace(/>/g, "&gt;")
-    .replace(/"/g, "&quot;")
-    .replace(/'/g, "&#39;")
+const clearNode = (node) => {
+    if (!node) return
+    while (node.firstChild) node.removeChild(node.firstChild)
+}
+
+const createEl = (tag, className, text) => {
+    const node = document.createElement(tag)
+    if (className) node.className = className
+    if (text != null) node.textContent = String(text)
+    return node
+}
+
+const safeCssColor = (value, fallback = "#94a3b8") => {
+    const color = String(value || "").trim()
+    if (/^#[0-9a-fA-F]{3,8}$/.test(color)) return color
+    if (/^rgba?\(\s*\d{1,3}\s*,\s*\d{1,3}\s*,\s*\d{1,3}(?:\s*,\s*(?:0|1|0?\.\d+))?\s*\)$/.test(color)) {
+        return color
+    }
+    return fallback
+}
+
+const createEmptyChartPlaceholder = () => {
+    const empty = createEl("div", "td-analytics-empty-chart")
+    empty.setAttribute("aria-hidden", "true")
+    return empty
+}
+
+const renderSummaryItems = (slot, items) => {
+    if (!slot) return
+    clearNode(slot)
+    items.forEach((item) => {
+        const wrap = createEl("div", "td-ts-item")
+        if (item.title) wrap.title = String(item.title)
+        wrap.appendChild(createEl("div", "td-ts-label", item.label))
+        wrap.appendChild(createEl("div", item.valueClass || "td-ts-value", item.value))
+        slot.appendChild(wrap)
+    })
+    slot.classList.add("td-timeline-summary")
+}
 
 const loadPayload = () => {
     const payloadEl = document.getElementById("stats-payload")
@@ -67,13 +100,11 @@ const destroyChart = (key) => {
 }
 
 const clearChartTarget = (elementId) => {
-    const element = document.getElementById(elementId)
-    if (element) element.innerHTML = ""
+    clearNode(document.getElementById(elementId))
 }
 
 const clearSummary = (elementId) => {
-    const slot = document.querySelector(`[data-summary-for="${elementId}"]`)
-    if (slot) slot.innerHTML = ""
+    clearNode(document.querySelector(`[data-summary-for="${elementId}"]`))
 }
 
 const getMultiMenu = (multi) => {
@@ -192,7 +223,7 @@ const styleMultiToggle = (multi) => {
     }
 
     if (checked.length === 1 && checked[0].color) {
-        toggle.style.setProperty("--filter-accent", checked[0].color)
+        toggle.style.setProperty("--filter-accent", safeCssColor(checked[0].color, "#6d28d9"))
         toggle.classList.add("has-accent")
     } else {
         toggle.style.removeProperty("--filter-accent")
@@ -594,21 +625,14 @@ const writeTimelineSummary = (targetId, parsedSeries, stateRows, sourceRows) => 
 
     const slot = document.querySelector(`[data-summary-for="${targetId}"]`)
     if (!slot) return
-    slot.innerHTML = `
-        <div class="td-ts-item">
-            <div class="td-ts-label">${escapeHtml(L_TOTAL_SESSIONS)}</div>
-            <div class="td-ts-value">${totalCount}</div>
-        </div>
-        <div class="td-ts-item">
-            <div class="td-ts-label">${escapeHtml(L_PEAK_DAY)}</div>
-            <div class="td-ts-value">${peakCount > 0 ? `${escapeHtml(peakDate)}, ${peakCount}` : "-"}</div>
-        </div>
-        <div class="td-ts-item">
-            <div class="td-ts-label">${escapeHtml(L_ACCEPTED_RATE)}</div>
-            <div class="td-ts-value">${acceptedRate}</div>
-        </div>
-    `
-    slot.classList.add("td-timeline-summary")
+    renderSummaryItems(slot, [
+        { label: L_TOTAL_SESSIONS, value: totalCount },
+        {
+            label: L_PEAK_DAY,
+            value: peakCount > 0 ? `${peakDate}, ${peakCount}` : "-",
+        },
+        { label: L_ACCEPTED_RATE, value: acceptedRate },
+    ])
 }
 
 const timelineChartOptions = (parsedSeries, { empty = false } = {}) => ({
@@ -757,8 +781,8 @@ const drawHBarChart = (data, elementId, clickType, status, colorPalette) => {
                         window.location.href = searchUrl + "&" + typeMapping[clickType] + "=" + searchValue
                     }
                 },
-                dataPointMouseEnter: () => { element.style.cursor = "pointer" },
-                dataPointMouseLeave: () => { element.style.cursor = "inherit" },
+                dataPointMouseEnter: () => { element.classList.add("is-pointer") },
+                dataPointMouseLeave: () => { element.classList.remove("is-pointer") },
             },
         },
         plotOptions: {
@@ -818,23 +842,29 @@ const drawHBarChart = (data, elementId, clickType, status, colorPalette) => {
 
     const slot = document.querySelector(`[data-summary-for="${elementId}"]`)
     if (slot) {
-        slot.innerHTML = `
-            <div class="td-ts-item" title="${escapeHtml(topItem)}">
-                <div class="td-ts-label">${escapeHtml(L_TOP_TYPE)}</div>
-                <div class="td-ts-value" style="font-size: 13px;">${escapeHtml(shortTopItem)}</div>
-            </div>
-            <div class="td-ts-item">
-                <div class="td-ts-label">${escapeHtml(L_TOTAL_TYPES)}</div>
-                <div class="td-ts-value">${combined.length}</div>
-            </div>
-            <div class="td-ts-item">
-                <div class="td-ts-label">${escapeHtml(L_TOTAL_SESSIONS)}</div>
-                <div class="td-ts-value">${totalCount}</div>
-            </div>
-        `
-        slot.classList.add("td-timeline-summary")
+        renderSummaryItems(slot, [
+            {
+                label: L_TOP_TYPE,
+                value: shortTopItem,
+                title: topItem,
+                valueClass: "td-ts-value is-compact",
+            },
+            { label: L_TOTAL_TYPES, value: combined.length },
+            { label: L_TOTAL_SESSIONS, value: totalCount },
+        ])
     }
     return chart
+}
+
+const appendStatsPadRow = (tbody) => {
+    const tr = createEl("tr", "td-st-pad")
+    tr.setAttribute("aria-hidden", "true")
+    ;["td-st-dot", "td-st-name", "td-st-count", "td-st-pct"].forEach((cls) => {
+        const td = createEl("td", cls)
+        if (cls === "td-st-name") td.textContent = "\u00a0"
+        tr.appendChild(td)
+    })
+    tbody.appendChild(tr)
 }
 
 const drawStatsTable = (data, elementId, options = {}) => {
@@ -842,7 +872,8 @@ const drawStatsTable = (data, elementId, options = {}) => {
     if (!element) return
 
     if (!data || !data.series || !data.series.length) {
-        element.innerHTML = `<div class="td-analytics-empty-chart" aria-hidden="true"></div>`
+        clearNode(element)
+        element.appendChild(createEmptyChartPlaceholder())
         return
     }
 
@@ -856,50 +887,67 @@ const drawStatsTable = (data, elementId, options = {}) => {
     }))
     rows.sort((a, b) => b.value - a.value)
 
-    let html = `<table class="td-stats-table">
-        <colgroup>
-            <col class="td-col-dot" />
-            <col class="td-col-name" />
-            <col class="td-col-count" />
-            <col class="td-col-pct" />
-        </colgroup>
-        <thead><tr>
-            <th colspan="2">${escapeHtml(L_NAME)}</th>
-            <th class="td-st-count">${escapeHtml(L_COUNT)}</th>
-            <th class="td-st-pct">%</th>
-        </tr></thead>
-        <tbody>`
+    clearNode(element)
+    const table = createEl("table", "td-stats-table")
+    const colgroup = document.createElement("colgroup")
+    ;["td-col-dot", "td-col-name", "td-col-count", "td-col-pct"].forEach((cls) => {
+        colgroup.appendChild(createEl("col", cls))
+    })
+    table.appendChild(colgroup)
 
+    const thead = document.createElement("thead")
+    const headRow = document.createElement("tr")
+    const nameTh = createEl("th", null, L_NAME)
+    nameTh.colSpan = 2
+    headRow.appendChild(nameTh)
+    headRow.appendChild(createEl("th", "td-st-count", L_COUNT))
+    headRow.appendChild(createEl("th", "td-st-pct", "%"))
+    thead.appendChild(headRow)
+    table.appendChild(thead)
+
+    const tbody = document.createElement("tbody")
     rows.forEach(({ label, value, color }, i) => {
-        const pct = total > 0 ? ((value / total) * 100).toFixed(1) : "0.0"
-        const dotColor = color || PALETTE[i % PALETTE.length]
-        html += `<tr>
-            <td class="td-st-dot"><span style="background:${escapeHtml(dotColor)}"></span></td>
-            <td class="td-st-name">${escapeHtml(label)}</td>
-            <td class="td-st-count">${value}</td>
-            <td class="td-st-pct">${pct}%</td>
-        </tr>`
+        const pct = total > 0 ? `${((value / total) * 100).toFixed(1)}%` : "0.0%"
+        const tr = document.createElement("tr")
+        const dotTd = createEl("td", "td-st-dot")
+        const dot = document.createElement("span")
+        dot.style.setProperty("--td-dot-color", safeCssColor(color || PALETTE[i % PALETTE.length]))
+        dotTd.appendChild(dot)
+        tr.appendChild(dotTd)
+        tr.appendChild(createEl("td", "td-st-name", label))
+        tr.appendChild(createEl("td", "td-st-count", value))
+        tr.appendChild(createEl("td", "td-st-pct", pct))
+        tbody.appendChild(tr)
     })
 
     const padTo = Math.max(MIN_STATS_ROWS, rows.length)
-    for (let i = rows.length; i < padTo; i += 1) {
-        html += `<tr class="td-st-pad" aria-hidden="true">
-            <td class="td-st-dot"></td>
-            <td class="td-st-name">&nbsp;</td>
-            <td class="td-st-count"></td>
-            <td class="td-st-pct"></td>
-        </tr>`
-    }
+    for (let i = rows.length; i < padTo; i += 1) appendStatsPadRow(tbody)
+    table.appendChild(tbody)
 
-    const footerPct = uniqueTotal != null ? "" : "100%"
-    html += `</tbody>
-        <tfoot><tr>
-            <td colspan="2"><strong>${escapeHtml(TOTAL_LABEL)}</strong></td>
-            <td class="td-st-count"><strong>${total}</strong></td>
-            <td class="td-st-pct"><strong>${footerPct}</strong></td>
-        </tr></tfoot>
-    </table>`
-    element.innerHTML = html
+    const tfoot = document.createElement("tfoot")
+    const footRow = document.createElement("tr")
+    const totalLabel = document.createElement("td")
+    totalLabel.colSpan = 2
+    const totalStrong = document.createElement("strong")
+    totalStrong.textContent = TOTAL_LABEL
+    totalLabel.appendChild(totalStrong)
+    footRow.appendChild(totalLabel)
+
+    const totalCountTd = createEl("td", "td-st-count")
+    const totalCountStrong = document.createElement("strong")
+    totalCountStrong.textContent = String(total)
+    totalCountTd.appendChild(totalCountStrong)
+    footRow.appendChild(totalCountTd)
+
+    const totalPctTd = createEl("td", "td-st-pct")
+    const totalPctStrong = document.createElement("strong")
+    totalPctStrong.textContent = uniqueTotal != null ? "" : "100%"
+    totalPctTd.appendChild(totalPctStrong)
+    footRow.appendChild(totalPctTd)
+
+    tfoot.appendChild(footRow)
+    table.appendChild(tfoot)
+    element.appendChild(table)
 }
 
 const equalizeStatsTableRows = () => {
@@ -911,13 +959,7 @@ const equalizeStatsTableRows = () => {
     })
     bodies.forEach((tbody) => {
         const current = tbody.querySelectorAll("tr").length
-        for (let i = current; i < maxRows; i += 1) {
-            const tr = document.createElement("tr")
-            tr.className = "td-st-pad"
-            tr.setAttribute("aria-hidden", "true")
-            tr.innerHTML = `<td class="td-st-dot"></td><td class="td-st-name">&nbsp;</td><td class="td-st-count"></td><td class="td-st-pct"></td>`
-            tbody.appendChild(tr)
-        }
+        for (let i = current; i < maxRows; i += 1) appendStatsPadRow(tbody)
     })
 }
 
@@ -994,7 +1036,8 @@ const renderCard = (payload, cardName) => {
             clearSummary("stats-type-chart")
             const slot = document.querySelector('[data-summary-for="stats-type-chart"]')
             if (slot) {
-                slot.innerHTML = `<div class="td-analytics-empty-chart" aria-hidden="true"></div>`
+                clearNode(slot)
+                slot.appendChild(createEmptyChartPlaceholder())
             }
         }
         return
