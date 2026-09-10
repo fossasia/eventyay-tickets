@@ -30,7 +30,7 @@
     {% has_event_perm "base.orga_list_speakerprofile" request.user request request.event as can_view_speakers %}
     {% has_event_perm "base.send_queuedmail" request.user request request.event as can_send_mails %}
     <div class="submission-list-header d-flex align-items-center mb-2">
-        <h2 class="mb-0">
+        <h2 class="mb-0" data-ajax-sync="submission-count">
             <span>
                 {{ page_obj.paginator.count }}
                 {% blocktranslate trimmed count count=page_obj.paginator.count %}
@@ -41,7 +41,7 @@
             </span>
         </h2>
         <div class="submission-page-actions">
-            <div class="submission-page-actions__primary">
+            <div class="submission-page-actions__primary" data-ajax-sync="submission-actions">
                 {% if can_send_mails %}
                     <a class="btn btn-outline-info" href="{{ request.event.orga_urls.compose_mails_sessions }}{% querystring page='' %}">
                         <i class="fa fa-envelope"></i>

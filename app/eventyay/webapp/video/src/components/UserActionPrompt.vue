@@ -4,7 +4,7 @@ prompt.c-user-action-prompt(@close="$emit('close')", :class="[`action-${action}`
 		h2(v-if="success") {{ confirmationText }}
 		h2(v-else) {{ questionText }}
 		.user
-			avatar(:user="user", :size="128")
+			avatar(:user="user", :size="64")
 			.display-name
 				| {{ user.profile.display_name }}
 				.ui-badge(v-for="badge in user.badges") {{ badge }}

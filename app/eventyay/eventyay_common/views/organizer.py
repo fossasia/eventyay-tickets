@@ -1,5 +1,6 @@
 import logging
 from urllib.parse import urlencode
+
 from django.contrib import messages
 from django.core.exceptions import PermissionDenied
 from django.db import transaction
@@ -17,7 +18,7 @@ from eventyay.base.models import Organizer, Team
 from eventyay.base.models.auth import User
 from eventyay.base.models.organizer import TeamAPIToken, TeamInvite
 from eventyay.base.services.mail import SendMailException, mail
-from eventyay.base.services.teams import send_team_invitation_email
+from eventyay.base.services.teams import check_full_admin_limit, send_team_invitation_email
 from eventyay.control.forms.filter import OrganizerFilterForm
 from eventyay.control.permissions import (
     OrganizerCreationPermissionMixin,
@@ -29,6 +30,7 @@ from eventyay.helpers.urls import build_absolute_uri as build_global_uri
 
 from ...control.forms.organizer_forms import OrganizerForm, OrganizerUpdateForm, TeamForm
 from ..video.traits_sync import sync_video_traits_for_team
+
 
 logger = logging.getLogger(__name__)
 
@@ -69,12 +71,15 @@ class OrganizerCreate(OrganizerCreationPermissionMixin, CreateView):
     def dispatch(self, request, *args, **kwargs):
         # Check if user has permission to create organizers
         if not self._can_create_organizer(request.user):
-            raise PermissionDenied(_('You do not have permission to create organizers. Please contact an administrator.'))
+            raise PermissionDenied(
+                _('You do not have permission to create organizers. Please contact an administrator.')
+            )
         return super().dispatch(request, *args, **kwargs)
 
     def get_form_kwargs(self):
         kwargs = super().get_form_kwargs()
         kwargs['user'] = self.request.user
+        kwargs['request'] = self.request
         return kwargs
 
     @transaction.atomic
@@ -118,6 +123,7 @@ class OrganizerCreate(OrganizerCreationPermissionMixin, CreateView):
 
     def get_success_url(self) -> str:
         return reverse('eventyay_common:organizers')
+
 
 class OrganizerTeamsView(UpdateView, OrganizerPermissionRequiredMixin):
     model = Organizer
@@ -533,6 +539,13 @@ class OrganizerTeamsView(UpdateView, OrganizerPermissionRequiredMixin):
         messages.success(self.request, _('The invite has been resent.'))
         return self._redirect_to_team_permissions(team.pk)
 
+    def _check_full_admin_limit(self, team, user=None, email=None):
+        decision = check_full_admin_limit(team, email=email, user=user)
+        if not decision.allowed:
+            messages.error(self.request, decision.message)
+            return False
+        return True
+
     def _handle_add_member_or_invite(self, team, invite_form, post):
         """Handle adding a member or creating an invite."""
         try:
@@ -547,6 +560,9 @@ class OrganizerTeamsView(UpdateView, OrganizerPermissionRequiredMixin):
             )
             return self._render_members_error(team.pk, invite_form)
 
+        if not self._check_full_admin_limit(team, user=user):
+            return self._render_members_error(team.pk, invite_form)
+
         team.members.add(user)
 
         team.log_action(
@@ -556,19 +572,21 @@ class OrganizerTeamsView(UpdateView, OrganizerPermissionRequiredMixin):
         )
         sync_video_traits_for_team(team, members=[user])
 
-        send_team_invitation_email(
-            user=user,
-            organizer_name=self.request.organizer.name,
-            team_name=team.name,
-            url=build_global_uri(
-                'eventyay_common:organizer.team',
-                kwargs={
-                    'organizer': self.request.organizer.slug,
-                    'team': team.pk,
-                },
-            ),
-            locale=self.request.LANGUAGE_CODE,
-            is_registered_user=True,
+        transaction.on_commit(
+            lambda: send_team_invitation_email(
+                user=user,
+                organizer_name=self.request.organizer.name,
+                team_name=team.name,
+                url=build_global_uri(
+                    'eventyay_common:organizer.team',
+                    kwargs={
+                        'organizer': self.request.organizer.slug,
+                        'team': team.pk,
+                    },
+                ),
+                locale=self.request.LANGUAGE_CODE,
+                is_registered_user=True,
+            )
         )
 
         messages.success(self.request, _('The new member has been added to the team.'))
@@ -590,8 +608,11 @@ class OrganizerTeamsView(UpdateView, OrganizerPermissionRequiredMixin):
             )
             return self._render_members_error(team.pk, invite_form)
 
+        if not self._check_full_admin_limit(team, email=invite_form.cleaned_data['user']):
+            return self._render_members_error(team.pk, invite_form)
+
         invite = team.invites.create(email=invite_form.cleaned_data['user'])
-        self._send_invite(invite)
+        transaction.on_commit(lambda: self._send_invite(invite))
         team.log_action(
             'eventyay.team.invite.created',
             user=self.request.user,
@@ -704,11 +725,11 @@ class OrganizerTeamsView(UpdateView, OrganizerPermissionRequiredMixin):
 
     def _collect_team_change_data(self, team: Team, form: TeamForm):
         """Collect only changed field data for audit logging.
-        
+
         Args:
             team: The Team model instance
             form: The TeamForm with changed_data populated
-            
+
         Returns:
             dict: Dictionary of changed field names to their new values
         """
