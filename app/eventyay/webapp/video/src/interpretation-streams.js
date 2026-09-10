@@ -22,5 +22,18 @@ export function pluginLanguageStreams(room) {
 	const usable = Array.isArray(streams)
 		? streams.filter(entry => isUsableAudioTranslationEntry(entry))
 		: []
-	return ensureOriginalLanguageEntry(usable)
+
+	const uniqueStreams = []
+	const seenKeys = new Set()
+
+	for (const entry of usable) {
+		// Create a unique key based on the stream's primary identifiers
+		const key = `${entry.language}:${entry.tts_ws_url || ''}:${entry.whep_url || entry.whip_url || ''}:${entry.url || entry.youtube_id || ''}`
+		if (!seenKeys.has(key)) {
+			seenKeys.add(key)
+			uniqueStreams.push(entry)
+		}
+	}
+
+	return ensureOriginalLanguageEntry(uniqueStreams)
 }

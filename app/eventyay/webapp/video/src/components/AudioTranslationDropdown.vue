@@ -81,7 +81,7 @@ export default {
 			immediate: true,
 			handler(newLanguages) {
 				this.languageOptions = newLanguages.map((entry, index) => ({
-					key: `${index}:${entry.language}`,
+					key: `${index}:${entry.language}:${entry.tts_ws_url || entry.whep_url || entry.whip_url || entry.url || entry.youtube_id || ''}`,
 					language: entry.language,
 					streamType: this.resolveStreamTypeLabel(entry)
 				}))
