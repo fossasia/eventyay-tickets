@@ -9,6 +9,8 @@ from eventyay.base.models import TalkSlot
 
 @pytest.mark.django_db()
 def test_can_create_feedback(django_assert_num_queries, past_slot, client, event):
+    event.feature_flags['use_feedback'] = True
+    event.save(update_fields=['feature_flags'])
     with scope(event=event):
         assert past_slot.submission.speakers.count() == 1
     with django_assert_num_queries(42):
@@ -29,6 +31,8 @@ def test_can_create_feedback(django_assert_num_queries, past_slot, client, event
 def test_can_create_feedback_for_multiple_speakers(
     django_assert_num_queries, past_slot, client, other_speaker, speaker, event
 ):
+    event.feature_flags['use_feedback'] = True
+    event.save(update_fields=['feature_flags'])
     with scope(event=event):
         past_slot.submission.speakers.add(other_speaker)
         past_slot.submission.speakers.add(speaker)
@@ -48,6 +52,8 @@ def test_can_create_feedback_for_multiple_speakers(
 def test_cannot_create_feedback_before_talk(
     django_assert_num_queries, slot, client, event
 ):
+    event.feature_flags['use_feedback'] = True
+    event.save(update_fields=['feature_flags'])
     _now = now()
     with scope(event=event):
         TalkSlot.objects.filter(submission__event=slot.event).update(

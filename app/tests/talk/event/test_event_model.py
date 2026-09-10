@@ -351,3 +351,12 @@ def test_event_update_review_phase_activate_next_phase(event):
         active_phase.save()
         new_phase = ReviewPhase.objects.create(event=event, position=3, start=active_phase.end)
         assert event.update_review_phase() == new_phase
+
+
+@pytest.mark.django_db
+def test_use_feedback_disabled_by_default(event):
+    """use_feedback should be False by default so organizers must opt-in.
+
+    See https://github.com/fossasia/eventyay/issues/5553
+    """
+    assert event.feature_flags['use_feedback'] is False

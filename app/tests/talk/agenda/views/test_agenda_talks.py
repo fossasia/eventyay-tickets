@@ -107,6 +107,8 @@ def test_can_see_talk_do_not_record(client, event, django_assert_num_queries, sl
 
 @pytest.mark.django_db
 def test_can_see_talk_does_accept_feedback(client, django_assert_num_queries, event, slot):
+    event.feature_flags['use_feedback'] = True
+    event.save(update_fields=['feature_flags'])
     with scope(event=event):
         slot.start = now() - dt.timedelta(days=1)
         slot.end = slot.start + dt.timedelta(hours=1)
