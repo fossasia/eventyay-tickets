@@ -4,8 +4,16 @@ from django.db import migrations, models
 
 
 INDEX_RENAMES = (
-    ("base_gmailo_event_i_6f0d0d_idx", "base_gmailo_event_i_133776_idx"),
-    ("base_gmailo_is_acti_0d8f8f_idx", "base_gmailo_is_acti_22cf9d_idx"),
+    (
+        ["event", "is_active"],
+        "base_gmailo_event_i_6f0d0d_idx",
+        "base_gmailo_event_i_133776_idx",
+    ),
+    (
+        ["is_active"],
+        "base_gmailo_is_acti_0d8f8f_idx",
+        "base_gmailo_is_acti_22cf9d_idx",
+    ),
 )
 
 
@@ -16,35 +24,38 @@ def _index_exists(schema_editor, index_name):
             return cursor.fetchone() is not None
         if schema_editor.connection.vendor == "sqlite":
             cursor.execute(
-                "SELECT 1 FROM sqlite_master WHERE type = 'index' AND name = %s",
-                [index_name],
+                "SELECT 1 FROM sqlite_master WHERE type = %s AND name = %s",
+                ["index", index_name],
             )
             return cursor.fetchone() is not None
     return False
 
 
+def _rename_gmail_indexes(apps, schema_editor, *, reverse=False):
+    """
+    Rename Gmail OAuth indexes using Django's backend-aware schema editor.
+
+    Skips when the target name already exists (or the source is missing), so this
+    is safe on databases that already match the destination names.
+    """
+    GmailOAuthCredential = apps.get_model("base", "GmailOAuthCredential")
+    for fields, old_name, new_name in INDEX_RENAMES:
+        source, target = (new_name, old_name) if reverse else (old_name, new_name)
+        if _index_exists(schema_editor, target):
+            continue
+        if not _index_exists(schema_editor, source):
+            continue
+        old_index = models.Index(fields=fields, name=source)
+        new_index = models.Index(fields=fields, name=target)
+        schema_editor.rename_index(GmailOAuthCredential, old_index, new_index)
+
+
 def rename_gmail_indexes_forward(apps, schema_editor):
-    for old_name, new_name in INDEX_RENAMES:
-        if _index_exists(schema_editor, new_name):
-            continue
-        if not _index_exists(schema_editor, old_name):
-            continue
-        schema_editor.execute(
-            f"ALTER INDEX {schema_editor.quote_name(old_name)} "
-            f"RENAME TO {schema_editor.quote_name(new_name)}"
-        )
+    _rename_gmail_indexes(apps, schema_editor, reverse=False)
 
 
 def rename_gmail_indexes_backward(apps, schema_editor):
-    for old_name, new_name in INDEX_RENAMES:
-        if _index_exists(schema_editor, old_name):
-            continue
-        if not _index_exists(schema_editor, new_name):
-            continue
-        schema_editor.execute(
-            f"ALTER INDEX {schema_editor.quote_name(new_name)} "
-            f"RENAME TO {schema_editor.quote_name(old_name)}"
-        )
+    _rename_gmail_indexes(apps, schema_editor, reverse=True)
 
 
 class Migration(migrations.Migration):
