@@ -65,7 +65,8 @@ class ThirdPartyService(models.Model):
     category = models.CharField(
         max_length=20,
         choices=ConsentCategory.choices,
-        default=ConsentCategory.FUNCTIONAL,
+        blank=True,
+        default='',
         verbose_name=_('Consent category'),
     )
     enabled = models.BooleanField(default=True, verbose_name=_('Enabled'))

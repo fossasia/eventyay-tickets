@@ -19,7 +19,7 @@ class Migration(migrations.Migration):
                 ('title', models.CharField(max_length=200, verbose_name='Display name')),
                 ('provider', models.CharField(blank=True, max_length=200, verbose_name='Provider')),
                 ('purpose', models.TextField(blank=True, verbose_name='Description / purpose')),
-                ('category', models.CharField(choices=[('necessary', 'Strictly necessary'), ('functional', 'Functional'), ('analytics', 'Analytics'), ('marketing', 'Marketing'), ('embed', 'Embedded content')], default='functional', max_length=20, verbose_name='Consent category')),
+                ('category', models.CharField(blank=True, choices=[('necessary', 'Strictly necessary'), ('functional', 'Functional'), ('analytics', 'Analytics'), ('marketing', 'Marketing'), ('embed', 'Embedded content')], default='', max_length=20, verbose_name='Consent category')),
                 ('enabled', models.BooleanField(default=True, verbose_name='Enabled')),
                 ('privacy_policy_url', models.CharField(blank=True, max_length=500, validators=[django.core.validators.URLValidator()], verbose_name='Privacy policy URL')),
                 ('cookie_names', models.TextField(blank=True, help_text='One cookie name per line.', verbose_name='Cookie names')),
