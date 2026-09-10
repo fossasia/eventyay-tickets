@@ -77,7 +77,14 @@ def populate_plugin_classification(apps, schema_editor):
             # Required plugins must be active — repair if previously disabled.
             if fields.get('is_required') and not obj.is_active:
                 obj.is_active = True
-            obj.save(update_fields=[*fields.keys(), 'is_active'])
+            obj.enable_by_default = False
+            obj.show_in_organizer_list = False
+            obj.save(update_fields=[
+                *fields.keys(),
+                'is_active',
+                'enable_by_default',
+                'show_in_organizer_list',
+            ])
 
     GlobalPluginConfig.objects.exclude(
         module__in=PLATFORM_PLUGINS.keys()

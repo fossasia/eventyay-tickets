@@ -581,6 +581,30 @@ class GlobalPluginManagementView(AdministratorPermissionRequiredMixin, TemplateV
         except (ProgrammingError, OperationalError):
             configs = {}
 
+        for plugin in all_plugins:
+            if plugin.module not in configs:
+                rt_type, rt_required, rt_configured_via = self._classify_plugin(plugin)
+                is_platform = rt_type in (
+                    GlobalPluginConfig.PluginType.PAYMENT_PROVIDER,
+                    GlobalPluginConfig.PluginType.SYSTEM,
+                )
+                try:
+                    obj, created = GlobalPluginConfig.objects.get_or_create(
+                        module=plugin.module,
+                        defaults={
+                            'plugin_type': rt_type,
+                            'is_active': True,
+                            'is_required': rt_required,
+                            'enable_by_default': False,
+                            'show_in_organizer_list': not is_platform,
+                            'configured_via': rt_configured_via,
+                        },
+                    )
+                    if created:
+                        configs[plugin.module] = obj
+                except (ProgrammingError, OperationalError):
+                    pass
+
         all_modules = {p.module for p in all_plugins}
         try:
             usage_counts = self._count_events_using_plugins(all_modules)
@@ -621,6 +645,8 @@ class GlobalPluginManagementView(AdministratorPermissionRequiredMixin, TemplateV
 
         try:
             for module, plugin in plugins_by_module.items():
+                if module in self.HIDDEN_SYSTEM_MODULES:
+                    continue
                 config = configs.get(module)
                 rt_type, rt_required, rt_configured_via = self._classify_plugin(plugin)
 
