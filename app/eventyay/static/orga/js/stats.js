@@ -213,6 +213,30 @@ const syncMultiOptionState = (multi) => {
     })
 }
 
+const syncStatusExclusivity = (multi, changedInput) => {
+    if (!multi || !changedInput || multi.getAttribute("data-stats-dim") !== "status") return
+    const menu = getMultiMenu(multi)
+    if (!menu || !changedInput.checked) return
+    const value = String(changedInput.value)
+    if (value === "not_accepted") {
+        menu.querySelectorAll('input[type="checkbox"]').forEach((input) => {
+            if (input !== changedInput) input.checked = false
+        })
+        return
+    }
+    const notAccepted = menu.querySelector('input[type="checkbox"][value="not_accepted"]')
+    if (notAccepted) notAccepted.checked = false
+}
+
+const applySwatchColors = () => {
+    document.querySelectorAll(".td-analytics-multi-option input[data-color]").forEach((input) => {
+        const option = input.closest(".td-analytics-multi-option")
+        const swatch = option && option.querySelector(".td-analytics-multi-swatch")
+        if (!swatch) return
+        swatch.style.setProperty("--swatch", safeCssColor(input.getAttribute("data-color")))
+    })
+}
+
 const getMultiValues = (multi) => getCheckedOptions(multi).map((item) => item.value)
 
 const clearMultiValues = (multi) => {
@@ -480,7 +504,7 @@ const buildTrackRows = (rows) => {
         const current = map.get(key) || {
             label: row.track,
             value: 0,
-            color: row.track_color || "#2185d0",
+            color: safeCssColor(row.track_color, "#2185d0"),
             filterValue: row.track_id,
         }
         current.value += 1
@@ -498,7 +522,7 @@ const buildTagRows = (rows) => {
             const current = map.get(key) || {
                 label: key,
                 value: 0,
-                color: tag.color || "#2185d0",
+                color: safeCssColor(tag.color, "#2185d0"),
                 filterValue: tag.id,
             }
             current.value += 1
@@ -554,7 +578,7 @@ const buildTimelinePoints = (rows, dateAxis) => {
 const seriesFromGroups = (groups, rows, dateAxis, matchFn) => {
     const series = groups.map((group) => ({
         label: group.label,
-        color: group.color || "#2185d0",
+        color: safeCssColor(group.color, "#2185d0"),
         filterDim: group.filterDim || null,
         filterValue: group.filterValue == null ? "" : String(group.filterValue),
         data: buildTimelinePoints(rows.filter((row) => matchFn(row, group)), dateAxis),
@@ -612,7 +636,7 @@ const buildTimelineSeries = (rows, dateAxis, filters, meta) => {
         const series = seriesFromGroups(
             selectedTracks.map((track) => ({
                 label: track.label,
-                color: track.color || "#2185d0",
+                color: safeCssColor(track.color, "#2185d0"),
                 filterDim: "track",
                 filterValue: track.id,
             })),
@@ -639,7 +663,7 @@ const buildTimelineSeries = (rows, dateAxis, filters, meta) => {
         const series = seriesFromGroups(
             selectedTags.map((tag) => ({
                 label: tag.label,
-                color: tag.color || "#2185d0",
+                color: safeCssColor(tag.color, "#2185d0"),
                 filterDim: "tag",
                 filterValue: tag.id,
             })),
@@ -690,7 +714,7 @@ const buildTimelineSeries = (rows, dateAxis, filters, meta) => {
     if ((meta.tracks || []).length) {
         const trackGroups = (meta.tracks || []).map((track) => ({
             label: track.label,
-            color: track.color || "#2185d0",
+            color: safeCssColor(track.color, "#2185d0"),
             filterDim: "track",
             filterValue: track.id,
         }))
@@ -715,7 +739,7 @@ const buildTimelineSeries = (rows, dateAxis, filters, meta) => {
         const series = seriesFromGroups(
             (meta.tags || []).map((tag) => ({
                 label: tag.label,
-                color: tag.color || "#2185d0",
+                color: safeCssColor(tag.color, "#2185d0"),
                 filterDim: "tag",
                 filterValue: tag.id,
             })),
@@ -955,7 +979,7 @@ const drawTimelineSeries = (targetId, seriesRows, stateRows, sourceRows) => {
 
     const parsedSeries = seriesRows.map((row) => ({
         name: row.label,
-        color: row.color || "#2185d0",
+        color: safeCssColor(row.color, "#2185d0"),
         filterDim: row.filterDim || null,
         filterValue: row.filterValue == null ? "" : String(row.filterValue),
         hidden: false,
@@ -1346,6 +1370,7 @@ const initAnalyticsFilters = () => {
 
     renderAllCards(payload)
     syncGlobalButtons()
+    applySwatchColors()
 
     document.querySelectorAll(".td-analytics-multi").forEach((multi) => {
         styleMultiToggle(multi)
@@ -1365,7 +1390,10 @@ const initAnalyticsFilters = () => {
             menu.addEventListener("click", (event) => event.stopPropagation())
             menu.addEventListener("mousedown", (event) => event.stopPropagation())
             menu.querySelectorAll('input[type="checkbox"]').forEach((input) => {
-                input.addEventListener("change", () => onMultiFilterChange(payload, multi))
+                input.addEventListener("change", () => {
+                    syncStatusExclusivity(multi, input)
+                    onMultiFilterChange(payload, multi)
+                })
             })
         }
     })
@@ -1408,4 +1436,12 @@ const initAnalyticsFilters = () => {
     })
 }
 
-setTimeout(initAnalyticsFilters, 10)
+const startAnalytics = () => {
+    if (typeof ApexCharts === "undefined") {
+        window.setTimeout(startAnalytics, 20)
+        return
+    }
+    initAnalyticsFilters()
+}
+
+startAnalytics()

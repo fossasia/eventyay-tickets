@@ -1,6 +1,5 @@
 import json
 from collections import Counter
-from operator import itemgetter
 
 from dateutil import rrule
 from django.conf import settings
@@ -1010,31 +1009,6 @@ class SubmissionStatsMixin:
             for date in date_range
         ]
 
-    @staticmethod
-    def _sorted_label_value_rows(counter):
-        if not counter:
-            return None
-        return sorted(
-            [{'label': label, 'value': value} for label, value in counter.items()],
-            key=itemgetter('label'),
-        )
-
-    @staticmethod
-    def _sorted_state_rows(rows):
-        state_labels = dict(SubmissionStates.get_choices())
-        payload = [
-            {
-                'label': str(state_labels.get(row['state'], row['state'])),
-                'value': row['count'],
-                'state': row['state'],
-            }
-            for row in rows
-            if row['count']
-        ]
-        if not payload:
-            return None
-        return sorted(payload, key=itemgetter('label'))
-
     def _stats_base_qs(self, scope='all'):
         qs = (
             Submission.all_objects
@@ -1048,160 +1022,6 @@ class SubmissionStatsMixin:
                 state=SubmissionStates.DELETED
             )
         return qs.exclude(state=SubmissionStates.DELETED)
-
-    def _timeline_for_qs(self, qs):
-        rows = (
-            qs.filter(created__isnull=False)
-            .annotate(date=TruncDate('created', tzinfo=self.request.event.tz))
-            .values('date')
-            .annotate(count=DbCount('id'))
-            .order_by('date')
-        )
-        if not rows:
-            return None
-        data = {row['date'].isoformat(): row['count'] for row in rows if row['date']}
-        if not data:
-            return None
-        if self.raw_submission_timeline_data:
-            return [
-                {'x': point['x'], 'y': data.get(point['x'][:10], 0)}
-                for point in self.raw_submission_timeline_data
-            ]
-        return [{'x': date, 'y': count} for date, count in sorted(data.items())]
-
-    def _type_for_qs(self, qs):
-        rows = qs.values('submission_type_id').annotate(count=DbCount('id'))
-        types_dict = {st.id: str(st) for st in self.request.event.submission_types.all()}
-        counter = {
-            types_dict[row['submission_type_id']]: row['count']
-            for row in rows
-            if row['submission_type_id'] in types_dict and row['count']
-        }
-        return self._sorted_label_value_rows(counter)
-
-    def _track_for_qs(self, qs):
-        if not self.request.event.get_feature_flag('use_tracks'):
-            return None
-        rows = (
-            qs.filter(track__isnull=False)
-            .values('track_id', 'track__color')
-            .annotate(count=DbCount('id'))
-        )
-        tracks_dict = {tr.id: str(tr.name) for tr in self.request.event.tracks.all()}
-        payload = [
-            {
-                'label': tracks_dict[row['track_id']],
-                'value': row['count'],
-                'color': row['track__color'] or '#2185d0',
-            }
-            for row in rows
-            if row['track_id'] in tracks_dict and row['count']
-        ]
-        if not payload:
-            return None
-        return sorted(payload, key=itemgetter('label'))
-
-    def _tag_for_qs(self, qs):
-        if not self.request.event.tags.exists():
-            return None
-        rows = (
-            qs.filter(tags__isnull=False)
-            .values('tags__id', 'tags__tag', 'tags__color')
-            .annotate(count=DbCount('id', distinct=True))
-        )
-        payload = [
-            {
-                'label': row['tags__tag'],
-                'value': row['count'],
-                'color': row['tags__color'] or '#2185d0',
-            }
-            for row in rows
-            if row['tags__id'] and row['count']
-        ]
-        if not payload:
-            return None
-        return sorted(payload, key=itemgetter('label'))
-
-    def _language_for_qs(self, qs):
-        locales_dict = dict(self.request.event.named_content_locales)
-        rows = qs.values('content_locale').annotate(count=DbCount('id'))
-        counter = {
-            str(locales_dict.get(row['content_locale'], row['content_locale'])): row['count']
-            for row in rows
-            if row['content_locale'] and row['count']
-        }
-        return self._sorted_label_value_rows(counter)
-
-    def _state_for_qs(self, qs):
-        rows = qs.values('state').annotate(count=DbCount('id'))
-        return self._sorted_state_rows(rows)
-
-    @context
-    def submission_timeline_data(self):
-        if self.raw_submission_timeline_data:
-            return self.raw_submission_timeline_data
-        return None
-
-    @context
-    @cached_property
-    def submission_state_data(self):
-        if not self.can_view_submission_stats:
-            return None
-        return self._state_for_qs(self._stats_base_qs('all'))
-
-    @context
-    def submission_type_data(self):
-        if not self.can_view_submission_stats:
-            return None
-        return self._type_for_qs(self._stats_base_qs('all'))
-
-    @context
-    def submission_track_data(self):
-        if not self.can_view_submission_stats:
-            return None
-        return self._track_for_qs(self._stats_base_qs('all'))
-
-    @context
-    def submission_tag_data(self):
-        if not self.can_view_submission_stats:
-            return None
-        return self._tag_for_qs(self._stats_base_qs('all'))
-
-    @context
-    def submission_language_data(self):
-        if not self.can_view_submission_stats:
-            return None
-        return self._language_for_qs(self._stats_base_qs('all'))
-
-    @context
-    def talk_timeline_data(self):
-        if not self.can_view_submission_stats:
-            return None
-        return self._timeline_for_qs(self._stats_base_qs('accepted'))
-
-    @context
-    def talk_state_data(self):
-        if not self.can_view_submission_stats:
-            return None
-        return self._state_for_qs(self._stats_base_qs('accepted'))
-
-    @context
-    def talk_type_data(self):
-        if not self.can_view_submission_stats:
-            return None
-        return self._type_for_qs(self._stats_base_qs('accepted'))
-
-    @context
-    def talk_track_data(self):
-        if not self.can_view_submission_stats:
-            return None
-        return self._track_for_qs(self._stats_base_qs('accepted'))
-
-    @context
-    def talk_language_data(self):
-        if not self.can_view_submission_stats:
-            return None
-        return self._language_for_qs(self._stats_base_qs('accepted'))
 
     @context
     @cached_property

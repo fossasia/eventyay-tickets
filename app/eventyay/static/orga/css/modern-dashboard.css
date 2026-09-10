@@ -1219,13 +1219,16 @@ body:has(.td-dashboard) #page-content {
 
 .td-analytics-scope-btn {
   appearance: none;
+  -webkit-appearance: none;
   border: 0;
+  outline: 0;
+  box-shadow: none;
   background: transparent;
   color: var(--td-muted);
   font-size: 12px;
   font-weight: 600;
-  line-height: 1.2;
-  padding: 6px 12px;
+  line-height: 1;
+  padding: 0 12px;
   border-radius: 7px;
   cursor: pointer;
   transition: background 0.15s ease, color 0.15s ease;
@@ -1234,32 +1237,14 @@ body:has(.td-dashboard) #page-content {
   justify-content: center;
   text-align: center;
   box-sizing: border-box;
-  min-height: 30px;
-}
-
-.td-analytics-scope-btn.td-scope-accepted {
-  min-width: 88px;
-  color: var(--td-green);
-}
-
-.td-analytics-scope-btn.td-scope-not-accepted {
-  min-width: 108px;
-  color: var(--td-orange);
+  height: 30px;
+  min-width: 0;
+  margin: 0;
 }
 
 .td-analytics-scope-btn:hover {
   color: var(--td-text);
   background: #f1f5f9;
-}
-
-.td-analytics-scope-btn.td-scope-accepted:hover {
-  color: var(--td-green);
-  background: #f0fdf4;
-}
-
-.td-analytics-scope-btn.td-scope-not-accepted:hover {
-  color: var(--td-orange);
-  background: #fff7ed;
 }
 
 .td-analytics-scope-btn.is-active {
@@ -1302,9 +1287,13 @@ body:has(.td-dashboard) #page-content {
   position: absolute;
   top: calc(100% + 6px);
   left: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 2px;
   min-width: 188px;
   max-width: 260px;
-  max-height: 260px;
+  max-height: 280px;
   overflow: auto;
   padding: 8px;
   background: #fff;
@@ -1315,6 +1304,8 @@ body:has(.td-dashboard) #page-content {
     0 16px 32px rgba(15, 23, 42, 0.12);
   z-index: 10050;
   scrollbar-width: thin;
+  columns: auto;
+  column-count: 1;
 }
 
 .td-analytics-multi-menu.is-ported {
@@ -1370,6 +1361,8 @@ body:has(.td-dashboard) #page-content {
   display: flex;
   align-items: center;
   gap: 8px;
+  width: 100%;
+  flex: 0 0 auto;
   margin: 0;
   padding: 8px 10px;
   border-radius: 8px;
@@ -1379,6 +1372,7 @@ body:has(.td-dashboard) #page-content {
   cursor: pointer;
   white-space: nowrap;
   transition: background-color 0.12s ease, color 0.12s ease;
+  break-inside: avoid;
 }
 
 .td-analytics-multi-option:hover {

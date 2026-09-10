@@ -21,8 +21,8 @@
     {% if can_view_submission_stats %}
         {% compress js %}
             <script defer src="{% static "vendored/apexcharts/apexcharts.min.js" %}"></script>
-            <script defer src="{% static "orga/js/stats.js" %}"></script>
         {% endcompress %}
+        <script type="module" src="{% static "orga/js/stats.js" %}"></script>
     {% endif %}
 {% endblock scripts %}
 
