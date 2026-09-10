@@ -24,13 +24,12 @@ export function pluginLanguageStreams(room) {
 		: []
 
 	const uniqueStreams = []
-	const seenKeys = new Set()
+	const seenLanguages = new Set()
 
 	for (const entry of usable) {
-		// Create a unique key based on the stream's primary identifiers
-		const key = `${entry.language}:${entry.tts_ws_url || ''}:${entry.whep_url || entry.whip_url || ''}:${entry.url || entry.youtube_id || ''}`
-		if (!seenKeys.has(key)) {
-			seenKeys.add(key)
+		// Deduplicate strictly by language so we don't show AI and Booth for the same language
+		if (!seenLanguages.has(entry.language)) {
+			seenLanguages.add(entry.language)
 			uniqueStreams.push(entry)
 		}
 	}
