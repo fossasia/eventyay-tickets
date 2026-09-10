@@ -11,16 +11,19 @@
                 class="td-analytics-filter-select is-kind-status is-scope-all td-analytics-multi-toggle"
                 aria-haspopup="true"
                 aria-expanded="false">
-          {% translate "All status" %}
+          <span class="td-analytics-multi-label">{% translate "All status" %}</span>
         </button>
         <div class="td-analytics-multi-menu" hidden role="group" aria-label="{% translate 'Status options' %}">
+          <div class="td-analytics-multi-menu-head">{% translate "Status" %}</div>
           <label class="td-analytics-multi-option">
             <input type="checkbox" value="accepted">
-            <span>{% translate "Accepted" %}</span>
+            <span class="td-analytics-multi-check" aria-hidden="true"></span>
+            <span class="td-analytics-multi-option-label">{% translate "Accepted" %}</span>
           </label>
           <label class="td-analytics-multi-option">
             <input type="checkbox" value="not_accepted">
-            <span>{% translate "Not accepted" %}</span>
+            <span class="td-analytics-multi-check" aria-hidden="true"></span>
+            <span class="td-analytics-multi-option-label">{% translate "Not accepted" %}</span>
           </label>
         </div>
       </div>
@@ -36,13 +39,16 @@
                 class="td-analytics-filter-select is-kind-track td-analytics-multi-toggle"
                 aria-haspopup="true"
                 aria-expanded="false">
-          {% translate "All tracks" %}
+          <span class="td-analytics-multi-label">{% translate "All tracks" %}</span>
         </button>
         <div class="td-analytics-multi-menu" hidden role="group" aria-label="{% translate 'Track options' %}">
+          <div class="td-analytics-multi-menu-head">{% translate "Tracks" %}</div>
           {% for track in stats_filter_tracks %}
           <label class="td-analytics-multi-option">
             <input type="checkbox" value="{{ track.id }}" data-color="{{ track.color }}">
-            <span>{{ track.label }}</span>
+            <span class="td-analytics-multi-check" aria-hidden="true"></span>
+            <span class="td-analytics-multi-swatch" style="--swatch: {{ track.color }};" aria-hidden="true"></span>
+            <span class="td-analytics-multi-option-label">{{ track.label }}</span>
           </label>
           {% endfor %}
         </div>
@@ -60,13 +66,16 @@
                 class="td-analytics-filter-select is-kind-tag td-analytics-multi-toggle"
                 aria-haspopup="true"
                 aria-expanded="false">
-          {% translate "All tags" %}
+          <span class="td-analytics-multi-label">{% translate "All tags" %}</span>
         </button>
         <div class="td-analytics-multi-menu" hidden role="group" aria-label="{% translate 'Tag options' %}">
+          <div class="td-analytics-multi-menu-head">{% translate "Tags" %}</div>
           {% for tag in stats_filter_tags %}
           <label class="td-analytics-multi-option">
             <input type="checkbox" value="{{ tag.id }}" data-color="{{ tag.color }}">
-            <span>{{ tag.label }}</span>
+            <span class="td-analytics-multi-check" aria-hidden="true"></span>
+            <span class="td-analytics-multi-swatch" style="--swatch: {{ tag.color }};" aria-hidden="true"></span>
+            <span class="td-analytics-multi-option-label">{{ tag.label }}</span>
           </label>
           {% endfor %}
         </div>
@@ -83,16 +92,19 @@
                 class="td-analytics-filter-select is-kind-schedule td-analytics-multi-toggle"
                 aria-haspopup="true"
                 aria-expanded="false">
-          {% translate "All schedule" %}
+          <span class="td-analytics-multi-label">{% translate "All schedule" %}</span>
         </button>
         <div class="td-analytics-multi-menu" hidden role="group" aria-label="{% translate 'Schedule options' %}">
+          <div class="td-analytics-multi-menu-head">{% translate "Schedule" %}</div>
           <label class="td-analytics-multi-option">
             <input type="checkbox" value="scheduled">
-            <span>{% translate "Scheduled" %}</span>
+            <span class="td-analytics-multi-check" aria-hidden="true"></span>
+            <span class="td-analytics-multi-option-label">{% translate "Scheduled" %}</span>
           </label>
           <label class="td-analytics-multi-option">
             <input type="checkbox" value="unscheduled">
-            <span>{% translate "Unscheduled" %}</span>
+            <span class="td-analytics-multi-check" aria-hidden="true"></span>
+            <span class="td-analytics-multi-option-label">{% translate "Unscheduled" %}</span>
           </label>
         </div>
       </div>

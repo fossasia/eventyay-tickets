@@ -136,13 +136,25 @@ const getMultiMenu = (multi) => {
 const getCheckedOptions = (multi) => {
     const menu = getMultiMenu(multi)
     if (!menu) return []
-    return Array.from(menu.querySelectorAll('input[type="checkbox"]:checked')).map((input) => ({
-        value: input.value,
-        label: (input.closest("label") && input.closest("label").querySelector("span")
-            ? input.closest("label").querySelector("span").textContent
-            : input.value).trim(),
-        color: input.getAttribute("data-color") || null,
-    }))
+    return Array.from(menu.querySelectorAll('input[type="checkbox"]:checked')).map((input) => {
+        const option = input.closest(".td-analytics-multi-option")
+        const labelNode = option && option.querySelector(".td-analytics-multi-option-label")
+        const fallback = option && option.querySelector("span:not(.td-analytics-multi-check):not(.td-analytics-multi-swatch)")
+        return {
+            value: input.value,
+            label: ((labelNode && labelNode.textContent) || (fallback && fallback.textContent) || input.value).trim(),
+            color: input.getAttribute("data-color") || null,
+        }
+    })
+}
+
+const syncMultiOptionState = (multi) => {
+    const menu = getMultiMenu(multi)
+    if (!menu) return
+    menu.querySelectorAll(".td-analytics-multi-option").forEach((option) => {
+        const input = option.querySelector('input[type="checkbox"]')
+        option.classList.toggle("is-selected", Boolean(input && input.checked))
+    })
 }
 
 const getMultiValues = (multi) => getCheckedOptions(multi).map((item) => item.value)
@@ -184,7 +196,7 @@ const closeAllMultiMenus = (except) => {
 
 const positionMultiMenu = (multi, menu, toggle) => {
     const rect = toggle.getBoundingClientRect()
-    const menuWidth = Math.max(rect.width, 168)
+    const menuWidth = Math.max(rect.width, 188)
     let left = rect.left
     if (left + menuWidth > window.innerWidth - 8) {
         left = Math.max(8, window.innerWidth - menuWidth - 8)
@@ -223,13 +235,37 @@ const styleMultiToggle = (multi) => {
     const dim = multi.getAttribute("data-stats-dim")
     const emptyLabel = multi.getAttribute("data-empty-label") || "All"
     const checked = getCheckedOptions(multi)
+    syncMultiOptionState(multi)
 
     let label = emptyLabel
     if (checked.length === 1) label = checked[0].label
     else if (checked.length === 2) label = `${checked[0].label}, ${checked[1].label}`
     else if (checked.length > 2) label = `${checked.length} ${L_SELECTED}`
-    toggle.textContent = label
+
+    let labelNode = toggle.querySelector(".td-analytics-multi-label")
+    if (!labelNode) {
+        clearNode(toggle)
+        labelNode = createEl("span", "td-analytics-multi-label")
+        toggle.appendChild(labelNode)
+    }
+    labelNode.textContent = label
+
+    let badge = toggle.querySelector(".td-analytics-multi-badge")
+    if (checked.length > 1) {
+        if (!badge) {
+            badge = createEl("span", "td-analytics-multi-badge")
+            badge.setAttribute("aria-hidden", "true")
+            toggle.appendChild(badge)
+        }
+        badge.textContent = String(checked.length)
+        badge.hidden = false
+    } else if (badge) {
+        badge.hidden = true
+    }
+
     toggle.title = checked.length ? checked.map((item) => item.label).join(", ") : emptyLabel
+    toggle.classList.toggle("has-selection", checked.length > 0)
+    multi.classList.toggle("has-selection", checked.length > 0)
 
     if (dim === "status") {
         let scope = "all"
