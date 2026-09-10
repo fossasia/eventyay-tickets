@@ -113,7 +113,7 @@ class TalkQuestion(OrderedModel, PretalxModel):
 
     :param variant: Can be any of 'number', 'string', 'text', 'url', 'video',
         'date', 'datetime', 'boolean', 'file', 'choices', 'multiple_choice',
-        'select', or 'country'. Defined in the ``TalkQuestionVariant`` class.
+        'select', 'country', or 'tel'. Defined in the ``TalkQuestionVariant`` class.
     :param target: Can be any of 'submission', 'speaker', or 'reviewer'.
         Defined in the ``TalkQuestionTarget`` class.
     :param deadline: Datetime field. This field is required for 'after deadline' and 'freeze after' options of
