@@ -432,8 +432,21 @@ class GlobalPluginManagementView(AdministratorPermissionRequiredMixin, TemplateV
         'eventyay.plugins.checkinlists',
     })
 
+    # Report exporter and Check-in list exporter are deeply integrated
+    # system features used across many parts of the platform (PDF exports,
+    # check-in infrastructure, etc.).  They are always active behind the
+    # scenes and are not meaningful for admins to manage through this page,
+    # so they are excluded from the UI while remaining fully functional in
+    # the system.
+    HIDDEN_SYSTEM_MODULES: frozenset[str] = frozenset({
+        'eventyay.plugins.reports',
+        'eventyay.plugins.checkinlists',
+    })
+
+    # Modules whose plugins are required for core platform functionality
+    # and cannot be deactivated by admins (e.g. authentication, check-in
+    # infrastructure).
     REQUIRED_MODULES: frozenset[str] = frozenset({
-        'eventyay.plugins.socialauth',
         'eventyay.plugins.checkinlists',
     })
 
@@ -532,6 +545,8 @@ class GlobalPluginManagementView(AdministratorPermissionRequiredMixin, TemplateV
         platform_rows = []
         external_rows = []
         for plugin in all_plugins:
+            if plugin.module in self.HIDDEN_SYSTEM_MODULES:
+                continue
             row = self._build_row(
                 plugin,
                 configs.get(plugin.module),

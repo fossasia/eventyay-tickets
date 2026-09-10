@@ -31,7 +31,15 @@ PLATFORM_PLUGINS = {
         'is_required': False,
         'configured_via': 'payment_settings',
     },
-    # System plugins — platform-level features
+    # System plugins — platform-level features.
+    # Report exporter and Check-in list exporter are deeply integrated
+    # system features (PDF exports, check-in infrastructure) that run
+    # behind the scenes across many parts of the platform.  They are
+    # hidden from the admin plugin management UI but remain fully
+    # functional in the system.
+    # SocialAuth provides social login.  It is kept modular so that
+    # deployments not using social authentication can disable it without
+    # breaking anything — the platform falls back to local auth.
     'eventyay.plugins.reports': {
         'plugin_type': 'system',
         'is_required': False,
@@ -39,7 +47,7 @@ PLATFORM_PLUGINS = {
     },
     'eventyay.plugins.socialauth': {
         'plugin_type': 'system',
-        'is_required': True,
+        'is_required': False,
         'configured_via': 'platform',
     },
     'eventyay.plugins.checkinlists': {
@@ -66,6 +74,7 @@ def populate_plugin_classification(apps, schema_editor):
         if not created:
             for attr, value in fields.items():
                 setattr(obj, attr, value)
+            # Required plugins must be active — repair if previously disabled.
             if fields.get('is_required') and not obj.is_active:
                 obj.is_active = True
             obj.save(update_fields=[*fields.keys(), 'is_active'])

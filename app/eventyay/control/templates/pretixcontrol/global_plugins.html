@@ -35,7 +35,6 @@
     <input type="hidden" name="active_tab" value="{{ active_tab }}" data-active-tab-field>
     <div class="tab-content">
 
-      {# ── Platform Plugins tab ── #}
       <div role="tabpanel"
            class="tab-pane {% if active_tab == 'platform' %}active{% endif %}"
            id="tab-platform">
@@ -49,8 +48,6 @@
                 <th>{% trans "Plugin" %}</th>
                 <th>{% trans "Type" %}</th>
                 <th class="text-center">{% trans "Active" %}</th>
-                <th class="text-center">{% trans "Enable by default" %}</th>
-                <th class="text-center">{% trans "Show in organiser plugin list" %}</th>
                 <th>{% trans "Controlled by" %}</th>
               </tr>
             </thead>
@@ -73,35 +70,12 @@
                     <span class="label label-default">{{ row.plugin_type_label }}</span>
                   </td>
                   <td class="text-center">
-                    {% if row.is_required %}
-                      <input type="checkbox"
-                             name="is_active_{{ row.module }}"
-                             data-col="active"
-                             aria-label="{% trans 'Active' %}: {{ row.name }}"
-                             checked
-                             disabled
-                             title="{% trans 'This plugin is required and cannot be deactivated.' %}">
-                      <input type="hidden" name="is_active_{{ row.module }}" value="on">
-                    {% else %}
-                      <input type="checkbox"
-                             name="is_active_{{ row.module }}"
-                             data-col="active"
-                             data-was-active="{% if row.is_active %}1{% endif %}"
-                             aria-label="{% trans 'Active' %}: {{ row.name }}"
-                             {% if row.is_active %}checked{% endif %}>
-                    {% endif %}
-                  </td>
-                  <td class="text-center">
-                    <span class="text-muted"
-                          title="{% trans 'Not applicable: this plugin is managed by the platform and is not available as an organiser-toggleable plugin.' %}">
-                      {% trans "N/A" %}
-                    </span>
-                  </td>
-                  <td class="text-center">
-                    <span class="text-muted"
-                          title="{% trans 'Not applicable: this plugin is managed by the platform and is not available as an organiser-toggleable plugin.' %}">
-                      {% trans "N/A" %}
-                    </span>
+                    <input type="checkbox"
+                           name="is_active_{{ row.module }}"
+                           data-col="active"
+                           data-was-active="{% if row.is_active %}1{% endif %}"
+                           aria-label="{% trans 'Active' %}: {{ row.name }}"
+                           {% if row.is_active %}checked{% endif %}>
                   </td>
                   <td>
                     {% if row.configured_via %}
@@ -111,7 +85,7 @@
                 </tr>
               {% empty %}
                 <tr>
-                  <td colspan="6" class="text-center text-muted">
+                  <td colspan="4" class="text-center text-muted">
                     {% trans "No platform plugins found." %}
                   </td>
                 </tr>
