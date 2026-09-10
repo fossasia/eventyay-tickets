@@ -10,18 +10,15 @@ from eventyay.base.models import TalkSlot
 @pytest.mark.django_db()
 def test_can_create_feedback(django_assert_num_queries, past_slot, client, event):
     with scope(event=event):
+        event.feature_flags['use_feedback'] = True
+        event.save(update_fields=['feature_flags'])
         assert past_slot.submission.speakers.count() == 1
     with django_assert_num_queries(42):
-        response = client.post(
-            past_slot.submission.urls.feedback, {"review": "cool!"}, follow=True
-        )
+        response = client.post(past_slot.submission.urls.feedback, {'review': 'cool!'}, follow=True)
     assert response.status_code == 200
     with scope(event=event):
-        assert past_slot.submission.feedback.first().review == "cool!"
-        assert (
-            past_slot.submission.feedback.first().speaker
-            == past_slot.submission.speakers.first()
-        )
+        assert past_slot.submission.feedback.first().review == 'cool!'
+        assert past_slot.submission.feedback.first().speaker == past_slot.submission.speakers.first()
         assert past_slot.submission.title in str(past_slot.submission.feedback.first())
 
 
@@ -30,34 +27,32 @@ def test_can_create_feedback_for_multiple_speakers(
     django_assert_num_queries, past_slot, client, other_speaker, speaker, event
 ):
     with scope(event=event):
+        event.feature_flags['use_feedback'] = True
+        event.save(update_fields=['feature_flags'])
         past_slot.submission.speakers.add(other_speaker)
         past_slot.submission.speakers.add(speaker)
         assert past_slot.submission.speakers.count() == 2
     with django_assert_num_queries(41):
-        response = client.post(
-            past_slot.submission.urls.feedback, {"review": "cool!"}, follow=True
-        )
+        response = client.post(past_slot.submission.urls.feedback, {'review': 'cool!'}, follow=True)
     assert response.status_code == 200
     with scope(event=event):
-        assert past_slot.submission.feedback.first().review == "cool!"
+        assert past_slot.submission.feedback.first().review == 'cool!'
         assert not past_slot.submission.feedback.first().speaker
         assert past_slot.submission.title in str(past_slot.submission.feedback.first())
 
 
 @pytest.mark.django_db()
-def test_cannot_create_feedback_before_talk(
-    django_assert_num_queries, slot, client, event
-):
+def test_cannot_create_feedback_before_talk(django_assert_num_queries, slot, client, event):
     _now = now()
     with scope(event=event):
+        event.feature_flags['use_feedback'] = True
+        event.save(update_fields=['feature_flags'])
         TalkSlot.objects.filter(submission__event=slot.event).update(
             start=_now + dt.timedelta(minutes=30),
             end=_now + dt.timedelta(minutes=60),
         )
     with django_assert_num_queries(13):
-        response = client.post(
-            slot.submission.urls.feedback, {"review": "cool!"}, follow=True
-        )
+        response = client.post(slot.submission.urls.feedback, {'review': 'cool!'}, follow=True)
     assert response.status_code == 200
     with scope(event=event):
         assert slot.submission.feedback.count() == 0
@@ -65,7 +60,20 @@ def test_cannot_create_feedback_before_talk(
 
 
 @pytest.mark.django_db()
+def test_cannot_create_feedback_when_feedback_disabled(django_assert_num_queries, past_slot, client, event):
+    with scope(event=event):
+        assert event.get_feature_flag('use_feedback') is False
+    with django_assert_num_queries(13):
+        response = client.post(past_slot.submission.urls.feedback, {'review': 'cool!'}, follow=True)
+    assert response.status_code == 200
+    with scope(event=event):
+        assert past_slot.submission.feedback.count() == 0
+
+
+@pytest.mark.django_db()
 def test_can_see_feedback(django_assert_num_queries, feedback, client):
+    feedback.talk.event.feature_flags['use_feedback'] = True
+    feedback.talk.event.save(update_fields=['feature_flags'])
     client.force_login(feedback.talk.speakers.first())
     with django_assert_num_queries(17):
         response = client.get(feedback.talk.urls.feedback)
@@ -75,6 +83,8 @@ def test_can_see_feedback(django_assert_num_queries, feedback, client):
 
 @pytest.mark.django_db()
 def test_can_see_feedback_form(django_assert_num_queries, past_slot, client):
+    past_slot.submission.event.feature_flags['use_feedback'] = True
+    past_slot.submission.event.save(update_fields=['feature_flags'])
     with django_assert_num_queries(13):
         response = client.get(past_slot.submission.urls.feedback, follow=True)
     assert response.status_code == 200
@@ -82,6 +92,8 @@ def test_can_see_feedback_form(django_assert_num_queries, past_slot, client):
 
 @pytest.mark.django_db()
 def test_cannot_see_feedback_form_before_talk(django_assert_num_queries, slot, client):
+    slot.submission.event.feature_flags['use_feedback'] = True
+    slot.submission.event.save(update_fields=['feature_flags'])
     with django_assert_num_queries(15):
         response = client.get(slot.submission.urls.feedback, follow=True)
     assert response.status_code == 200

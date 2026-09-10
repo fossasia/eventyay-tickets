@@ -351,3 +351,12 @@ def test_event_update_review_phase_activate_next_phase(event):
         active_phase.save()
         new_phase = ReviewPhase.objects.create(event=event, position=3, start=active_phase.end)
         assert event.update_review_phase() == new_phase
+
+
+def test_default_feature_flags_feedback_disabled():
+    from eventyay.base.models.event import Event, default_feature_flags
+
+    flags = default_feature_flags()
+    assert flags['use_feedback'] is False
+    event = Event()
+    assert event.get_feature_flag('use_feedback') is False

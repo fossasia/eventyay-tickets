@@ -72,3 +72,23 @@ def test_feedback_create_unauthenticated(client, past_slot):
         },
     )
     assert response.status_code == 403
+
+
+@pytest.mark.django_db
+def test_feedback_create_when_disabled(client, past_slot, user):
+    submission = past_slot.submission
+    event = submission.event
+    # use_feedback is False by default
+    client.force_login(user)
+    url = reverse('api:feedback-list', kwargs={'event': event.slug})
+    response = client.post(
+        url,
+        {
+            'talk': submission.code,
+            'review': 'Great talk!',
+            'is_public': True,
+        },
+    )
+    assert response.status_code == 403
+    assert response.data['detail'] == 'Feedback is not enabled for this event.'
+    assert Feedback.objects.count() == 0

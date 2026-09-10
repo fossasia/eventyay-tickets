@@ -8,15 +8,15 @@ from eventyay.orga.forms.event import ReviewScoreCategoryForm
 
 @pytest.mark.django_db
 def test_submissionform_content_locale_choices(event):
-    event.locale_array = "en,de"
-    event.content_locale_array = "en,de,fr"
+    event.locale_array = 'en,de'
+    event.content_locale_array = 'en,de,fr'
     event.save()
     with scope(event=event):
         submission_form = SubmissionForm(event)
-        assert submission_form.fields["content_locale"].choices == [
-            ("en", "English"),
-            ("de", "Deutsch"),
-            ("fr", "Français"),
+        assert submission_form.fields['content_locale'].choices == [
+            ('en', 'English'),
+            ('de', 'Deutsch'),
+            ('fr', 'Français'),
         ]
 
 
@@ -68,3 +68,11 @@ def test_review_score_category_form_duplicate_score_validation(event):
         form_valid = ReviewScoreCategoryForm(event=event, instance=category, data=data_valid)
         assert form_valid.is_valid()
 
+
+def test_feedback_settings_form_defaults():
+    from eventyay.base.models import Event
+    from eventyay.orga.forms.event import FeedbackSettingsForm
+
+    event = Event()
+    form = FeedbackSettingsForm(obj=event)
+    assert form.fields['use_feedback'].initial is False
