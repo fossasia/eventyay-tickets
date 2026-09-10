@@ -39,6 +39,7 @@ COPY pyproject.toml uv.lock ./
 RUN --mount=type=cache,target=/root/.cache/uv \
     if [ "$BUILD_MODE" = "dev" ]; then \
       echo "=== Dev build: refreshing plugins (CACHE_BUST=$CACHE_BUST) ===" && \
+      sed -i 's/\.git@main/\.git@dev/g' pyproject.toml && \
       uv sync --no-install-project --no-editable --refresh \
         --upgrade-package eventyay-paypal \
         --upgrade-package eventyay-stripe \
@@ -47,7 +48,8 @@ RUN --mount=type=cache,target=/root/.cache/uv \
         --upgrade-package exhibition \
         --upgrade-package eventyay-teamshifts \
         --upgrade-package eventyay-interpretation \
-        --upgrade-package eventyay-hubspot; \
+        --upgrade-package eventyay-hubspot \
+        --upgrade-package eventyay-business; \
     else \
       echo "=== Production build: using locked dependencies ===" && \
       uv sync --locked --no-install-project --no-editable; \

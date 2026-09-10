@@ -8,16 +8,77 @@
 
   .avatar-upload .form-group {
     display: block;
-
-    .col-md-9 br:first-of-type {
-      display: none;
-    }
-
     padding-top: 8px;
+  }
+}
 
-    input[type="file"] {
-      display: inline-block;
-      width: auto;
-    }
+.eventyay-image-input {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.5rem;
+  min-width: 0;
+  max-width: 22rem;
+}
+
+/* Visually hidden but still focusable and reachable by its labels. */
+.eventyay-image-input .eventyay-image-file {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.eventyay-image-input .eventyay-image-clear {
+  display: none;
+}
+
+.eventyay-image-current {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  min-width: 0;
+  max-width: 100%;
+  padding: 0.25rem 0.25rem 0.25rem 0.75rem;
+  background-color: var(--color-bg);
+  border: 1px solid var(--color-border);
+  border-radius: var(--size-border-radius);
+}
+
+.eventyay-image-name {
+  flex: 0 1 auto;
+  min-width: 0;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  color: var(--color-text-muted);
+  font-size: 0.875em;
+}
+
+.eventyay-image-current[hidden] {
+  display: none;
+}
+
+.eventyay-image-current .eventyay-image-replace,
+.eventyay-image-current .eventyay-image-delete {
+  flex: none;
+  margin-bottom: 0;
+}
+
+.eventyay-image-picker[hidden] {
+  display: none;
+}
+
+@media (max-width: 576px) {
+  .eventyay-image-input {
+    align-self: stretch;
+    max-width: 100%;
+  }
+
+  .eventyay-image-current {
+    width: 100%;
   }
 }

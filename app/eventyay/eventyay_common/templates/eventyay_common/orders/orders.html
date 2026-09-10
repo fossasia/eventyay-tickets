@@ -5,14 +5,15 @@
 {% load money %}
 {% load static %}
 
-{% block title %}{% trans "My Orders" %}{% endblock %}
+{% block title %}{% trans "My Tickets" %}{% endblock %}
 
 {% block custom_header %}
     {{ block.super }}
+    <script type="module" src="{% static 'eventyay-common/js/orders-filter.js' %}"></script>
 {% endblock %}
 
 {% block content %}
-    <h1>{% trans "My Orders" %}</h1>
+    <h1>{% trans "My Tickets" %}</h1>
     <div class="advanced-filter-search" data-advanced-filter-search>
         <form class="filter-form advanced-filter-search-form" action="" method="get">
             <div class="advanced-filter-search-bar">
@@ -56,6 +57,7 @@
         </form>
     </div>
     <div data-ajax-results-region>
+        {% if order_list %}
         <div class="table-responsive">
             <table class="table table-condensed table-hover table-quotas events-table">
                 <thead>
@@ -86,45 +88,23 @@
                             {% include "eventyay_common/orders/fragment_order_status.html" with order=order event=order.event %}
                         </td>
                     </tr>
-                    {% empty %}
-                    <tr>
-                        <td colspan="5" class="text-center">{{ _('You have no orders.') }}</td>
-                    </tr>
                     {% endfor %}
                 </tbody>
             </table>
         </div>
         {% include 'pretixcontrol/pagination.html' %}
+        {% else %}
+          {% if has_active_filters %}
+            <div class="alert alert-info">{% trans "No tickets match your filters." %}</div>
+          {% else %}
+            {% url 'presale:events.upcoming' as browse_events_url %}
+            {% url 'eventyay_common:dashboard' as dashboard_url %}
+            {% trans "No tickets yet" as empty_title %}
+            {% trans "Browse upcoming events and register to see your tickets here." as empty_description %}
+            {% trans "Browse events" as empty_primary_label %}
+            {% trans "Go to dashboard" as empty_secondary_label %}
+            {% include "eventyay_common/includes/personal_empty_state.html" with icon="ticket" title=empty_title description=empty_description primary_url=browse_events_url primary_label=empty_primary_label secondary_url=dashboard_url secondary_label=empty_secondary_label %}
+          {% endif %}
+        {% endif %}
     </div>
-    <script>
-        (function () {
-            var params = new URLSearchParams(window.location.search);
-            ['date_from', 'date_to'].forEach(function (name) {
-                if (!params.get(name)) {
-                    var input = document.querySelector('input[name="' + name + '"]');
-                    if (input) input.value = '';
-                }
-            });
-
-            var fromInput = document.querySelector('input[name="date_from"]');
-            var toInput = document.querySelector('input[name="date_to"]');
-            if (fromInput && toInput) {
-                function syncRangeLimits() {
-                    if (fromInput.value) {
-                        toInput.min = fromInput.value;
-                    } else {
-                        toInput.removeAttribute('min');
-                    }
-                    if (toInput.value) {
-                        fromInput.max = toInput.value;
-                    } else {
-                        fromInput.removeAttribute('max');
-                    }
-                }
-                fromInput.addEventListener('change', syncRangeLimits);
-                toInput.addEventListener('change', syncRangeLimits);
-                syncRangeLimits();
-            }
-        })();
-    </script>
 {% endblock %}

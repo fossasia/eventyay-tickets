@@ -144,13 +144,21 @@ class TestGlobalSettingsCleanUp:
         assert 'id="tab-billing_validation"' not in content
         assert 'id="tab-organizer_billing"' not in content
 
-        # Payment Gateways MUST still contain ticket payments
-        assert 'id="tab-payment_gateways"' in content
-        assert 'Stripe — Ticket Payments' in content
-        assert 'PayPal — Ticket Payments' in content
-        assert 'payment_stripe_connect_client_id' in content
-        assert 'payment_stripe_connect_publishable_key' in content
-        assert 'payment_paypal_connect_client_id' in content
+        # Payment Gateways should be moved to Ticketing page, not in Global Settings
+        assert 'id="tab-payment_gateways"' not in content
+        assert 'id="tab-payment-gateways"' not in content
+
+        # Verify Ticketing page contains ticket payments
+        ticketing_url = reverse('eventyay_admin:admin.global.ticketing')
+        ticketing_resp = staff_client.get(ticketing_url)
+        assert ticketing_resp.status_code == 200
+        ticketing_content = ticketing_resp.content.decode('utf-8')
+        assert 'id="tab-payment-gateways"' in ticketing_content
+        assert 'Stripe — Ticket Payments' in ticketing_content
+        assert 'PayPal — Ticket Payments' in ticketing_content
+        assert 'payment_stripe_connect_client_id' in ticketing_content
+        assert 'payment_stripe_connect_publishable_key' in ticketing_content
+        assert 'payment_paypal_connect_client_id' in ticketing_content
 
     def test_global_settings_redirects_for_legacy_tabs(self, staff_client):
         url = reverse('eventyay_admin:admin.global.settings')
