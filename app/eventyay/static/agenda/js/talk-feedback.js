@@ -1,6 +1,236 @@
 /**
- * Session talk feedback UI: replies, reactions, ratings, and toggles.
+ * Session talk feedback UI: replies, reactions, ratings, emoji picker, and speaker filter.
  */
+
+const COMMON_EMOJIS = [
+  '😀', '😃', '😄', '😁', '😅', '😂', '🤣', '😊', '😇', '🙂',
+  '😉', '😌', '😍', '🥰', '😘', '😋', '😜', '🤪', '🤨', '🧐',
+  '🤓', '😎', '🤩', '🥳', '😏', '😒', '😞', '😔', '😟', '😕',
+  '🙁', '😣', '😖', '😫', '😩', '🥺', '😢', '😭', '😤', '😠',
+  '🤯', '😳', '🥵', '🥶', '😱', '😨', '🤗', '🤔', '🤭', '🤫',
+  '😶', '😐', '😑', '😬', '🙄', '😯', '😮', '😲', '🥱', '😴',
+  '🤤', '😪', '😵', '🤠', '😈', '👍', '👎', '👏', '🙌', '🙏',
+  '✌️', '🤞', '🤟', '🤘', '👌', '👈', '👉', '👆', '👇', '👋',
+  '💪', '❤️', '🧡', '💛', '💚', '💙', '💜', '🖤', '💔', '💕',
+  '🔥', '⭐', '🌟', '✨', '💯', '🎉', '🎊', '✅', '❌', '👀',
+];
+
+function insertTextAtCursor(textarea, text) {
+  const start = textarea.selectionStart ?? textarea.value.length;
+  const end = textarea.selectionEnd ?? textarea.value.length;
+  const before = textarea.value.slice(0, start);
+  const after = textarea.value.slice(end);
+  textarea.value = before + text + after;
+  const caret = start + text.length;
+  textarea.setSelectionRange(caret, caret);
+  textarea.focus();
+  textarea.dispatchEvent(new Event('input', { bubbles: true }));
+}
+
+function ensureEmojiPicker(root) {
+  let picker = document.getElementById('talk-emoji-picker');
+  if (picker) {
+    return picker;
+  }
+  picker = document.createElement('div');
+  picker.id = 'talk-emoji-picker';
+  picker.className = 'talk-emoji-picker d-none';
+  picker.setAttribute('role', 'dialog');
+  const ariaLabel = typeof window.gettext === 'function' ? window.gettext('Emoji picker') : 'Emoji picker';
+  picker.setAttribute('aria-label', ariaLabel);
+  const grid = document.createElement('div');
+  grid.className = 'talk-emoji-picker__grid';
+  COMMON_EMOJIS.forEach((emoji) => {
+    const btn = document.createElement('button');
+    btn.type = 'button';
+    btn.className = 'talk-emoji-picker__emoji';
+    btn.textContent = emoji;
+    btn.setAttribute('aria-label', emoji);
+    grid.appendChild(btn);
+  });
+  picker.appendChild(grid);
+  (root.body || document.body).appendChild(picker);
+  return picker;
+}
+
+function hideEmojiPicker(picker, toggle) {
+  if (!picker) {
+    return;
+  }
+  picker.classList.add('d-none');
+  const active = toggle || picker._activeToggle;
+  picker._activeToggle = null;
+  if (active) {
+    active.setAttribute('aria-expanded', 'false');
+  }
+}
+
+function positionEmojiPicker(picker, toggle) {
+  const rect = toggle.getBoundingClientRect();
+  const pickerWidth = Math.min(264, window.innerWidth - 16);
+  const left = Math.min(
+    Math.max(8, rect.left - pickerWidth + rect.width),
+    window.innerWidth - pickerWidth - 8,
+  );
+  let top = rect.bottom + 6;
+  const estimatedHeight = 240;
+  if (top + estimatedHeight > window.innerHeight - 8) {
+    top = Math.max(8, rect.top - estimatedHeight - 6);
+  }
+  picker.style.width = `${pickerWidth}px`;
+  picker.style.left = `${left}px`;
+  picker.style.top = `${top}px`;
+}
+
+function initEmojiPickers(root = document) {
+  const picker = ensureEmojiPicker(document);
+  const toggles = root.querySelectorAll('.emoji-picker-toggle');
+
+  toggles.forEach((toggle) => {
+    if (toggle.dataset.emojiPickerInit === 'true') {
+      return;
+    }
+    toggle.dataset.emojiPickerInit = 'true';
+    toggle.addEventListener('click', (event) => {
+      event.preventDefault();
+      event.stopPropagation();
+      const isOpen = !picker.classList.contains('d-none') && picker._activeToggle === toggle;
+      if (isOpen) {
+        hideEmojiPicker(picker, toggle);
+        return;
+      }
+      if (picker._activeToggle && picker._activeToggle !== toggle) {
+        picker._activeToggle.setAttribute('aria-expanded', 'false');
+      }
+      picker.classList.remove('d-none');
+      picker._activeToggle = toggle;
+      toggle.setAttribute('aria-expanded', 'true');
+      positionEmojiPicker(picker, toggle);
+      picker._activeTextarea = toggle
+        .closest('.comment-compose-row, .youtube-comment-form, form')
+        ?.querySelector('textarea');
+    });
+  });
+
+  if (picker.dataset.emojiPickerGlobalInit === 'true') {
+    return;
+  }
+  picker.dataset.emojiPickerGlobalInit = 'true';
+
+  picker.addEventListener('click', (event) => {
+    const btn = event.target.closest('.talk-emoji-picker__emoji');
+    if (!btn) {
+      return;
+    }
+    const textarea = picker._activeTextarea;
+    if (textarea) {
+      insertTextAtCursor(textarea, btn.textContent);
+    }
+    hideEmojiPicker(picker);
+  });
+
+  document.addEventListener('click', (event) => {
+    if (picker.classList.contains('d-none')) {
+      return;
+    }
+    if (event.target.closest('#talk-emoji-picker, .emoji-picker-toggle')) {
+      return;
+    }
+    hideEmojiPicker(picker);
+  });
+
+  document.addEventListener('keydown', (event) => {
+    if (event.key === 'Escape' && !picker.classList.contains('d-none')) {
+      hideEmojiPicker(picker);
+    }
+  });
+}
+
+function initRateMeDialog(root = document) {
+
+  root.querySelectorAll('fieldset.rate-me-emoji-rating').forEach((fieldset) => {
+    if (fieldset.dataset.rateMeInit === 'true') {
+      return;
+    }
+    fieldset.dataset.rateMeInit = 'true';
+    fieldset.querySelectorAll('.rate-me-emoji-option input[type="radio"]').forEach((radio) => {
+      radio.addEventListener('change', () => {
+        fieldset.querySelectorAll('.rate-me-emoji-option').forEach((option) => {
+          option.classList.toggle('is-selected', option.querySelector('input')?.checked === true);
+        });
+      });
+    });
+  });
+}
+
+function updateCommentCount(list, visibleCount) {
+  const label = document.querySelector('.comment-count-label');
+  if (!label) {
+    return;
+  }
+  const total = Number(label.dataset.total || '0');
+  label.textContent = String(visibleCount);
+  if (visibleCount !== total && total > 0) {
+    label.dataset.filtered = 'true';
+  } else {
+    label.dataset.filtered = 'false';
+  }
+}
+
+function filterCommentsBySpeaker(select) {
+  const list = document.querySelector('.comment-list');
+  if (!list || !select) {
+    return;
+  }
+  const speakerId = select.value || '';
+  const items = list.querySelectorAll('.comment-item[data-speaker-id]');
+  let visible = 0;
+  items.forEach((item) => {
+    // Only filter top-level comments (replies stay nested under parents).
+    if (item.classList.contains('reply-item')) {
+      return;
+    }
+    const itemSpeaker = item.getAttribute('data-speaker-id') || '';
+    // Selected speaker sees their targeted comments plus general (session speakers) ones.
+    const show = !speakerId || itemSpeaker === speakerId || itemSpeaker === '';
+    item.classList.toggle('d-none', !show);
+    if (show) {
+      visible += 1;
+    }
+  });
+
+  const emptyEl = list.querySelector('.speaker-filter-empty');
+  if (emptyEl) {
+    if (speakerId && visible === 0) {
+      emptyEl.textContent = list.getAttribute('data-empty-filter-text') || '';
+      emptyEl.classList.remove('d-none');
+    } else {
+      emptyEl.classList.add('d-none');
+      emptyEl.textContent = '';
+    }
+  }
+  updateCommentCount(list, speakerId ? visible : Number(
+    document.querySelector('.comment-count-label')?.dataset.total || visible,
+  ));
+}
+
+function initSpeakerFilter(root = document) {
+  const selects = root.querySelectorAll('.main-feedback-form .speaker-target-select, select.speaker-target-select');
+  selects.forEach((select) => {
+    if (select.dataset.speakerFilterInit === 'true') {
+      return;
+    }
+    // Only the compose-form select drives list filtering.
+    if (!select.closest('.main-feedback-form')) {
+      return;
+    }
+    select.dataset.speakerFilterInit = 'true';
+    select.addEventListener('change', () => {
+      filterCommentsBySpeaker(select);
+    });
+  });
+}
+
 export function initTalkFeedback(root = document) {
   const replyBtns = root.querySelectorAll('.reply-btn');
   replyBtns.forEach((btn) => {
@@ -31,7 +261,6 @@ export function initTalkFeedback(root = document) {
         parentInput.value = parentId;
       }
       formContainer.classList.remove('d-none');
-      formContainer.style.display = 'block';
       const textarea = formContainer.querySelector('textarea');
       if (textarea) {
         textarea.focus();
@@ -150,7 +379,7 @@ export function initTalkFeedback(root = document) {
   });
 
   root.querySelectorAll('.reply-form-container').forEach((form) => {
-    form.style.display = 'none';
+    form.classList.add('d-none');
   });
 
   root.querySelectorAll('.comment-text-collapsed').forEach((content) => {
@@ -221,6 +450,10 @@ export function initTalkFeedback(root = document) {
       }
     });
   });
+
+  initEmojiPickers(root);
+  initRateMeDialog(root);
+  initSpeakerFilter(root);
 }
 
 if (document.readyState === 'loading') {

@@ -46,7 +46,15 @@ const fetchRecipients = async (url, form) => {
     return response.json()
 }
 
+const SEND_ACTIONS =
+    'button[name="action"][value="send"], button[name="action"][value="draft"], [data-send-option="now"], [data-send-option="schedule"]'
+
 const renderCount = (el, count) => {
+    if (count < 1 && el.dataset.labelNone) {
+        el.textContent = el.dataset.labelNone
+        el.hidden = false
+        return
+    }
     const label = count === 1 ? el.dataset.labelOne : el.dataset.labelOther
     el.textContent = `${count} ${label}`
     // Audience badge stays quiet until there is an audience; footer summary always shows.
@@ -54,6 +62,23 @@ const renderCount = (el, count) => {
         el.hidden = count < 1
     } else {
         el.hidden = false
+    }
+}
+
+const setSendingEnabled = (form, enabled) => {
+    form.querySelectorAll(SEND_ACTIONS).forEach((control) => {
+        control.disabled = !enabled
+    })
+    const moreOptions = form.querySelector(".composer-send-group details.dropdown")
+    if (moreOptions) {
+        const caret = moreOptions.querySelector("summary")
+        caret.classList.toggle("disabled", !enabled)
+        caret.setAttribute("aria-disabled", String(!enabled))
+        if (!enabled) moreOptions.open = false
+    }
+    if (!enabled) {
+        const confirmDialog = form.querySelector("#send-confirm-dialog")
+        if (confirmDialog && confirmDialog.open) confirmDialog.close()
     }
 }
 
@@ -72,7 +97,13 @@ const clearFilters = (form) => {
         guard += 1
     }
     filters.querySelectorAll("select.enhanced").forEach((select) => {
-        select.selectedIndex = 0
+        if (select.multiple) {
+            Array.from(select.options).forEach((option) => {
+                option.selected = false
+            })
+        } else {
+            select.selectedIndex = 0
+        }
         if (select.choices) {
             if (select.multiple) {
                 select.choices.removeActiveItems()
@@ -149,18 +180,37 @@ const initRecipientPreview = () => {
     }
 
     const summary = document.querySelector("#recipient-summary")
+    const requiresAudience = Boolean(summary && "requiresAudience" in summary.dataset)
+
+    let latestCountRequest = 0
+    let latestListRequest = 0
+
+    const applyCount = (count) => {
+        renderCount(badge, count)
+        if (summary) renderCount(summary, count)
+        if (requiresAudience) setSendingEnabled(form, count > 0)
+    }
+
+    const invalidateCount = () => {
+        latestCountRequest += 1
+        latestListRequest += 1
+        if (requiresAudience) setSendingEnabled(form, false)
+    }
 
     const refreshCount = async () => {
+        const request = (latestCountRequest += 1)
         try {
             const data = await fetchRecipients(url, form)
-            renderCount(badge, data.count)
-            if (summary) renderCount(summary, data.count)
+            if (request !== latestCountRequest) return
+            applyCount(data.count)
         } catch (error) {
+            if (request !== latestCountRequest) return
             console.error("Could not refresh the recipient count", error)
             badge.hidden = true
             if (summary) {
-                summary.textContent = ""
+                summary.textContent = summary.dataset.labelUnavailable || ""
             }
+            if (requiresAudience) setSendingEnabled(form, true)
         }
     }
 
@@ -168,6 +218,7 @@ const initRecipientPreview = () => {
     if (clearButton) {
         clearButton.addEventListener("click", () => {
             clearFilters(form)
+            invalidateCount()
             window.clearTimeout(timer)
             timer = window.setTimeout(refreshCount, 50)
         })
@@ -176,18 +227,20 @@ const initRecipientPreview = () => {
     let timer = null
     form.addEventListener("change", (e) => {
         if (MESSAGE_FIELDS.test(e.target.name || "")) return
+        invalidateCount()
         window.clearTimeout(timer)
         timer = window.setTimeout(refreshCount, 300)
     })
 
     trigger.addEventListener("click", async () => {
         body.textContent = body.dataset.loadingLabel
+        const request = (latestListRequest += 1)
         try {
             const data = await fetchRecipients(url, form)
-            renderCount(badge, data.count)
-            if (summary) renderCount(summary, data.count)
+            if (request !== latestListRequest) return
             renderRecipients(body, data.recipients)
         } catch (error) {
+            if (request !== latestListRequest) return
             console.error("Could not load the recipient list", error)
             body.textContent = body.dataset.errorLabel
         }
