@@ -16,14 +16,34 @@
         <div class="td-analytics-multi-menu" hidden role="group" aria-label="{% translate 'Status options' %}">
           <div class="td-analytics-multi-menu-head">{% translate "Status" %}</div>
           <label class="td-analytics-multi-option">
+            <input type="checkbox" value="pending">
+            <span class="td-analytics-multi-check" aria-hidden="true"></span>
+            <span class="td-analytics-multi-option-label">{% translate "Pending" %}</span>
+          </label>
+          <label class="td-analytics-multi-option">
             <input type="checkbox" value="accepted">
             <span class="td-analytics-multi-check" aria-hidden="true"></span>
             <span class="td-analytics-multi-option-label">{% translate "Accepted" %}</span>
           </label>
           <label class="td-analytics-multi-option">
-            <input type="checkbox" value="not_accepted">
+            <input type="checkbox" value="confirmed">
             <span class="td-analytics-multi-check" aria-hidden="true"></span>
-            <span class="td-analytics-multi-option-label">{% translate "Not accepted" %}</span>
+            <span class="td-analytics-multi-option-label">{% translate "Confirmed" %}</span>
+          </label>
+          <label class="td-analytics-multi-option">
+            <input type="checkbox" value="rejected">
+            <span class="td-analytics-multi-check" aria-hidden="true"></span>
+            <span class="td-analytics-multi-option-label">{% translate "Rejected" %}</span>
+          </label>
+          <label class="td-analytics-multi-option">
+            <input type="checkbox" value="withdrawn">
+            <span class="td-analytics-multi-check" aria-hidden="true"></span>
+            <span class="td-analytics-multi-option-label">{% translate "Withdrawn" %}</span>
+          </label>
+          <label class="td-analytics-multi-option">
+            <input type="checkbox" value="canceled">
+            <span class="td-analytics-multi-check" aria-hidden="true"></span>
+            <span class="td-analytics-multi-option-label">{% translate "Canceled" %}</span>
           </label>
         </div>
       </div>

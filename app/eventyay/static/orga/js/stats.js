@@ -51,10 +51,64 @@ const SCOPE_COLORS = {
     all: "#2185d0",
     accepted: "#16a34a",
     not_accepted: "#ea580c",
+    pending: "#2185d0",
+    confirmed: "#15803d",
+    rejected: "#dc2626",
+    withdrawn: "#64748b",
+    canceled: "#78716c",
+    mixed: "#4b5563",
 }
+const STATUS_STATE_COLORS = {
+    pending: "#2185d0",
+    accepted: "#16a34a",
+    confirmed: "#15803d",
+    rejected: "#dc2626",
+    withdrawn: "#64748b",
+    canceled: "#78716c",
+}
+const ACCEPTED_STATUS_VALUES = ["accepted", "confirmed"]
+const NOT_ACCEPTED_STATUS_VALUES = ["pending", "rejected", "withdrawn", "canceled"]
 const PALETTE = ["#2185d0", "#f97316", "#22c55e", "#8b5cf6", "#ef4444", "#06b6d4", "#f59e0b", "#ec4899", "#10b981", "#a78bfa"]
 const MIN_STATS_ROWS = 3
-const STATUS_SCOPE_CLASSES = ["is-scope-all", "is-scope-accepted", "is-scope-not-accepted"]
+const STATUS_SCOPE_CLASSES = [
+    "is-scope-all",
+    "is-scope-accepted",
+    "is-scope-not-accepted",
+    "is-scope-pending",
+    "is-scope-confirmed",
+    "is-scope-rejected",
+    "is-scope-withdrawn",
+    "is-scope-canceled",
+    "is-scope-mixed",
+]
+
+const sameStringSet = (left, right) => {
+    if (left.length !== right.length) return false
+    const wanted = new Set(left.map(String))
+    return right.every((value) => wanted.has(String(value)))
+}
+
+const resolveStatusScope = (values) => {
+    const selected = (values || []).map(String)
+    if (!selected.length) return "all"
+    if (sameStringSet(selected, ACCEPTED_STATUS_VALUES)) return "accepted"
+    if (sameStringSet(selected, NOT_ACCEPTED_STATUS_VALUES)) return "not_accepted"
+    if (selected.length === 1) return selected[0]
+    return "mixed"
+}
+
+const recordMatchesStatus = (row, status) => {
+    const value = String(status || "")
+    if (value === "pending") return String(row.state || "") === "submitted"
+    if (value === "accepted") return String(row.state || "") === "accepted"
+    if (value === "confirmed") return String(row.state || "") === "confirmed"
+    if (value === "rejected") return String(row.state || "") === "rejected"
+    if (value === "withdrawn") return String(row.state || "") === "withdrawn"
+    if (value === "canceled") return String(row.state || "") === "canceled"
+    // Legacy group values from older global-filter sync.
+    if (value === "not_accepted") return !row.accepted
+    return String(row.state || "") === value
+}
 
 const clearNode = (node) => {
     if (!node) return
@@ -297,8 +351,7 @@ const styleMultiToggle = (multi) => {
     multi.classList.toggle("has-selection", checked.length > 0)
 
     if (dim === "status") {
-        let scope = "all"
-        if (checked.length === 1) scope = checked[0].value
+        const scope = resolveStatusScope(checked.map((item) => item.value))
         setStatusSelectClass(toggle, scope)
         toggle.style.removeProperty("--filter-accent")
         toggle.classList.remove("has-accent")
@@ -330,7 +383,7 @@ const readCardFilters = (cardName) => {
     const tagEl = root.querySelector('[data-stats-dim="tag"]')
     const scheduleEl = root.querySelector('[data-stats-dim="schedule"]')
     return {
-        statuses: normalizeExclusivePair(getMultiValues(statusEl), ["accepted", "not_accepted"]),
+        statuses: getMultiValues(statusEl).map(String),
         trackIds: getMultiValues(trackEl).map(String),
         tagIds: getMultiValues(tagEl).map(String),
         schedules: normalizeExclusivePair(getMultiValues(scheduleEl), ["scheduled", "unscheduled"]),
@@ -365,14 +418,13 @@ const filterRecords = (records, filters) => {
     const tagIds = new Set((filters.tagIds || []).map(String))
     const statuses = filters.statuses || []
     const schedules = filters.schedules || []
-    const wantAccepted = statuses.includes("accepted")
-    const wantNotAccepted = statuses.includes("not_accepted")
     const wantScheduled = schedules.includes("scheduled")
     const wantUnscheduled = schedules.includes("unscheduled")
 
     return (records || []).filter((row) => {
-        if (wantAccepted && !wantNotAccepted && !row.accepted) return false
-        if (wantNotAccepted && !wantAccepted && row.accepted) return false
+        if (statuses.length && !statuses.some((status) => recordMatchesStatus(row, status))) {
+            return false
+        }
         if (trackIds.size && !trackIds.has(String(row.track_id || ""))) return false
         if (tagIds.size && !(row.tags || []).some((tag) => tagIds.has(String(tag.id)))) return false
         if (wantScheduled && !wantUnscheduled && !row.scheduled) return false
@@ -519,6 +571,23 @@ const singleSeries = (label, color, filterDim, filterValue, rows, dateAxis) => (
     }],
 })
 
+const statusOptionLabel = (value) => {
+    const input = document.querySelector(
+        `.td-analytics-multi[data-stats-dim="status"] input[value="${String(value).replace(/"/g, '\\"')}"]`,
+    )
+    const option = input && input.closest(".td-analytics-multi-option")
+    const label = option && option.querySelector(".td-analytics-multi-option-label")
+    if (label && label.textContent) return label.textContent.trim()
+    if (value === "pending") return "Pending"
+    if (value === "accepted") return L_ACCEPTED
+    if (value === "not_accepted") return L_NOT_ACCEPTED
+    return String(value)
+}
+
+const statusFilterColor = (value) => (
+    STATUS_STATE_COLORS[value] || SCOPE_COLORS[value] || SCOPE_COLORS.mixed
+)
+
 const buildTimelineSeries = (rows, dateAxis, filters, meta) => {
     const trackIds = (filters.trackIds || []).map(String)
     const tagIds = (filters.tagIds || []).map(String)
@@ -592,13 +661,27 @@ const buildTimelineSeries = (rows, dateAxis, filters, meta) => {
 
     if (statuses.length === 1) {
         return singleSeries(
-            statuses[0] === "accepted" ? L_ACCEPTED : L_NOT_ACCEPTED,
-            SCOPE_COLORS[statuses[0]],
+            statusOptionLabel(statuses[0]),
+            statusFilterColor(statuses[0]),
             "status",
             statuses[0],
             rows,
             dateAxis,
         )
+    }
+    if (statuses.length > 1) {
+        const series = seriesFromGroups(
+            statuses.map((status) => ({
+                label: statusOptionLabel(status),
+                color: statusFilterColor(status),
+                filterDim: "status",
+                filterValue: status,
+            })),
+            rows,
+            dateAxis,
+            (row, group) => recordMatchesStatus(row, group.filterValue),
+        )
+        if (series.length) return { mode: "status", series }
     }
 
     // No specific multi selection → multi mountains by Track, else Tag, else Schedule, else Status.
@@ -654,12 +737,16 @@ const buildTimelineSeries = (rows, dateAxis, filters, meta) => {
 
     const statusSeries = seriesFromGroups(
         [
-            { label: L_ACCEPTED, color: SCOPE_COLORS.accepted, filterDim: "status", filterValue: "accepted" },
-            { label: L_NOT_ACCEPTED, color: SCOPE_COLORS.not_accepted, filterDim: "status", filterValue: "not_accepted" },
+            { label: statusOptionLabel("pending"), color: STATUS_STATE_COLORS.pending, filterDim: "status", filterValue: "pending" },
+            { label: statusOptionLabel("accepted"), color: STATUS_STATE_COLORS.accepted, filterDim: "status", filterValue: "accepted" },
+            { label: statusOptionLabel("confirmed"), color: STATUS_STATE_COLORS.confirmed, filterDim: "status", filterValue: "confirmed" },
+            { label: statusOptionLabel("rejected"), color: STATUS_STATE_COLORS.rejected, filterDim: "status", filterValue: "rejected" },
+            { label: statusOptionLabel("withdrawn"), color: STATUS_STATE_COLORS.withdrawn, filterDim: "status", filterValue: "withdrawn" },
+            { label: statusOptionLabel("canceled"), color: STATUS_STATE_COLORS.canceled, filterDim: "status", filterValue: "canceled" },
         ],
         rows,
         dateAxis,
-        (row, group) => (group.filterValue === "accepted" ? row.accepted : !row.accepted),
+        (row, group) => recordMatchesStatus(row, group.filterValue),
     )
     if (statusSeries.length) return { mode: "status", series: statusSeries }
 
@@ -1116,11 +1203,7 @@ const setStatusSelectClass = (el, status) => {
     el.classList.add(`is-scope-${String(status || "all").replace(/_/g, "-")}`)
 }
 
-const statusScopeFromMulti = (multi) => {
-    const values = normalizeExclusivePair(getMultiValues(multi), ["accepted", "not_accepted"])
-    if (!values.length) return "all"
-    return values[0]
-}
+const statusScopeFromMulti = (multi) => resolveStatusScope(getMultiValues(multi))
 
 const syncGlobalButtons = () => {
     const statusMultis = Array.from(document.querySelectorAll('[data-stats-dim="status"]'))
@@ -1309,8 +1392,11 @@ const initAnalyticsFilters = () => {
     document.querySelectorAll("[data-stats-scope-global]").forEach((btn) => {
         btn.addEventListener("click", () => {
             const status = btn.getAttribute("data-stats-scope-global") || "all"
+            let values = []
+            if (status === "accepted") values = ACCEPTED_STATUS_VALUES.slice()
+            else if (status === "not_accepted") values = NOT_ACCEPTED_STATUS_VALUES.slice()
             document.querySelectorAll('[data-stats-dim="status"]').forEach((multi) => {
-                setMultiValues(multi, status === "all" ? [] : [status])
+                setMultiValues(multi, values)
                 styleMultiToggle(multi)
             })
             closeAllMultiMenus()

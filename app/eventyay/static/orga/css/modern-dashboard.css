@@ -1520,16 +1520,32 @@ body:has(.td-dashboard) #page-content {
   background-color: #eff6ff;
 }
 
-.td-analytics-filter-select.is-kind-status.is-scope-accepted {
+.td-analytics-filter-select.is-kind-status.is-scope-accepted,
+.td-analytics-filter-select.is-kind-status.is-scope-confirmed {
   color: var(--td-green);
   border: 1px solid #86efac;
   background-color: #f0fdf4;
 }
 
-.td-analytics-filter-select.is-kind-status.is-scope-not-accepted {
+.td-analytics-filter-select.is-kind-status.is-scope-not-accepted,
+.td-analytics-filter-select.is-kind-status.is-scope-rejected {
   color: var(--td-orange);
   border: 1px solid #fdba74;
   background-color: #fff7ed;
+}
+
+.td-analytics-filter-select.is-kind-status.is-scope-pending {
+  color: var(--td-blue);
+  border: 1px solid #93c5fd;
+  background-color: #eff6ff;
+}
+
+.td-analytics-filter-select.is-kind-status.is-scope-withdrawn,
+.td-analytics-filter-select.is-kind-status.is-scope-canceled,
+.td-analytics-filter-select.is-kind-status.is-scope-mixed {
+  color: #4b5563;
+  border: 1px solid #d1d5db;
+  background-color: #f9fafb;
 }
 
 .td-analytics-filter-select.is-kind-track {
