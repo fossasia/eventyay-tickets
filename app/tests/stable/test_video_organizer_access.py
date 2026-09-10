@@ -505,6 +505,12 @@ def test_is_announcements_enabled_helper():
     event_none_live_features = MagicMock(config={'live_features': None})
     assert is_announcements_enabled(event_none_live_features) is False
 
+    event_invalid_config = MagicMock(config='not-a-dict')
+    assert is_announcements_enabled(event_invalid_config) is False
+
+    event_invalid_live_features = MagicMock(config={'live_features': 'not-a-dict'})
+    assert is_announcements_enabled(event_invalid_live_features) is False
+
 
 def test_is_kiosks_enabled_helper():
     from eventyay.features.live.modules.auth import is_kiosks_enabled
@@ -520,6 +526,114 @@ def test_is_kiosks_enabled_helper():
 
     event_none_config = MagicMock(config=None)
     assert is_kiosks_enabled(event_none_config) is False
+
+    event_none_live_features = MagicMock(config={'live_features': None})
+    assert is_kiosks_enabled(event_none_live_features) is False
+
+    event_invalid_config = MagicMock(config='not-a-dict')
+    assert is_kiosks_enabled(event_invalid_config) is False
+
+    event_invalid_live_features = MagicMock(config={'live_features': 'not-a-dict'})
+    assert is_kiosks_enabled(event_invalid_live_features) is False
+
+
+def test_backfill_existing_event_announcements_migration():
+    import importlib
+
+    migration_module = importlib.import_module(
+        'eventyay.base.migrations.0071_backfill_existing_event_announcements'
+    )
+    backfill_existing_event_announcements = (
+        migration_module.backfill_existing_event_announcements
+    )
+
+    class FakeEvent:
+        def __init__(self, config, pk=1):
+            self.id = pk
+            self.config = config
+            self.saved_fields = None
+
+        def save(self, update_fields=None):
+            self.saved_fields = update_fields
+
+    events = [
+        # 0: Pure ticketing event (None config, no video, no announcements) -> untouched
+        FakeEvent(None, pk=1),
+        # 1: Pure ticketing event (empty config, no video, no announcements) -> untouched
+        FakeEvent({}, pk=2),
+        # 2: Video-configured event via JWT_secrets -> backfilled with announcements: True
+        FakeEvent({'JWT_secrets': [{'secret': 'abc'}]}, pk=3),
+        # 3: Event with active live_features but missing announcements -> backfilled with announcements: True
+        FakeEvent({'live_features': {'chat_rooms': True}}, pk=4),
+        # 4: Explicitly disabled announcements -> preserved as False
+        FakeEvent({'live_features': {'announcements': False}}, pk=5),
+        # 5: Explicitly enabled announcements -> preserved as True
+        FakeEvent({'live_features': {'announcements': True}}, pk=6),
+        # 6: Event with Announcement records in DB (even if config was empty) -> backfilled
+        FakeEvent({}, pk=7),
+        # 7: Non-dict config without video/announcements -> untouched
+        FakeEvent('non-dict-config', pk=8),
+        # 8: Ambiguous empty live_features without video/announcements -> untouched
+        FakeEvent({'live_features': {}}, pk=9),
+    ]
+
+    fake_apps = MagicMock()
+    fake_event_model = MagicMock()
+    fake_event_model.objects.all.return_value = events
+
+    fake_announcement_model = MagicMock()
+    # Event id=7 is the only one with announcements in DB
+    fake_announcement_model.objects.values_list.return_value.distinct.return_value = [7]
+
+    def get_model(app_label, model_name):
+        if model_name == 'Event':
+            return fake_event_model
+        if model_name == 'Announcement':
+            return fake_announcement_model
+        raise ValueError(f'Unexpected model {model_name}')
+
+    fake_apps.get_model.side_effect = get_model
+
+    backfill_existing_event_announcements(fake_apps, None)
+
+    # 0: Pure ticketing (None) -> untouched
+    assert events[0].config is None
+    assert events[0].saved_fields is None
+
+    # 1: Pure ticketing ({}) -> untouched
+    assert events[1].config == {}
+    assert events[1].saved_fields is None
+
+    # 2: Video via JWT_secrets -> backfilled
+    assert events[2].config == {
+        'JWT_secrets': [{'secret': 'abc'}],
+        'live_features': {'announcements': True},
+    }
+    assert events[2].saved_fields == ['config']
+
+    # 3: Video via active live_features -> backfilled
+    assert events[3].config == {'live_features': {'chat_rooms': True, 'announcements': True}}
+    assert events[3].saved_fields == ['config']
+
+    # 4: Explicitly disabled -> preserved
+    assert events[4].config == {'live_features': {'announcements': False}}
+    assert events[4].saved_fields is None
+
+    # 5: Explicitly enabled -> preserved
+    assert events[5].config == {'live_features': {'announcements': True}}
+    assert events[5].saved_fields is None
+
+    # 6: Has Announcement records in DB -> backfilled
+    assert events[6].config == {'live_features': {'announcements': True}}
+    assert events[6].saved_fields == ['config']
+
+    # 7: Non-dict config -> untouched
+    assert events[7].config == 'non-dict-config'
+    assert events[7].saved_fields is None
+
+    # 8: Ambiguous empty live_features without video/announcements -> untouched
+    assert events[8].config == {'live_features': {}}
+    assert events[8].saved_fields is None
 
 
 @pytest.mark.asyncio

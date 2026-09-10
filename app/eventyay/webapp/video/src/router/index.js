@@ -246,9 +246,9 @@ const router = createRouter({
 
 export function checkRoutePermission(to) {
 	if (!store.state.permissions) return true
-	if (store.getters.isAdminMode) return true
+	const isAdmin = Boolean(store.getters.isAdminMode)
 	const name = typeof to.name === 'string' ? to.name : ''
-	const hasPerm = store.getters.hasPermission
+	const hasPerm = (permission) => isAdmin || Boolean(store.getters.hasPermission?.(permission))
 	const liveFeatures = Object.assign({
 		chat_rooms: false,
 		kiosks: false,
@@ -272,10 +272,10 @@ export function checkRoutePermission(to) {
 		return Boolean(liveFeatures.announcements) && hasPerm('world:announce')
 	}
 	if (name.startsWith('admin:kiosks')) {
-		return liveFeatures.kiosks && hasPerm('world:kiosks.manage')
+		return Boolean(liveFeatures.kiosks) && hasPerm('world:kiosks.manage')
 	}
 	if (name.startsWith('admin:chat')) {
-		return liveFeatures.chat_rooms && (hasPerm('room:update') || hasPerm('world:rooms.create.chat'))
+		return Boolean(liveFeatures.chat_rooms) && (hasPerm('room:update') || hasPerm('world:rooms.create.chat'))
 	}
 	if (name.startsWith('admin:rooms') || name === 'room:manage') {
 		return hasPerm('room:update') || hasPerm('world:rooms.create.stage') || hasPerm('world:rooms.create.bbb') || hasPerm('world:rooms.create.jitsi')

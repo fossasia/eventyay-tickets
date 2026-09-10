@@ -52,7 +52,13 @@ logger = logging.getLogger(__name__)
 
 
 def is_kiosks_enabled(event) -> bool:
-    live_features = (getattr(event, "config", None) or {}).get("live_features", {})
+    """Return True if kiosks feature is enabled for the event (default False)."""
+    config = getattr(event, "config", None) or {}
+    if not isinstance(config, dict):
+        return False
+    live_features = config.get("live_features") or {}
+    if not isinstance(live_features, dict):
+        return False
     return bool(live_features.get("kiosks", False))
 
 
