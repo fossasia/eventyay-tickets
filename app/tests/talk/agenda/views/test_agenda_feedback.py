@@ -72,6 +72,8 @@ def test_cannot_create_feedback_before_talk(
 
 @pytest.mark.django_db()
 def test_can_see_feedback(django_assert_num_queries, feedback, client):
+    feedback.talk.event.feature_flags['use_feedback'] = True
+    feedback.talk.event.save(update_fields=['feature_flags'])
     client.force_login(feedback.talk.speakers.first())
     with django_assert_num_queries(17):
         response = client.get(feedback.talk.urls.feedback)
@@ -80,14 +82,18 @@ def test_can_see_feedback(django_assert_num_queries, feedback, client):
 
 
 @pytest.mark.django_db()
-def test_can_see_feedback_form(django_assert_num_queries, past_slot, client):
+def test_can_see_feedback_form(django_assert_num_queries, past_slot, client, event):
+    event.feature_flags['use_feedback'] = True
+    event.save(update_fields=['feature_flags'])
     with django_assert_num_queries(13):
         response = client.get(past_slot.submission.urls.feedback, follow=True)
     assert response.status_code == 200
 
 
 @pytest.mark.django_db()
-def test_cannot_see_feedback_form_before_talk(django_assert_num_queries, slot, client):
+def test_cannot_see_feedback_form_before_talk(django_assert_num_queries, slot, client, event):
+    event.feature_flags['use_feedback'] = True
+    event.save(update_fields=['feature_flags'])
     with django_assert_num_queries(15):
         response = client.get(slot.submission.urls.feedback, follow=True)
     assert response.status_code == 200
