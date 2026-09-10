@@ -183,7 +183,7 @@ const closeAllMultiMenus = (except) => {
         const toggle = multi.querySelector(".td-analytics-multi-toggle")
         if (menu) {
             menu.hidden = true
-            menu.classList.remove("is-ported")
+            menu.classList.remove("is-ported", "is-positioned", "is-animating")
             menu.style.removeProperty("top")
             menu.style.removeProperty("left")
             menu.style.removeProperty("min-width")
@@ -192,19 +192,6 @@ const closeAllMultiMenus = (except) => {
         if (toggle) toggle.setAttribute("aria-expanded", "false")
         multi.classList.remove("is-open")
     })
-}
-
-let ignoreMenuScrollClose = false
-
-const withMenuScrollGuard = (fn) => {
-    ignoreMenuScrollClose = true
-    try {
-        fn()
-    } finally {
-        requestAnimationFrame(() => {
-            ignoreMenuScrollClose = false
-        })
-    }
 }
 
 const positionMultiMenu = (multi, menu, toggle) => {
@@ -216,10 +203,16 @@ const positionMultiMenu = (multi, menu, toggle) => {
     }
     menu.classList.add("is-ported")
     menu.hidden = false
-    const estimatedHeight = Math.min(240, Math.max(menu.scrollHeight, 120))
-    let top = rect.bottom + 4
+    // Avoid replaying the open animation when only repositioning.
+    if (!menu.classList.contains("is-positioned")) {
+        menu.classList.add("is-animating")
+        menu.classList.add("is-positioned")
+        window.setTimeout(() => menu.classList.remove("is-animating"), 160)
+    }
+    const estimatedHeight = Math.min(260, Math.max(menu.scrollHeight, 120))
+    let top = rect.bottom + 6
     if (top + estimatedHeight > window.innerHeight - 8) {
-        top = Math.max(8, rect.top - estimatedHeight - 4)
+        top = Math.max(8, rect.top - estimatedHeight - 6)
     }
     menu.style.top = `${Math.round(top)}px`
     menu.style.left = `${Math.round(left)}px`
@@ -239,6 +232,29 @@ const openMultiMenu = (multi) => {
     positionMultiMenu(multi, menu, toggle)
     toggle.setAttribute("aria-expanded", "true")
     multi.classList.add("is-open")
+}
+
+const keepMultiMenuOpen = (multi) => {
+    const toggle = multi.querySelector(".td-analytics-multi-toggle")
+    const menu = getMultiMenu(multi)
+    if (!toggle || !menu || toggle.disabled) return
+    menu.setAttribute(
+        "data-stats-menu-for",
+        `${multi.getAttribute("data-stats-card")}-${multi.getAttribute("data-stats-dim")}`,
+    )
+    if (menu.parentElement !== document.body) document.body.appendChild(menu)
+    positionMultiMenu(multi, menu, toggle)
+    toggle.setAttribute("aria-expanded", "true")
+    multi.classList.add("is-open")
+}
+
+const repositionOpenMultiMenus = () => {
+    document.querySelectorAll(".td-analytics-multi.is-open").forEach((multi) => {
+        const toggle = multi.querySelector(".td-analytics-multi-toggle")
+        const menu = getMultiMenu(multi)
+        if (!toggle || !menu || menu.hidden) return
+        positionMultiMenu(multi, menu, toggle)
+    })
 }
 
 const styleMultiToggle = (multi) => {
@@ -1215,10 +1231,25 @@ const renderAllCards = (payload) => {
 
 const onMultiFilterChange = (payload, multi) => {
     const cardName = multi.getAttribute("data-stats-card")
+    const keepOpen = multi.classList.contains("is-open")
     styleMultiToggle(multi)
     renderCard(payload, cardName)
     equalizeStatsTableRows()
     syncGlobalButtons()
+    // Chart redraw can fire scroll events; keep the menu open for multi-select.
+    if (keepOpen) {
+        keepMultiMenuOpen(multi)
+        requestAnimationFrame(() => keepMultiMenuOpen(multi))
+    }
+}
+
+const isInsideOpenMulti = (target) => {
+    if (!(target instanceof Element)) return false
+    return Boolean(
+        target.closest(".td-analytics-multi-menu")
+        || target.closest(".td-analytics-multi-toggle")
+        || target.closest(".td-analytics-multi"),
+    )
 }
 
 const initAnalyticsFilters = () => {
@@ -1247,18 +1278,22 @@ const initAnalyticsFilters = () => {
         }
         if (menu) {
             menu.addEventListener("click", (event) => event.stopPropagation())
+            menu.addEventListener("mousedown", (event) => event.stopPropagation())
             menu.querySelectorAll('input[type="checkbox"]').forEach((input) => {
                 input.addEventListener("change", () => onMultiFilterChange(payload, multi))
             })
         }
     })
 
-    document.addEventListener("click", () => closeAllMultiMenus())
+    document.addEventListener("click", (event) => {
+        if (isInsideOpenMulti(event.target)) return
+        closeAllMultiMenus()
+    })
     document.addEventListener("keydown", (event) => {
         if (event.key === "Escape") closeAllMultiMenus()
     })
     window.addEventListener("resize", () => closeAllMultiMenus())
-    window.addEventListener("scroll", () => closeAllMultiMenus(), true)
+    window.addEventListener("scroll", () => repositionOpenMultiMenus(), true)
 
     document.querySelectorAll("[data-stats-reset]").forEach((btn) => {
         btn.addEventListener("click", () => {

@@ -1292,6 +1292,9 @@ body:has(.td-dashboard) #page-content {
 .td-analytics-multi-menu.is-ported {
   position: fixed;
   margin: 0;
+}
+
+.td-analytics-multi-menu.is-ported.is-animating {
   animation: td-multi-menu-in 0.14s ease-out;
 }
 
@@ -1307,7 +1310,7 @@ body:has(.td-dashboard) #page-content {
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .td-analytics-multi-menu.is-ported {
+  .td-analytics-multi-menu.is-ported.is-animating {
     animation: none;
   }
 
