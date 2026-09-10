@@ -547,4 +547,11 @@
     {% csrf_token %}
 </form>
 <script src="{% static 'eventyay-common/js/event-settings-images.js' %}" type="module"></script>
+<script>
+    window.addEventListener('load', function () {
+        setTimeout(function () {
+            window.scrollTo(0, 0);
+        }, 0);
+    });
+</script>
 {% endblock %}
