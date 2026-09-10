@@ -248,13 +248,6 @@
             {% bootstrap_field sform.show_date_to layout="control" %}
             {% bootstrap_field sform.show_times layout="control" %}
         </fieldset>
-        {% if not is_meetup_event %}
-        <fieldset>
-            <legend>{% trans "Publication" %}</legend>
-            {% bootstrap_field form.is_public layout="control" %}
-            {% bootstrap_field sform.meta_noindex layout="control" %}
-        </fieldset>
-        {% endif %}
         <fieldset id="email-settings-tab">
             <legend>{% trans "Email" %}</legend>
             <h4 class="settings-sub-heading">{% trans "General" %}</h4>

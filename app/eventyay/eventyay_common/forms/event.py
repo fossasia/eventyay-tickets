@@ -76,7 +76,6 @@ class EventCommonSettingsForm(SettingsForm):
         'frontpage_text',
         'menu_label_tickets',
         'menu_label_join_video',
-        'meta_noindex',
         'show_date_to',
         'show_times',
     ]
@@ -138,7 +137,6 @@ class EventCommonSettingsForm(SettingsForm):
                 self.cleaned_data[image_field] = self._save_optimized(new_value, image_field, crop_box)
 
         if is_meetup_event(self.event):
-            self.cleaned_data.pop('meta_noindex', None)
             if 'privacy_type' in self.cleaned_data:
                 is_priv = self.cleaned_data['privacy_type'] == PRIVACY_PRIVATE
                 set_meetup_privacy(self.event, is_private=is_priv)
@@ -311,12 +309,6 @@ class EventCommonSettingsForm(SettingsForm):
                 )
         if self.event and 'content_locales' in self.fields:
             self.fields['content_locales'].initial = self.event.content_locales
-        if is_meetup_event(self.event):
-            self.fields.pop('meta_noindex', None)
-            self.initial.pop('meta_noindex', None)
-        elif 'meta_noindex' in self.fields:
-            self.fields['meta_noindex'].label = _('Ask search engines not to index the event pages')
-
         for name, field in self.fields.items():
             if isinstance(field.widget, forms.ClearableFileInput):
                 field.widget.attrs['data-eventyay-file-wrapper'] = 'disabled'
@@ -358,13 +350,6 @@ class EventUpdateForm(I18nModelForm):
         self.fields['location'].widget.attrs['placeholder'] = _('Sample Conference Center\nHeidelberg, Germany')
         self.fields['geo_lat'].widget.attrs['placeholder'] = _('Latitude, e.g. 40.7128')
         self.fields['geo_lon'].widget.attrs['placeholder'] = _('Longitude, e.g. -74.0060')
-
-        if 'is_public' in self.fields:
-            if is_meetup_event(self.instance):
-                self.fields.pop('is_public', None)
-            else:
-                self.fields['is_public'].label = _('Show in search results and lists')
-                self.fields['is_public'].help_text = _('If selected, this event will show up publicly on the list of events for your organizer account and in platform search results.')
 
         if self.domain_field_enabled:
             self.fields['domain'] = forms.CharField(
@@ -422,7 +407,6 @@ class EventUpdateForm(I18nModelForm):
             'date_from',
             'date_to',
             'date_admission',
-            'is_public',
             'location',
             'geo_lat',
             'geo_lon',
