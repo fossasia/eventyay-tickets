@@ -347,6 +347,35 @@ class QuestionFieldsMixin:
             field.original_help_text = original_help_text
             field.widget.attrs['placeholder'] = ''  # XSS
             return field
+        if question.variant == TalkQuestionVariant.PHONE_NUMBER:
+            from phonenumber_field.formfields import PhoneNumberField
+            from phonenumber_field.phonenumber import PhoneNumber
+            from phonenumbers import NumberParseException
+            from phonenumbers.data import _COUNTRY_CODE_TO_REGION_CODE
+            from eventyay.base.forms.questions import WrappedPhoneNumberPrefixWidget, guess_country
+            from eventyay.base.i18n import get_babel_locale, language
+
+            with language(get_babel_locale()):
+                default_country = guess_country(self.event)
+                default_prefix = None
+                for prefix, values in _COUNTRY_CODE_TO_REGION_CODE.items():
+                    if str(default_country) in values:
+                        default_prefix = prefix
+                try:
+                    initial_val = PhoneNumber().from_string(initial) if initial else f'+{default_prefix}.'
+                except NumberParseException:
+                    initial_val = None
+                
+                field = PhoneNumberField(
+                    label=label_text,
+                    required=question.required,
+                    disabled=read_only,
+                    help_text=original_help_text,
+                    initial=initial_val,
+                    widget=WrappedPhoneNumberPrefixWidget(),
+                )
+                field.original_help_text = original_help_text
+                return field
         if question.variant == TalkQuestionVariant.VIDEO:
             video_help = original_help_text or _(
                 'Paste YouTube or Vimeo URLs, one per line. '

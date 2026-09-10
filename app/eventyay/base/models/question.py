@@ -46,6 +46,7 @@ class TalkQuestionVariant(Choices):
     MULTIPLE = 'multiple_choice'
     SELECT = 'select'
     COUNTRY = 'country'
+    PHONE_NUMBER = 'tel'
 
     valid_choices = [
         (NUMBER, _('Number')),
@@ -61,6 +62,7 @@ class TalkQuestionVariant(Choices):
         (MULTIPLE, _('Checkbox (Choose one or several options)')),
         (SELECT, _('Select (one option)')),
         (COUNTRY, _('Country List')),
+        (PHONE_NUMBER, _('Phone number')),
     ]
 
 
