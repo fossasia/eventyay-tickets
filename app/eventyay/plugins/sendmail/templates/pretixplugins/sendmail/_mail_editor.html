@@ -178,46 +178,6 @@
             {% include "orga/mails/_placeholder_group.html" with placeholders=form.grouped_placeholders.other tag="other" %}
         </div>
 
-        {% block email_editor_preview %}
-            {% if request.method == "POST" %}
-                <fieldset class="mt-4">
-                    <legend id="preview">{% translate "Email preview" %}</legend>
-                    <div class="alert alert-info">
-                        {% blocktranslate trimmed with count=mail_count %}
-                            Roughly {{ count }} emails will be generated.
-                        {% endblocktranslate %}
-                    </div>
-                    {% if form.warnings %}
-                        <div class="alert alert-warning">
-                            <span>
-                                {% blocktranslate trimmed %}
-                                    You have placeholders in your email that are either not valid or not valid for every email!
-                                {% endblocktranslate %}
-                                <ul>
-                                    {# &#123; is the HTML entity for {, which would break django template syntax #}
-                                    {% for w in form.warnings %}<li>&#123;{{ w }}}</li>{% endfor %}
-                                </ul>
-                                {% blocktranslate trimmed %}
-                                    Emails where placeholders are invalid will <strong>not</strong> be created!
-                                    For example, if you are using {session_room}, but some proposals don’t have a room yet, only emails for proposals with a scheduled room will be created.
-                                {% endblocktranslate %}
-                            </span>
-                        </div>
-                    {% endif %}
-                    <div class="tab-pane mail-preview-group">
-                        {% for locale, out in output.items %}
-                            <div lang="{{ locale }}" class="mail-preview">
-                                <strong>{{ out.subject|safe }}</strong>
-                                <br>
-                                <br>
-                                {{ out.html|safe }}
-                            </div>
-                        {% endfor %}
-                    </div>
-                </fieldset>
-            {% endif %}
-        {% endblock email_editor_preview %}
-
         {% block email_editor_actions %}
             <section class="card mb-3">
                 <div class="card-body d-md-flex justify-content-between align-items-center">
@@ -228,7 +188,7 @@
                                 {% translate "Save draft" %}
                             </button>
                         {% endblock draft_button %}
-                        <button type="submit" class="btn btn-outline-info btn-save" name="action" value="preview" formnovalidate>
+                        <button type="submit" class="btn btn-outline-info" name="action" value="preview" formnovalidate data-no-loading>
                             {% translate "Preview email" %}
                         </button>
                         <span class="composer-send-group">
@@ -261,7 +221,16 @@
                 </div>
             </section>
         {% endblock email_editor_actions %}
-        <dialog class="info-dialog" id="send-confirm-dialog" aria-label="{% translate 'Send email?' %}">
+
+        {% block email_editor_preview %}
+            <div id="ajax-preview-container">
+            {% if output %}
+                {% include "pretixplugins/sendmail/_mail_preview.html" %}
+            {% endif %}
+            </div>
+        {% endblock email_editor_preview %}
+
+        <dialog class="info-dialog" id="send-confirm-dialog" aria-label="{% translate 'Send to outbox?' %}" style="position: fixed;">
             <div class="dialog-content">
                 <h5 id="send-confirm-title"
                     data-title-send="{% translate 'Send email?' %}"
@@ -290,6 +259,7 @@
     {% block mail_extra %}{% endblock mail_extra %}
 
     <script src="{% static 'orga/js/placeholder.js' %}" defer></script>
+    <script type="module" src="{% static 'common/js/mail-preview.js' %}" defer></script>
     <script type="module" src="{% static 'orga/js/mail-language-tabs.js' %}"></script>
     <script type="module" src="{% static 'orga/js/mail-editor-tabs.js' %}"></script>
     <script type="module" src="{% static 'orga/js/mail-delivery.js' %}"></script>
