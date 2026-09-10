@@ -194,6 +194,19 @@ const closeAllMultiMenus = (except) => {
     })
 }
 
+let ignoreMenuScrollClose = false
+
+const withMenuScrollGuard = (fn) => {
+    ignoreMenuScrollClose = true
+    try {
+        fn()
+    } finally {
+        requestAnimationFrame(() => {
+            ignoreMenuScrollClose = false
+        })
+    }
+}
+
 const positionMultiMenu = (multi, menu, toggle) => {
     const rect = toggle.getBoundingClientRect()
     const menuWidth = Math.max(rect.width, 188)
