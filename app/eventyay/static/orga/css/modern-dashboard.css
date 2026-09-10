@@ -1651,6 +1651,17 @@ body:has(.td-dashboard) #page-content {
 
 .td-st-name { font-weight: 500; }
 
+.td-st-name a {
+  color: inherit;
+  text-decoration: none;
+}
+
+.td-st-name a:hover,
+.td-st-name a:focus-visible {
+  color: var(--td-blue);
+  text-decoration: underline;
+}
+
 .td-st-count,
 .td-st-pct {
   text-align: right;

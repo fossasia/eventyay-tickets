@@ -1,6 +1,6 @@
 {% load i18n %}
 
-{% if submission_timeline_data or submission_type_data or submission_track_data or submission_tag_data or submission_state_data or submission_language_data or talk_timeline_data or talk_type_data or talk_track_data or talk_state_data or talk_language_data or room_status or show_tracks or show_tags %}
+{% if stats_payload %}
 {% translate "Total" as total_label %}
 {% translate "Total sessions" as label_total_sessions %}
 {% translate "Peak day" as label_peak_day %}
@@ -14,6 +14,13 @@
 {% translate "Name" as label_name %}
 {% translate "Count" as label_count %}
 {% translate "No data" as label_no_data %}
+{% translate "Scheduled" as label_scheduled %}
+{% translate "Unscheduled" as label_unscheduled %}
+{% translate "Accepted" as label_accepted %}
+{% translate "Not accepted" as label_not_accepted %}
+{% translate "Sessions" as label_sessions %}
+{% translate "No track" as label_no_track %}
+{% translate "selected" as label_selected %}
 
 <section class="td-section td-analytics-shell" aria-labelledby="td-analytics-title">
   <div class="td-section-heading">
@@ -50,7 +57,14 @@
        data-label-total-tags="{{ label_total_tags|escapejs }}"
        data-label-name="{{ label_name|escapejs }}"
        data-label-count="{{ label_count|escapejs }}"
-       data-label-no-data="{{ label_no_data|escapejs }}">
+       data-label-no-data="{{ label_no_data|escapejs }}"
+       data-label-scheduled="{{ label_scheduled|escapejs }}"
+       data-label-unscheduled="{{ label_unscheduled|escapejs }}"
+       data-label-accepted="{{ label_accepted|escapejs }}"
+       data-label-not-accepted="{{ label_not_accepted|escapejs }}"
+       data-label-sessions="{{ label_sessions|escapejs }}"
+       data-label-no-track="{{ label_no_track|escapejs }}"
+       data-label-selected="{{ label_selected|escapejs }}">
     <div id="global-data" class="d-none"
          data-url="{{ request.event.orga_urls.submissions }}?"
          data-mapping="{{ id_mapping }}"
@@ -183,7 +197,7 @@
               {% for row in room_status.rows %}
                 <tr>
                   <td class="td-st-dot"><span class="td-dot-{{ row.status }}"></span></td>
-                  <td class="td-st-name">{{ row.label }}</td>
+                  <td class="td-st-name"><a href="{{ row.url }}">{{ row.label }}</a></td>
                   <td class="td-st-count">{{ row.count }}</td>
                   <td class="td-st-pct">{{ row.pct }}%</td>
                 </tr>

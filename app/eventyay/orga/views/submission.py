@@ -1363,6 +1363,12 @@ class SubmissionStatsMixin:
         def pct(count):
             return round((count / total) * 100, 1) if total else 0.0
 
+        def row_url(room_status_key):
+            return '{base}?{query}'.format(
+                base=event.orga_urls.submissions,
+                query=urlencode({'state': SubmissionStates.CONFIRMED, 'room_status': room_status_key}),
+            )
+
         return {
             'rows': [
                 {
@@ -1370,18 +1376,21 @@ class SubmissionStatsMixin:
                     'count': published,
                     'pct': pct(published),
                     'status': 'success',
+                    'url': row_url('published'),
                 },
                 {
                     'label': _('Room not published'),
                     'count': not_published,
                     'pct': pct(not_published),
                     'status': 'info' if not_published else 'neutral',
+                    'url': row_url('not_published'),
                 },
                 {
                     'label': _('Room not assigned'),
                     'count': not_assigned,
                     'pct': pct(not_assigned),
                     'status': 'warning' if not_assigned else 'neutral',
+                    'url': row_url('not_assigned'),
                 },
             ],
             'total': total,

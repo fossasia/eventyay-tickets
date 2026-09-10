@@ -12,6 +12,7 @@ from eventyay.base.models import (
     SubmissionStates,
     Tag,
     TalkQuestionTarget,
+    TalkSlot,
     Track,
 )
 from eventyay.base.models.cfp import default_fields
@@ -462,6 +463,16 @@ class SubmissionFilterForm(forms.Form):
         required=False,
         label=_('exclude pending'),
     )
+    room_status = forms.ChoiceField(
+        required=False,
+        label=_('Room status'),
+        choices=(
+            ('', _('All room statuses')),
+            ('published', _('Room published')),
+            ('not_published', _('Room not published')),
+            ('not_assigned', _('Room not assigned')),
+        ),
+    )
     content_locale = forms.MultipleChoiceField(
         required=False,
         widget=SelectMultipleWithCount(attrs={'title': phrases.base.language}),
@@ -608,6 +619,48 @@ class SubmissionFilterForm(forms.Form):
             qs = qs.annotate(has_answer=Exists(answers)).filter(has_answer=False)
         return qs
 
+    def _filter_room_status(self, qs, room_status):
+        """Match analytics room_status rows: published / not published / not assigned."""
+        if not room_status:
+            return qs
+
+        wip_schedule = getattr(self.event, 'wip_schedule', None)
+        current_schedule = getattr(self.event, 'current_schedule', None)
+
+        assigned_slots = TalkSlot.objects.filter(
+            submission_id=OuterRef('pk'),
+            room__isnull=False,
+            room__deleted=False,
+        )
+        published_slots = assigned_slots.filter(is_visible=True)
+
+        if room_status == 'published':
+            if wip_schedule is None or current_schedule is None:
+                return qs.none()
+            return qs.annotate(
+                has_room_assigned=Exists(assigned_slots.filter(schedule=wip_schedule)),
+                has_room_published=Exists(published_slots.filter(schedule=current_schedule)),
+            ).filter(has_room_assigned=True, has_room_published=True)
+
+        if room_status == 'not_published':
+            if wip_schedule is None:
+                return qs.none()
+            qs = qs.annotate(has_room_assigned=Exists(assigned_slots.filter(schedule=wip_schedule)))
+            if current_schedule is None:
+                return qs.filter(has_room_assigned=True)
+            return qs.annotate(
+                has_room_published=Exists(published_slots.filter(schedule=current_schedule)),
+            ).filter(has_room_assigned=True, has_room_published=False)
+
+        if room_status == 'not_assigned':
+            if wip_schedule is None:
+                return qs
+            return qs.annotate(
+                has_room_assigned=Exists(assigned_slots.filter(schedule=wip_schedule)),
+            ).filter(has_room_assigned=False)
+
+        return qs
+
     def filter_queryset(self, qs):
         for field in ('submission_type', 'content_locale', 'track', 'tags'):
             value = self.cleaned_data.get(field)
@@ -627,6 +680,8 @@ class SubmissionFilterForm(forms.Form):
 
         if self.cleaned_data.get('pending_state__isnull'):
             qs = qs.filter(pending_state__isnull=True)
+
+        qs = self._filter_room_status(qs, self.cleaned_data.get('room_status'))
 
         search = self.cleaned_data.get('q')
         if search:

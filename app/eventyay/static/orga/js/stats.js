@@ -12,6 +12,24 @@ const L_TOTAL_TYPES = (statsRoot && statsRoot.dataset.labelTotalTypes) || "Total
 const L_NAME = (statsRoot && statsRoot.dataset.labelName) || "Name"
 const L_COUNT = (statsRoot && statsRoot.dataset.labelCount) || "Count"
 const L_NO_DATA = (statsRoot && statsRoot.dataset.labelNoData) || "No data for this status"
+const L_SCHEDULED = (statsRoot && statsRoot.dataset.labelScheduled) || "Scheduled"
+const L_UNSCHEDULED = (statsRoot && statsRoot.dataset.labelUnscheduled) || "Unscheduled"
+const L_ACCEPTED = (statsRoot && statsRoot.dataset.labelAccepted) || "Accepted"
+const L_NOT_ACCEPTED = (statsRoot && statsRoot.dataset.labelNotAccepted) || "Not accepted"
+const L_SESSIONS = (statsRoot && statsRoot.dataset.labelSessions) || "Sessions"
+const L_NO_TRACK = (statsRoot && statsRoot.dataset.labelNoTrack) || "No track"
+const L_SELECTED = (statsRoot && statsRoot.dataset.labelSelected) || "selected"
+
+/** Parse YYYY-MM-DD as a local calendar date to avoid UTC day shifts. */
+const parseCalendarDate = (value) => {
+    if (typeof value === "number") return value
+    if (typeof value !== "string") return new Date(value).getTime()
+    const match = /^(\d{4})-(\d{2})-(\d{2})$/.exec(value)
+    if (match) {
+        return new Date(Number(match[1]), Number(match[2]) - 1, Number(match[3])).getTime()
+    }
+    return new Date(value).getTime()
+}
 
 try {
     if (globalData && globalData.dataset.mapping) {
@@ -209,7 +227,7 @@ const styleMultiToggle = (multi) => {
     let label = emptyLabel
     if (checked.length === 1) label = checked[0].label
     else if (checked.length === 2) label = `${checked[0].label}, ${checked[1].label}`
-    else if (checked.length > 2) label = `${checked.length} selected`
+    else if (checked.length > 2) label = `${checked.length} ${L_SELECTED}`
     toggle.textContent = label
     toggle.title = checked.length ? checked.map((item) => item.label).join(", ") : emptyLabel
 
@@ -441,7 +459,7 @@ const buildTimelineSeries = (rows, dateAxis, filters, meta) => {
 
     if (schedules.length === 1) {
         return singleSeries(
-            schedules[0] === "scheduled" ? "Scheduled" : "Unscheduled",
+            schedules[0] === "scheduled" ? L_SCHEDULED : L_UNSCHEDULED,
             schedules[0] === "scheduled" ? "#16a34a" : "#64748b",
             "schedule",
             schedules[0],
@@ -452,7 +470,7 @@ const buildTimelineSeries = (rows, dateAxis, filters, meta) => {
 
     if (statuses.length === 1) {
         return singleSeries(
-            statuses[0] === "accepted" ? "Accepted" : "Not accepted",
+            statuses[0] === "accepted" ? L_ACCEPTED : L_NOT_ACCEPTED,
             SCOPE_COLORS[statuses[0]],
             "status",
             statuses[0],
@@ -471,7 +489,7 @@ const buildTimelineSeries = (rows, dateAxis, filters, meta) => {
         }))
         if (rows.some((row) => !row.track_id)) {
             trackGroups.push({
-                label: "No track",
+                label: L_NO_TRACK,
                 color: "#94a3b8",
                 filterDim: "track",
                 filterValue: "",
@@ -503,8 +521,8 @@ const buildTimelineSeries = (rows, dateAxis, filters, meta) => {
 
     const scheduleSeries = seriesFromGroups(
         [
-            { label: "Scheduled", color: "#16a34a", filterDim: "schedule", filterValue: "scheduled" },
-            { label: "Unscheduled", color: "#64748b", filterDim: "schedule", filterValue: "unscheduled" },
+            { label: L_SCHEDULED, color: "#16a34a", filterDim: "schedule", filterValue: "scheduled" },
+            { label: L_UNSCHEDULED, color: "#64748b", filterDim: "schedule", filterValue: "unscheduled" },
         ],
         rows,
         dateAxis,
@@ -514,8 +532,8 @@ const buildTimelineSeries = (rows, dateAxis, filters, meta) => {
 
     const statusSeries = seriesFromGroups(
         [
-            { label: "Accepted", color: SCOPE_COLORS.accepted, filterDim: "status", filterValue: "accepted" },
-            { label: "Not accepted", color: SCOPE_COLORS.not_accepted, filterDim: "status", filterValue: "not_accepted" },
+            { label: L_ACCEPTED, color: SCOPE_COLORS.accepted, filterDim: "status", filterValue: "accepted" },
+            { label: L_NOT_ACCEPTED, color: SCOPE_COLORS.not_accepted, filterDim: "status", filterValue: "not_accepted" },
         ],
         rows,
         dateAxis,
@@ -523,7 +541,7 @@ const buildTimelineSeries = (rows, dateAxis, filters, meta) => {
     )
     if (statusSeries.length) return { mode: "status", series: statusSeries }
 
-    return singleSeries("Sessions", SCOPE_COLORS.all, null, "", rows, dateAxis)
+    return singleSeries(L_SESSIONS, SCOPE_COLORS.all, null, "", rows, dateAxis)
 }
 
 const toChartData = (rows) => {
@@ -538,7 +556,7 @@ const toChartData = (rows) => {
 
 const padTimelinePoints = (timelineRows) => {
     let parsedData = timelineRows.map((point) => ({
-        x: new Date(point.x).getTime(),
+        x: parseCalendarDate(point.x),
         y: point.y,
     }))
     parsedData.sort((a, b) => a.x - b.x)
@@ -556,7 +574,7 @@ const loadDeadlineAnnotations = () => {
             ? globalData.dataset.annotations
             : '{"deadlines":[]}'
         return JSON.parse(annotations).deadlines.map((element) => ({
-            x: new Date(element[0]).getTime(),
+            x: parseCalendarDate(element[0]),
             borderColor: "#ff4560",
             strokeDashArray: 0,
             label: {
@@ -601,8 +619,8 @@ const writeTimelineSummary = (targetId, parsedSeries, stateRows, sourceRows) => 
     dayTotals.forEach((value, day) => {
         if (value > peakCount) {
             peakCount = value
-            const dayValue = typeof day === "number" ? day : new Date(day).getTime()
-            peakDate = new Date(dayValue).toLocaleDateString("en-US", {
+            const dayValue = typeof day === "number" ? day : parseCalendarDate(day)
+            peakDate = new Date(dayValue).toLocaleDateString(undefined, {
                 month: "short",
                 day: "numeric",
             })
