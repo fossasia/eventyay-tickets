@@ -8,6 +8,7 @@ from django_scopes import scope, scopes_disabled
 from i18nfield.strings import LazyI18nString
 
 from eventyay.base.models import Event, MailTemplate
+from eventyay.base.models.event import default_feature_flags
 
 
 @pytest.fixture
@@ -354,8 +355,7 @@ def test_event_update_review_phase_activate_next_phase(event):
 
 
 def test_default_feature_flags_feedback_disabled():
-    from eventyay.base.models.event import Event, default_feature_flags
-
+    """Verify default feature flags and event model default for session feedback is False."""
     flags = default_feature_flags()
     assert flags['use_feedback'] is False
     event = Event()

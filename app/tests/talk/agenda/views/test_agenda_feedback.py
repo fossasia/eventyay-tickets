@@ -61,6 +61,7 @@ def test_cannot_create_feedback_before_talk(django_assert_num_queries, slot, cli
 
 @pytest.mark.django_db()
 def test_cannot_create_feedback_when_feedback_disabled(django_assert_num_queries, past_slot, client, event):
+    """Verify feedback cannot be created when feedback is disabled by default."""
     with scope(event=event):
         assert event.get_feature_flag('use_feedback') is False
     with django_assert_num_queries(13):

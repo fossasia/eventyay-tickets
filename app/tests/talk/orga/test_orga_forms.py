@@ -1,9 +1,10 @@
 import pytest
 from django_scopes import scope
 
+from eventyay.base.models import Event
 from eventyay.eventyay_common.forms.event import EventCommonSettingsForm
 from eventyay.orga.forms import SubmissionForm
-from eventyay.orga.forms.event import ReviewScoreCategoryForm
+from eventyay.orga.forms.event import FeedbackSettingsForm, ReviewScoreCategoryForm
 
 
 @pytest.mark.django_db
@@ -70,9 +71,7 @@ def test_review_score_category_form_duplicate_score_validation(event):
 
 
 def test_feedback_settings_form_defaults():
-    from eventyay.base.models import Event
-    from eventyay.orga.forms.event import FeedbackSettingsForm
-
+    """Verify that FeedbackSettingsForm defaults use_feedback to False."""
     event = Event()
     form = FeedbackSettingsForm(obj=event)
     assert form.fields['use_feedback'].initial is False

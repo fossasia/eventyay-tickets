@@ -14,6 +14,7 @@ from eventyay.agenda.feedback_access import (
 
 @pytest.mark.django_db
 def test_feedback_period_closed_by_default_use_feedback_disabled(past_slot, event):
+    """Verify feedback period is closed when use_feedback is disabled by default."""
     with scope(event=event):
         assert event.get_feature_flag('use_feedback') is False
         assert feedback_period_open(past_slot.submission) is False
