@@ -9,9 +9,13 @@ document.addEventListener('DOMContentLoaded', function () {
 
   var radios = document.querySelectorAll('input[name="delivery_mode"]')
   var scheduleDiv = document.getElementById('delivery-schedule')
+  var deliveryModeHidden = document.querySelector('input[name="delivery_mode"][type="hidden"]')
   radios.forEach(function (radio) {
     radio.addEventListener('change', function () {
       scheduleDiv.hidden = this.value !== 'later'
+      if (deliveryModeHidden) {
+        deliveryModeHidden.value = this.value
+      }
     })
   })
 
@@ -26,15 +30,15 @@ document.addEventListener('DOMContentLoaded', function () {
     })
   }
 
-  var recipientsUrl = document.getElementById('show-recipient-list')
-    ? document.getElementById('show-recipient-list').dataset.recipientsUrl
-    : ''
+  var showBtnEl = document.getElementById('show-recipient-list')
+  var recipientsUrl = showBtnEl ? showBtnEl.dataset.recipientsUrl : ''
   var countBadge = document.getElementById('recipient-count')
   var actionCount = document.getElementById('action-recipient-count')
 
   var FILTER_FIELDS = [
     'recipient_group', 'account_status', 'user_role', 'language',
     'event_status', 'created_after', 'created_before',
+    'last_active_after', 'last_active_before',
     'selected_organisers', 'selected_events', 'selected_users',
     'exclude_admins', 'exclude_inactive', 'exclude_unconfirmed_email'
   ]
@@ -63,59 +67,106 @@ document.addEventListener('DOMContentLoaded', function () {
       .catch(function () {})
   }
 
-  ;['recipient_group', 'account_status', 'user_role', 'language',
-    'event_status', 'exclude_admins', 'exclude_inactive', 'exclude_unconfirmed_email'
-  ].forEach(function (name) {
+  FILTER_FIELDS.forEach(function (name) {
     var el = document.querySelector('[name="' + name + '"]')
     if (el) el.addEventListener('change', updateRecipientCount)
   })
 
   updateRecipientCount()
 
-  var showBtn = document.getElementById('show-recipient-list')
   var dialog = document.getElementById('recipient-list-dialog')
   var listBody = document.getElementById('recipient-list-body')
   var closeBtn = document.getElementById('close-recipient-dialog')
   var closeBtnBottom = document.getElementById('close-recipient-dialog-btn')
 
-  if (showBtn && dialog) {
-    showBtn.addEventListener('click', function () {
+  function buildRecipientRow (r) {
+    var tr = document.createElement('tr')
+    var fields = [r.name || '', r.email, r.status || '', r.role || '', r.reason || '']
+    fields.forEach(function (text) {
+      var td = document.createElement('td')
+      td.textContent = text
+      tr.appendChild(td)
+    })
+    return tr
+  }
+
+  if (showBtnEl && dialog) {
+    showBtnEl.addEventListener('click', function () {
       dialog.showModal()
-      listBody.innerHTML = '<p class="text-muted">' + listBody.dataset.loadingLabel + '</p>'
+      listBody.innerHTML = ''
+      var loadingP = document.createElement('p')
+      loadingP.className = 'text-muted'
+      loadingP.textContent = listBody.dataset.loadingLabel
+      listBody.appendChild(loadingP)
+
       var params = getFilterParams()
       params.set('show_list', '1')
       fetch(recipientsUrl + '?' + params.toString())
         .then(function (r) { return r.json() })
         .then(function (data) {
+          listBody.innerHTML = ''
           if (!data.recipients || data.recipients.length === 0) {
-            listBody.innerHTML = '<p class="text-muted">' + listBody.dataset.emptyLabel + '</p>'
+            var emptyP = document.createElement('p')
+            emptyP.className = 'text-muted'
+            emptyP.textContent = listBody.dataset.emptyLabel
+            listBody.appendChild(emptyP)
             return
           }
-          var html = '<p>' + data.count + ' ' + countBadge.dataset.labelRecipients
+
+          var summary = document.createElement('p')
+          summary.textContent = data.count + ' ' + countBadge.dataset.labelRecipients
           if (data.skipped > 0) {
-            html += ' <span class="text-warning">(' + data.skipped + ' ' + listBody.dataset.skippedLabel + ')</span>'
+            var warn = document.createElement('span')
+            warn.className = 'text-warning'
+            warn.textContent = ' (' + data.skipped + ' ' + listBody.dataset.skippedLabel + ')'
+            summary.appendChild(warn)
           }
-          html += '</p>'
-          html += '<div class="table-responsive"><table class="table table-sm table-condensed"><thead><tr>'
-          html += '<th>' + listBody.dataset.colName + '</th>'
-          html += '<th>' + listBody.dataset.colEmail + '</th>'
-          html += '<th>' + listBody.dataset.colStatus + '</th>'
-          html += '<th>' + listBody.dataset.colRole + '</th>'
-          html += '<th>' + listBody.dataset.colReason + '</th>'
-          html += '</tr></thead><tbody>'
+          listBody.appendChild(summary)
+
+          var wrapper = document.createElement('div')
+          wrapper.className = 'table-responsive'
+          var table = document.createElement('table')
+          table.className = 'table table-sm table-condensed'
+          var thead = document.createElement('thead')
+          var headerRow = document.createElement('tr')
+          var cols = [
+            listBody.dataset.colName,
+            listBody.dataset.colEmail,
+            listBody.dataset.colStatus,
+            listBody.dataset.colRole,
+            listBody.dataset.colReason
+          ]
+          cols.forEach(function (label) {
+            var th = document.createElement('th')
+            th.textContent = label
+            headerRow.appendChild(th)
+          })
+          thead.appendChild(headerRow)
+          table.appendChild(thead)
+
+          var tbody = document.createElement('tbody')
           data.recipients.forEach(function (r) {
-            html += '<tr><td>' + (r.name || '') + '</td><td>' + r.email + '</td>'
-            html += '<td>' + (r.status || '') + '</td><td>' + (r.role || '') + '</td>'
-            html += '<td>' + (r.reason || '') + '</td></tr>'
+            tbody.appendChild(buildRecipientRow(r))
           })
           if (data.count > 100) {
-            html += '<tr><td colspan="5" class="text-muted text-center">' + listBody.dataset.truncatedLabel + ' ' + data.count + '</td></tr>'
+            var truncRow = document.createElement('tr')
+            var truncTd = document.createElement('td')
+            truncTd.setAttribute('colspan', '5')
+            truncTd.className = 'text-muted text-center'
+            truncTd.textContent = listBody.dataset.truncatedLabel + ' ' + data.count
+            truncRow.appendChild(truncTd)
+            tbody.appendChild(truncRow)
           }
-          html += '</tbody></table></div>'
-          listBody.innerHTML = html
+          table.appendChild(tbody)
+          wrapper.appendChild(table)
+          listBody.appendChild(wrapper)
         })
         .catch(function () {
-          listBody.innerHTML = '<p class="text-danger">' + listBody.dataset.errorLabel + '</p>'
+          listBody.innerHTML = ''
+          var errP = document.createElement('p')
+          errP.className = 'text-danger'
+          errP.textContent = listBody.dataset.errorLabel
+          listBody.appendChild(errP)
         })
     })
     if (closeBtn) closeBtn.addEventListener('click', function () { dialog.close() })

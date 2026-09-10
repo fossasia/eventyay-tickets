@@ -1,15 +1,22 @@
 {% extends "pretixcontrol/admin/base.html" %}
 {% load i18n static %}
 
+{% block title %}{% translate "Template detail" %} — {{ role_label }}{% endblock %}
+
 {% block custom_header %}
   {{ block.super }}
   <link rel="stylesheet" href="{% static 'pretixcontrol/css/admin-messages.css' %}">
 {% endblock %}
 
-{% block title %}{% translate "Template detail" %} — {{ role_label }}{% endblock %}
-
 {% block content %}
-<h1>{{ role_label }}</h1>
+<nav id="event-nav" class="header-nav">
+  <div class="navigation">
+    <div class="navigation-title">
+      <h1>{{ role_label }}</h1>
+    </div>
+  </div>
+</nav>
+
 <p>
   <a href="{% url 'eventyay_admin:admin.messages.templates' %}">
     <i class="fa fa-arrow-left" aria-hidden="true"></i> {% translate "Back to templates" %}

@@ -1,9 +1,7 @@
-"""
-Models for the Admin Message Center — platform-wide email system.
-"""
-
 import logging
 
+import nh3
+from django.conf import settings as django_settings
 from django.contrib.postgres.fields import ArrayField
 from django.db import models
 from django.urls import reverse
@@ -13,6 +11,14 @@ from django.utils.translation import gettext_lazy as _
 from eventyay.base.models.auth import User
 
 logger = logging.getLogger(__name__)
+
+ALLOWED_HTML_TAGS = frozenset({
+    'b', 'i', 'u', 'a', 'p', 'br', 'strong', 'em',
+    'ul', 'ol', 'li', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6',
+    'blockquote', 'pre', 'code', 'hr',
+    'table', 'thead', 'tbody', 'tr', 'th', 'td',
+    'img', 'span', 'div',
+})
 
 
 class AdminRecipientGroup(models.TextChoices):
@@ -77,6 +83,11 @@ class AdminEmailQueue(models.Model):
 
     attachment = models.UUIDField(null=True, blank=True, verbose_name=_('Attachment'))
 
+    recipient_count_snapshot = models.PositiveIntegerField(
+        default=0,
+        verbose_name=_('Recipient count at save time'),
+    )
+
     class Meta:
         ordering = ['-created_at']
         verbose_name = _('Admin email')
@@ -138,21 +149,36 @@ class AdminEmailQueue(models.Model):
             )
         return new_mail
 
+    def _resolve_attachment(self) -> list[dict] | None:
+        """Resolve the CachedFile UUID into an attachment list for mail_send_task."""
+        if not self.attachment:
+            return None
+        from eventyay.base.models.base import CachedFile
+        try:
+            cf = CachedFile.objects.get(id=self.attachment)
+            content = cf.file.read()
+            cf.file.seek(0)
+            return [{
+                'name': cf.filename or 'attachment',
+                'content': content,
+                'content_type': cf.type or 'application/octet-stream',
+            }]
+        except CachedFile.DoesNotExist:
+            logger.warning('CachedFile %s not found for AdminEmailQueue %s', self.attachment, self.pk)
+            return None
+
     def send(self) -> bool:
         """
         Send the queued email to all recipients. Returns True if sent.
         Called by the Celery task.
         """
-        if self.status == AdminEmailStatus.SENT:
-            return False
-
-        if self.status == AdminEmailStatus.DRAFT:
+        if self.status in (AdminEmailStatus.SENT, AdminEmailStatus.DRAFT):
             return False
 
         if self.scheduled_at and self.scheduled_at > now():
             return False
 
-        recipients = self.recipients.filter(sent=False)
+        recipients = self.recipients.select_related('user').filter(sent=False)
         if not recipients.exists():
             self.status = AdminEmailStatus.SENT
             self.sent_at = now()
@@ -163,6 +189,10 @@ class AdminEmailQueue(models.Model):
         self.save(update_fields=['status'])
 
         from eventyay.common.mail import mail_send_task
+
+        reply_to_addr = self.reply_to or getattr(django_settings, 'DEFAULT_FROM_EMAIL', '')
+        bcc_list = [b.strip() for b in self.bcc.split(',') if b.strip()] if self.bcc else []
+        attachments = self._resolve_attachment()
 
         for recipient in recipients:
             if not recipient.email:
@@ -184,12 +214,12 @@ class AdminEmailQueue(models.Model):
                         'to': [recipient.email],
                         'subject': subject,
                         'body': body,
-                        'html': self._make_html(body),
-                        'reply_to': [self.reply_to] if self.reply_to else [],
+                        'html': AdminEmailQueue.make_html(body),
+                        'reply_to': [reply_to_addr] if reply_to_addr else [],
                         'event': None,
                         'cc': [],
-                        'bcc': [b.strip() for b in self.bcc.split(',') if b.strip()] if self.bcc else [],
-                        'attachments': None,
+                        'bcc': bcc_list,
+                        'attachments': attachments,
                     },
                     ignore_result=True,
                 )
@@ -201,8 +231,7 @@ class AdminEmailQueue(models.Model):
                 recipient.error = str(exc)
                 recipient.save(update_fields=['error'])
 
-        all_sent = not self.recipients.filter(sent=False).exclude(error__isnull=False).exists()
-        if all_sent or not self.recipients.filter(sent=False, error__isnull=True).exists():
+        if not self.recipients.filter(sent=False).exists():
             self.status = AdminEmailStatus.SENT
             self.sent_at = now()
             self.scheduled_at = None
@@ -211,8 +240,6 @@ class AdminEmailQueue(models.Model):
         return True
 
     def _build_context(self, recipient: 'AdminEmailQueueRecipient') -> dict[str, str]:
-        from django.conf import settings as django_settings
-
         context: dict[str, str] = {
             'platform_name': str(getattr(django_settings, 'PLATFORM_NAME', 'Eventyay')),
             'platform_url': str(getattr(django_settings, 'SITE_URL', '')),
@@ -220,30 +247,32 @@ class AdminEmailQueue(models.Model):
             'support_url': str(getattr(django_settings, 'SUPPORT_URL', '')),
         }
 
-        if recipient.user_id:
-            try:
-                user = User.objects.get(pk=recipient.user_id)
-                context['user_name'] = user.get_full_name() or user.email or ''
-                context['first_name'] = (user.fullname or '').split(' ')[0] if user.fullname else ''
-                context['last_name'] = ' '.join((user.fullname or '').split(' ')[1:]) if user.fullname else ''
-                context['email'] = user.email or ''
-                context['account_url'] = ''
-            except User.DoesNotExist:
-                pass
+        user = recipient.user
+        if user:
+            context['user_name'] = user.get_full_name() or user.email or ''
+            context['first_name'] = (user.fullname or '').split(' ')[0] if user.fullname else ''
+            context['last_name'] = ' '.join((user.fullname or '').split(' ')[1:]) if user.fullname else ''
+            context['email'] = user.email or ''
+            context['account_url'] = ''
+        elif recipient.email:
+            context['user_name'] = recipient.name or recipient.email
+            context['first_name'] = ''
+            context['last_name'] = ''
+            context['email'] = recipient.email
+            context['account_url'] = ''
 
         return context
 
-    def _make_html(self, body_text: str) -> str:
-        import nh3
-
-        safe_body = nh3.clean(body_text, tags={'b', 'i', 'u', 'a', 'p', 'br', 'strong', 'em', 'ul', 'ol', 'li', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'blockquote', 'pre', 'code', 'hr', 'table', 'thead', 'tbody', 'tr', 'th', 'td', 'img', 'span', 'div'})
-        return f"""<!DOCTYPE html>
-<html>
-<head><meta charset="utf-8"></head>
-<body style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; line-height: 1.6; color: #333;">
-{safe_body}
-</body>
-</html>"""
+    @staticmethod
+    def make_html(body_text: str) -> str:
+        safe_body = nh3.clean(body_text, tags=ALLOWED_HTML_TAGS)
+        return (
+            '<!DOCTYPE html>\n'
+            '<html>\n<head><meta charset="utf-8"></head>\n'
+            '<body>\n'
+            f'{safe_body}\n'
+            '</body>\n</html>'
+        )
 
     send.alters_data = True
     duplicate.alters_data = True

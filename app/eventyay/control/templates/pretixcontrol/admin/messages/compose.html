@@ -5,27 +5,49 @@
 
 {% block custom_header %}
   {{ block.super }}
+  <link rel="stylesheet" href="{% static 'common/css/_fonts.css' %}">
+  <link rel="stylesheet" href="{% static 'common/css/base.css' %}">
+  <link rel="stylesheet" href="{% static 'vendored/choices/choices.min.css' %}">
   <link rel="stylesheet" href="{% static 'common/css/_forms.css' %}">
   <link rel="stylesheet" href="{% static 'common/css/_composer.css' %}">
   <link rel="stylesheet" href="{% static 'pretixcontrol/css/admin-messages.css' %}">
+  <script src="{% static 'vendored/choices/choices.min.js' %}"></script>
 {% endblock %}
 
 {% block content %}
-<form method="post" enctype="multipart/form-data" class="form-with-placeholder" novalidate>
+<form method="post" enctype="multipart/form-data" class="form-with-placeholder mail-composer" novalidate>
   {% csrf_token %}
   {% if draft %}
     <input type="hidden" name="draft_id" value="{{ draft.pk }}">
   {% endif %}
 
-  {% if form.errors %}
-    <div class="alert alert-danger">
-      {% translate "Please correct the errors below." %}
+  {% include "common/forms/errors.html" %}
+
+  {% if recipient_count_changed %}
+    <div class="alert alert-warning">
+      {% blocktranslate with old=old_recipient_count new=new_recipient_count %}
+        Recipient count changed from {{ old }} to {{ new }} because platform data changed since this draft was saved.
+      {% endblocktranslate %}
     </div>
   {% endif %}
 
-  <div class="mb-3">
-    <h2>{% translate "Compose platform email" %}</h2>
-    <p class="text-muted">
+  {% if confirm_high_count %}
+    <div class="alert alert-warning">
+      {% blocktranslate with count=high_count %}
+        You are about to send this email to {{ count }} recipients.
+      {% endblocktranslate %}
+      <input type="hidden" name="confirm_send" value="1">
+    </div>
+  {% endif %}
+
+  <div class="composer-intro mb-3">
+    <h2 class="composer-title">
+      {% translate "Compose email" %}
+      <small class="composer-title-detail text-muted">
+        {% translate "Platform" %}
+      </small>
+    </h2>
+    <p class="composer-description text-muted">
       {% translate "Send emails to organisers, registered users and selected platform groups." %}
     </p>
   </div>
@@ -39,7 +61,8 @@
       </span>
       <span>
         <button type="button" class="btn btn-sm btn-outline-info" id="show-recipient-list"
-                data-recipients-url="{% url 'eventyay_admin:admin.messages.recipients' %}">
+                data-recipients-url="{% url 'eventyay_admin:admin.messages.recipients' %}"
+                data-dialog-target="#recipient-list-dialog">
           {% translate "Show recipient list" %}
         </button>
         <button type="button" class="btn btn-sm btn-link" id="clear-filters">
@@ -50,63 +73,28 @@
     <div class="card-body">
       <fieldset>
         <div class="composer-filters">
-          <div class="form-group">
-            <label for="{{ form.recipient_group.id_for_label }}">{{ form.recipient_group.label }}</label>
-            {{ form.recipient_group }}
-            {% for error in form.recipient_group.errors %}<div class="text-danger">{{ error }}</div>{% endfor %}
-          </div>
-          <div class="form-group">
-            <label for="{{ form.account_status.id_for_label }}">{{ form.account_status.label }}</label>
-            {{ form.account_status }}
-          </div>
-          <div class="form-group">
-            <label for="{{ form.user_role.id_for_label }}">{{ form.user_role.label }}</label>
-            {{ form.user_role }}
-          </div>
-          <div class="form-group">
-            <label for="{{ form.language.id_for_label }}">{{ form.language.label }}</label>
-            {{ form.language }}
-          </div>
-          <div class="form-group">
-            <label for="{{ form.selected_organisers.id_for_label }}">{{ form.selected_organisers.label }}</label>
-            {{ form.selected_organisers }}
-          </div>
-          <div class="form-group">
-            <label for="{{ form.event_status.id_for_label }}">{{ form.event_status.label }}</label>
-            {{ form.event_status }}
-          </div>
-          <div class="form-group">
-            <label for="{{ form.selected_events.id_for_label }}">{{ form.selected_events.label }}</label>
-            {{ form.selected_events }}
-          </div>
-          <div class="form-group">
-            <label for="{{ form.created_after.id_for_label }}">{{ form.created_after.label }}</label>
-            {{ form.created_after }}
-          </div>
-          <div class="form-group">
-            <label for="{{ form.created_before.id_for_label }}">{{ form.created_before.label }}</label>
-            {{ form.created_before }}
-          </div>
+          {{ form.recipient_group.as_field_group }}
+          {{ form.account_status.as_field_group }}
+          {{ form.user_role.as_field_group }}
+          {{ form.language.as_field_group }}
+          {{ form.selected_organisers.as_field_group }}
+          {{ form.event_status.as_field_group }}
+          {{ form.selected_events.as_field_group }}
+          {{ form.created_after.as_field_group }}
+          {{ form.created_before.as_field_group }}
+          {{ form.last_active_after.as_field_group }}
+          {{ form.last_active_before.as_field_group }}
           <div class="composer-filter-full">
-            <div class="form-group">
-              <label for="{{ form.selected_users.id_for_label }}">{{ form.selected_users.label }}</label>
-              {{ form.selected_users }}
-            </div>
+            {{ form.selected_users.as_field_group }}
           </div>
           <div class="composer-filter-checkbox">
-            <label>
-              {{ form.exclude_admins }} {{ form.exclude_admins.label }}
-            </label>
+            {{ form.exclude_admins.as_field_group }}
           </div>
           <div class="composer-filter-checkbox">
-            <label>
-              {{ form.exclude_inactive }} {{ form.exclude_inactive.label }}
-            </label>
+            {{ form.exclude_inactive.as_field_group }}
           </div>
           <div class="composer-filter-checkbox">
-            <label>
-              {{ form.exclude_unconfirmed_email }} {{ form.exclude_unconfirmed_email.label }}
-            </label>
+            {{ form.exclude_unconfirmed_email.as_field_group }}
           </div>
         </div>
       </fieldset>
@@ -117,28 +105,8 @@
     <div class="card-header"><strong>{% translate "Reply-To and BCC" %}</strong></div>
     <div class="card-body">
       <fieldset>
-        <div class="form-group row">
-          <label class="col-md-3 col-form-label" for="{{ form.reply_to.id_for_label }}">
-            {{ form.reply_to.label }}
-            <span class="text-muted d-block optional-label">{% translate "Optional" %}</span>
-          </label>
-          <div class="col-md-9">
-            {{ form.reply_to }}
-            {% if form.reply_to.help_text %}<small class="form-text text-muted">{{ form.reply_to.help_text }}</small>{% endif %}
-            {% for error in form.reply_to.errors %}<div class="text-danger">{{ error }}</div>{% endfor %}
-          </div>
-        </div>
-        <div class="form-group row">
-          <label class="col-md-3 col-form-label" for="{{ form.bcc.id_for_label }}">
-            {{ form.bcc.label }}
-            <span class="text-muted d-block optional-label">{% translate "Optional" %}</span>
-          </label>
-          <div class="col-md-9">
-            {{ form.bcc }}
-            {% if form.bcc.help_text %}<small class="form-text text-muted">{{ form.bcc.help_text }}</small>{% endif %}
-            {% for error in form.bcc.errors %}<div class="text-danger">{{ error }}</div>{% endfor %}
-          </div>
-        </div>
+        {{ form.reply_to.as_field_group }}
+        {{ form.bcc.as_field_group }}
       </fieldset>
     </div>
   </section>
@@ -146,46 +114,16 @@
   <section class="card mb-3">
     <div class="card-header d-flex justify-content-between align-items-center">
       <strong>{% translate "Message" %}</strong>
-      <button type="button" class="btn btn-sm btn-outline-info" id="toggle-placeholders">
+      <button type="button" class="btn btn-sm btn-outline-info" id="toggle-placeholders"
+              data-placeholder-toggle aria-controls="placeholder-drawer" aria-expanded="false">
         {% translate "Placeholder help" %}
       </button>
     </div>
     <div class="card-body">
       <fieldset>
-        <div class="form-group row">
-          <label class="col-md-3 col-form-label" for="{{ form.subject.id_for_label }}">
-            {{ form.subject.label }} <span class="text-danger">*</span>
-          </label>
-          <div class="col-md-9">
-            {{ form.subject }}
-            {% for error in form.subject.errors %}<div class="text-danger">{{ error }}</div>{% endfor %}
-          </div>
-        </div>
-        <div class="form-group row">
-          <label class="col-md-3 col-form-label" for="{{ form.message.id_for_label }}">
-            {{ form.message.label }} <span class="text-danger">*</span>
-          </label>
-          <div class="col-md-9">
-            {{ form.message }}
-            {% for error in form.message.errors %}<div class="text-danger">{{ error }}</div>{% endfor %}
-          </div>
-        </div>
+        {{ form.subject.as_field_group }}
+        {{ form.message.as_field_group }}
       </fieldset>
-      <div id="placeholder-drawer" hidden>
-        <hr>
-        <strong>{% translate "Available placeholders" %}</strong>
-        {% for group_name, items in placeholders.items %}
-          <div class="placeholder-group mt-2">
-            <h6>{{ group_name|title }}</h6>
-            <dl>
-              {% for ph in items %}
-                <dt><code>{<span></span>{{ ph.key }}}</code></dt>
-                <dd>{{ ph.label }}</dd>
-              {% endfor %}
-            </dl>
-          </div>
-        {% endfor %}
-      </div>
     </div>
   </section>
 
@@ -195,17 +133,7 @@
     </div>
     <div class="card-body">
       <fieldset>
-        <div class="form-group row">
-          <label class="col-md-3 col-form-label" for="{{ form.attachment.id_for_label }}">
-            {{ form.attachment.label }}
-            <span class="text-muted d-block optional-label">{% translate "Optional" %}</span>
-          </label>
-          <div class="col-md-9">
-            {{ form.attachment }}
-            {% if form.attachment.help_text %}<small class="form-text text-muted">{{ form.attachment.help_text }}</small>{% endif %}
-            {% for error in form.attachment.errors %}<div class="text-danger">{{ error }}</div>{% endfor %}
-          </div>
-        </div>
+        {{ form.attachment.as_field_group }}
       </fieldset>
     </div>
   </section>
@@ -216,8 +144,8 @@
       <fieldset>
         <div class="form-group row delivery-test">
           <label class="col-md-3 col-form-label" for="{{ form.test_email.id_for_label }}">
-            {{ form.test_email.label }}
-            <span class="text-muted d-block optional-label">{% translate "Optional" %}</span>
+            <span>{{ form.test_email.label }}</span>
+            <span class="optional">{% translate "Optional" %}</span>
           </label>
           <div class="col-md-9">
             <div class="delivery-test-controls">
@@ -226,77 +154,94 @@
                 {% translate "Send test email" %}
               </button>
             </div>
-            {% for error in form.test_email.errors %}<div class="text-danger">{{ error }}</div>{% endfor %}
+            {% for error in form.test_email.errors %}
+              <div class="invalid-feedback d-block">{{ error }}</div>
+            {% endfor %}
           </div>
         </div>
         <hr>
+        {{ form.delivery_mode }}
         <div class="mb-3">
           <div class="form-check form-check-inline">
-            <input class="form-check-input" type="radio" name="delivery_mode" id="delivery-mode-now" value="now" checked>
+            <input class="form-check-input" type="radio" name="delivery_mode_radio" id="delivery-mode-now" value="now" checked>
             <label class="form-check-label" for="delivery-mode-now">{% translate "Send now" %}</label>
           </div>
           <div class="form-check form-check-inline">
-            <input class="form-check-input" type="radio" name="delivery_mode" id="delivery-mode-later" value="later">
+            <input class="form-check-input" type="radio" name="delivery_mode_radio" id="delivery-mode-later" value="later">
             <label class="form-check-label" for="delivery-mode-later">{% translate "Schedule for later" %}</label>
           </div>
         </div>
         <div id="delivery-schedule" hidden>
-          <div class="form-group row">
-            <label class="col-md-3 col-form-label" for="{{ form.scheduled_at.id_for_label }}">
-              {{ form.scheduled_at.label }}
-            </label>
-            <div class="col-md-9">
-              {{ form.scheduled_at }}
-              {% if form.scheduled_at.help_text %}<small class="form-text text-muted">{{ form.scheduled_at.help_text }}</small>{% endif %}
-              {% for error in form.scheduled_at.errors %}<div class="text-danger">{{ error }}</div>{% endfor %}
-            </div>
-          </div>
+          {{ form.scheduled_at.as_field_group }}
         </div>
       </fieldset>
     </div>
   </section>
 
+  <div id="placeholder-drawer" role="dialog" aria-labelledby="placeholder-drawer-title" hidden>
+    <div id="placeholder-drawer-head">
+      <strong id="placeholder-drawer-title">{% translate "Placeholder help" %}</strong>
+      <button type="button" class="btn btn-link p-0" data-placeholder-close aria-label="{% translate 'Close' %}">&times;</button>
+    </div>
+    <input type="search" id="placeholder-search" class="form-control" placeholder="{% translate 'Search placeholders' %}" autocomplete="off">
+    <p class="text-muted d-none" id="placeholder-empty">{% translate "No placeholders match your search." %}</p>
+    {% for group_name, items in placeholders.items %}
+      <div class="placeholder-group" data-placeholder-group="{{ group_name }}">
+        <h6 class="placeholder-group-title">{{ group_name|title }}</h6>
+        <dl>
+          {% for ph in items %}
+            <dt data-placeholder-key="{{ ph.key }}"><code>{{ '{' }}{{ ph.key }}{{ '}' }}</code></dt>
+            <dd>{{ ph.label }}</dd>
+          {% endfor %}
+        </dl>
+      </div>
+    {% endfor %}
+  </div>
+
   {% if output %}
-    <section class="card mb-3">
-      <div class="card-header"><strong>{% translate "Email preview" %}</strong></div>
-      <div class="card-body">
-        {% if recipient_count %}
-          <div class="alert alert-info">
-            {% blocktranslate with count=recipient_count %}
-              This email will be sent to approximately {{ count }} recipients.
-            {% endblocktranslate %}
-          </div>
-        {% endif %}
-        <strong>{% translate "Subject:" %} {{ output.subject }}</strong>
-        <div class="mail-preview mt-2">
+    <fieldset class="mt-4">
+      <legend id="preview">{% translate "Email preview" %}</legend>
+      {% if recipient_count %}
+        <div class="alert alert-info">
+          {% blocktranslate with count=recipient_count %}
+            Roughly {{ count }} emails will be generated.
+          {% endblocktranslate %}
+        </div>
+      {% endif %}
+      <div class="tab-pane mail-preview-group">
+        <div class="mail-preview">
+          <strong>{% translate "Subject:" %} {{ output.subject }}</strong>
+          <br><br>
           {{ output.html|safe }}
         </div>
       </div>
-    </section>
+    </fieldset>
   {% endif %}
 
   <section class="card mb-3">
     <div class="card-body d-md-flex justify-content-between align-items-center">
-      <span class="text-muted mb-2 mb-md-0" id="recipient-summary">
-        <span id="action-recipient-count">0</span> {% translate "recipients selected" %}
+      <span class="text-muted mb-2 mb-md-0">
+        <span id="recipient-summary"
+              data-label-one="{% translate 'recipient selected' %}"
+              data-label-other="{% translate 'recipients selected' %}">
+          <span id="action-recipient-count">0</span> {% translate "recipients selected" %}
+        </span>
       </span>
       <span class="composer-actions">
-        <label class="form-check-label mr-3 send-immediately-label">
-          {{ form.send_immediately }}
-          {% translate "Send immediately" %}
-        </label>
         <button type="submit" class="btn btn-outline-info" name="action" value="draft" formnovalidate>
           {% translate "Save draft" %}
         </button>
-        <button type="submit" class="btn btn-outline-info" name="action" value="preview" formnovalidate>
+        <button type="submit" class="btn btn-outline-info btn-save" name="action" value="preview" formnovalidate>
           {% translate "Preview email" %}
         </button>
-        <button type="submit" class="btn btn-primary" name="action" value="send" id="send-btn"
-                data-label-outbox="{% translate 'Send to Outbox' %}"
-                data-label-immediate="{% translate 'Send email' %}">
-          <i class="fa fa-paper-plane" aria-hidden="true"></i>
-          <span class="send-label">{% translate "Send to Outbox" %}</span>
-        </button>
+        <span class="composer-send-group">
+          <button type="submit" class="btn btn-primary" name="action" value="send" id="send-btn"
+                  data-label-outbox="{% translate 'Send to Outbox' %}"
+                  data-label-immediate="{% translate 'Send email' %}">
+            <i class="fa fa-paper-plane" aria-hidden="true"></i>
+            <span class="send-label">{% translate "Send to Outbox" %}</span>
+          </button>
+        </span>
       </span>
     </div>
   </section>
@@ -306,7 +251,7 @@
   <div class="dialog-content">
     <div class="d-flex justify-content-between align-items-center mb-2">
       <h5 class="mb-0">{% translate "Recipients" %}</h5>
-      <button type="button" class="btn btn-link p-0" id="close-recipient-dialog" aria-label="{% translate 'Close' %}">&times;</button>
+      <button type="button" class="btn btn-link p-0" id="close-recipient-dialog" data-recipient-close aria-label="{% translate 'Close' %}">&times;</button>
     </div>
     <div id="recipient-list-body"
          data-loading-label="{% translate 'Loading recipients…' %}"
@@ -319,13 +264,14 @@
          data-col-status="{% translate 'Status' %}"
          data-col-role="{% translate 'Role' %}"
          data-col-reason="{% translate 'Reason' %}">
-      <p class="text-muted">{% translate "Click 'Show recipient list' to load recipients." %}</p>
     </div>
-    <div class="mt-2">
-      <button type="button" class="btn btn-default" id="close-recipient-dialog-btn">{% translate "Close" %}</button>
+    <div class="dialog-footer">
+      <button type="button" class="btn btn-default" id="close-recipient-dialog-btn" data-recipient-close>{% translate "Close" %}</button>
     </div>
   </div>
 </dialog>
 
-<script defer src="{% static 'pretixcontrol/js/admin-messages-compose.js' %}"></script>
+<script defer src="{% static 'common/js/modalDialog.js' %}"></script>
+<script defer src="{% static 'orga/js/placeholder.js' %}"></script>
+<script type="module" src="{% static 'pretixcontrol/js/admin-messages-compose.js' %}"></script>
 {% endblock %}

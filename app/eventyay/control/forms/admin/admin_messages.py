@@ -1,18 +1,17 @@
 from django import forms
 from django.conf import settings
+from django.core.validators import validate_email
 from django.utils.translation import gettext_lazy as _
 
+from eventyay.base.forms.widgets import SplitDateTimePickerWidget
 from eventyay.base.models import Event, Organizer, User
 from eventyay.base.models.admin_mail import (
-    AdminEmailQueue,
-    AdminEmailStatus,
     AdminRecipientGroup,
 )
 from eventyay.common.forms.mixins import ScheduledAtValidationMixin
 from eventyay.common.forms.widgets import EnhancedSelect, EnhancedSelectMultiple
 from eventyay.consts import SizeKey
 from eventyay.control.forms import CachedFileField, SplitDateTimeField
-from eventyay.base.forms.widgets import SplitDateTimePickerWidget
 
 
 ACCOUNT_STATUS_CHOICES = [
@@ -36,6 +35,11 @@ EVENT_STATUS_CHOICES = [
     ('live', _('Live')),
     ('draft', _('Draft')),
     ('past', _('Past')),
+]
+
+DELIVERY_MODE_CHOICES = [
+    ('now', _('Send now')),
+    ('later', _('Schedule for later')),
 ]
 
 
@@ -132,6 +136,18 @@ class AdminComposeForm(ScheduledAtValidationMixin, forms.Form):
         widget=forms.DateInput(attrs={'type': 'date', 'placeholder': _('mm/dd/yyyy')}),
     )
 
+    last_active_after = forms.DateTimeField(
+        label=_('Last active after'),
+        required=False,
+        widget=forms.DateInput(attrs={'type': 'date', 'placeholder': _('mm/dd/yyyy')}),
+    )
+
+    last_active_before = forms.DateTimeField(
+        label=_('Last active before'),
+        required=False,
+        widget=forms.DateInput(attrs={'type': 'date', 'placeholder': _('mm/dd/yyyy')}),
+    )
+
     exclude_admins = forms.BooleanField(
         label=_('Exclude platform admins'),
         required=False,
@@ -195,6 +211,14 @@ class AdminComposeForm(ScheduledAtValidationMixin, forms.Form):
         widget=forms.EmailInput(attrs={'placeholder': 'name@domain.com'}),
     )
 
+    delivery_mode = forms.ChoiceField(
+        label=_('Delivery mode'),
+        choices=DELIVERY_MODE_CHOICES,
+        initial='now',
+        required=False,
+        widget=forms.HiddenInput(),
+    )
+
     scheduled_at = SplitDateTimeField(
         widget=SplitDateTimePickerWidget(),
         label=_('Schedule for later'),
@@ -236,18 +260,20 @@ class AdminComposeForm(ScheduledAtValidationMixin, forms.Form):
 
         send_immediately = cleaned.get('send_immediately', False)
         scheduled_at = cleaned.get('scheduled_at')
+
         if send_immediately and scheduled_at:
             raise forms.ValidationError(
                 _('You cannot select "Send immediately" and also specify a scheduled time.')
             )
+
+        if cleaned.get('delivery_mode') == 'now' and scheduled_at:
+            cleaned['scheduled_at'] = None
 
         return cleaned
 
     def clean_bcc(self):
         bcc = self.cleaned_data.get('bcc', '')
         if bcc:
-            from django.core.validators import validate_email
-
             for addr in bcc.split(','):
                 addr = addr.strip()
                 if addr:
@@ -262,11 +288,6 @@ class AdminComposeForm(ScheduledAtValidationMixin, forms.Form):
 
 
 class AdminComposeRecipientsForm(forms.Form):
-    """
-    Lightweight form for the AJAX recipient count / preview endpoint.
-    Contains only the filter fields from AdminComposeForm.
-    """
-
     recipient_group = forms.ChoiceField(
         choices=AdminRecipientGroup.choices,
         required=True,
@@ -277,6 +298,8 @@ class AdminComposeRecipientsForm(forms.Form):
     event_status = forms.ChoiceField(choices=EVENT_STATUS_CHOICES, required=False)
     created_after = forms.DateTimeField(required=False)
     created_before = forms.DateTimeField(required=False)
+    last_active_after = forms.DateTimeField(required=False)
+    last_active_before = forms.DateTimeField(required=False)
     selected_organisers = forms.CharField(required=False)
     selected_events = forms.CharField(required=False)
     selected_users = forms.CharField(required=False)
@@ -289,3 +312,25 @@ class AdminComposeRecipientsForm(forms.Form):
         lang_choices = [('', _('All'))]
         lang_choices.extend(settings.LANGUAGES)
         self.fields['language'].choices = lang_choices
+
+    def _clean_id_list(self, field_name: str) -> str:
+        value = self.cleaned_data.get(field_name, '')
+        if not value:
+            return value
+        for part in str(value).split(','):
+            part = part.strip()
+            if part and not part.isdigit():
+                raise forms.ValidationError(
+                    _('Invalid ID in %(field)s: %(value)s'),
+                    params={'field': field_name, 'value': part},
+                )
+        return value
+
+    def clean_selected_organisers(self):
+        return self._clean_id_list('selected_organisers')
+
+    def clean_selected_events(self):
+        return self._clean_id_list('selected_events')
+
+    def clean_selected_users(self):
+        return self._clean_id_list('selected_users')
