@@ -946,6 +946,7 @@ def test_talk_dashboard_statistics(use_tracks, slot, other_slot, orga_client):
     assert "room_status=published" in content
     assert "room_status=not_published" in content
     assert "room_status=not_assigned" in content
+    assert "td-analytics-filter-bar-placeholder" in content
     if use_tracks:
         assert "All tracks" in content
         assert "Sessions by track" in content

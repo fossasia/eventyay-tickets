@@ -331,11 +331,44 @@ const countBy = (rows, keyFn, colorFn) => {
 
 const buildTypeRows = (rows) => countBy(rows, (row) => row.type)
 
-const buildTrackRows = (rows) => countBy(
-    rows,
-    (row) => row.track,
-    (row) => row.track_color || "#2185d0",
-)
+const FILTER_PARAM = {
+    track: "track",
+    type: "submission_type",
+    state: "state",
+    language: "content_locale",
+    tag: "tags",
+}
+
+const buildFilterUrl = (clickType, label, filterValue) => {
+    if (!searchUrl || !clickType) return null
+    const param = FILTER_PARAM[clickType]
+    if (!param) return null
+    let value = filterValue
+    if (value == null || value === "") {
+        const mapped = dataMapping[clickType]
+        if (!mapped) return null
+        value = mapped[label]
+    }
+    if (value == null || value === "") return null
+    return `${searchUrl}&${param}=${encodeURIComponent(value)}`
+}
+
+const buildTrackRows = (rows) => {
+    const map = new Map()
+    rows.forEach((row) => {
+        if (!row.track) return
+        const key = String(row.track_id || row.track)
+        const current = map.get(key) || {
+            label: row.track,
+            value: 0,
+            color: row.track_color || "#2185d0",
+            filterValue: row.track_id,
+        }
+        current.value += 1
+        map.set(key, current)
+    })
+    return Array.from(map.values()).sort((a, b) => a.label.localeCompare(b.label))
+}
 
 const buildTagRows = (rows) => {
     const map = new Map()
@@ -343,7 +376,12 @@ const buildTagRows = (rows) => {
         ;(row.tags || []).forEach((tag) => {
             const key = tag.label
             if (!key) return
-            const current = map.get(key) || { label: key, value: 0, color: tag.color || "#2185d0" }
+            const current = map.get(key) || {
+                label: key,
+                value: 0,
+                color: tag.color || "#2185d0",
+                filterValue: tag.id,
+            }
             current.value += 1
             map.set(key, current)
         })
@@ -351,7 +389,22 @@ const buildTagRows = (rows) => {
     return Array.from(map.values()).sort((a, b) => a.label.localeCompare(b.label))
 }
 
-const buildLanguageRows = (rows) => countBy(rows, (row) => row.language)
+const buildLanguageRows = (rows) => {
+    const map = new Map()
+    rows.forEach((row) => {
+        if (!row.language) return
+        const key = String(row.language_code || row.language)
+        const current = map.get(key) || {
+            label: row.language,
+            value: 0,
+            color: null,
+            filterValue: row.language_code || null,
+        }
+        current.value += 1
+        map.set(key, current)
+    })
+    return Array.from(map.values()).sort((a, b) => a.label.localeCompare(b.label))
+}
 
 const buildStateRows = (rows) => countBy(
     rows,
@@ -359,7 +412,11 @@ const buildStateRows = (rows) => countBy(
     null,
 ).map((item) => {
     const match = rows.find((row) => (row.state_label || row.state) === item.label)
-    return { ...item, state: match ? match.state : null }
+    return {
+        ...item,
+        state: match ? match.state : null,
+        filterValue: match ? match.state : null,
+    }
 })
 
 const buildTimelinePoints = (rows, dateAxis) => {
@@ -551,6 +608,9 @@ const toChartData = (rows) => {
         labels: rows.map((row) => row.label),
         states: rows.map((row) => row.state || null),
         colors: rows.map((row) => row.color || null),
+        filterValues: rows.map((row) => (
+            row.filterValue != null ? row.filterValue : (row.state != null ? row.state : null)
+        )),
     }
 }
 
@@ -785,19 +845,9 @@ const drawHBarChart = (data, elementId, clickType, status, colorPalette) => {
             toolbar: { show: false },
             events: {
                 dataPointSelection: (event, chartContext, config) => {
-                    if (!clickType || !dataMapping[clickType]) return
-                    const typeMapping = {
-                        track: "track",
-                        type: "submission_type",
-                        state: "state",
-                        language: "content_locale",
-                        tag: "tags",
-                    }
                     const label = combined[config.dataPointIndex].label
-                    const searchValue = dataMapping[clickType][label]
-                    if (searchValue) {
-                        window.location.href = searchUrl + "&" + typeMapping[clickType] + "=" + searchValue
-                    }
+                    const href = buildFilterUrl(clickType, label, null)
+                    if (href) window.location.href = href
                 },
                 dataPointMouseEnter: () => { element.classList.add("is-pointer") },
                 dataPointMouseLeave: () => { element.classList.remove("is-pointer") },
@@ -897,11 +947,15 @@ const drawStatsTable = (data, elementId, options = {}) => {
 
     const assignmentTotal = data.series.reduce((a, b) => a + b, 0)
     const uniqueTotal = Number.isFinite(options.uniqueTotal) ? options.uniqueTotal : null
+    const clickType = options.clickType || null
     const total = uniqueTotal != null ? uniqueTotal : assignmentTotal
     const rows = data.labels.map((label, i) => ({
         label,
         value: data.series[i],
         color: (data.colors && data.colors[i]) || null,
+        filterValue: (data.filterValues && data.filterValues[i] != null)
+            ? data.filterValues[i]
+            : ((data.states && data.states[i]) || null),
     }))
     rows.sort((a, b) => b.value - a.value)
 
@@ -924,7 +978,7 @@ const drawStatsTable = (data, elementId, options = {}) => {
     table.appendChild(thead)
 
     const tbody = document.createElement("tbody")
-    rows.forEach(({ label, value, color }, i) => {
+    rows.forEach(({ label, value, color, filterValue }, i) => {
         const pct = total > 0 ? `${((value / total) * 100).toFixed(1)}%` : "0.0%"
         const tr = document.createElement("tr")
         const dotTd = createEl("td", "td-st-dot")
@@ -932,7 +986,18 @@ const drawStatsTable = (data, elementId, options = {}) => {
         dot.style.setProperty("--td-dot-color", safeCssColor(color || PALETTE[i % PALETTE.length]))
         dotTd.appendChild(dot)
         tr.appendChild(dotTd)
-        tr.appendChild(createEl("td", "td-st-name", label))
+
+        const nameTd = createEl("td", "td-st-name")
+        const href = buildFilterUrl(clickType, label, filterValue)
+        if (href) {
+            const link = document.createElement("a")
+            link.href = href
+            link.textContent = String(label)
+            nameTd.appendChild(link)
+        } else {
+            nameTd.textContent = String(label)
+        }
+        tr.appendChild(nameTd)
         tr.appendChild(createEl("td", "td-st-count", value))
         tr.appendChild(createEl("td", "td-st-pct", pct))
         tbody.appendChild(tr)
@@ -1063,7 +1128,9 @@ const renderCard = (payload, cardName) => {
 
     if (cardName === "track") {
         if (!document.getElementById("stats-track-table")) return
-        drawStatsTable(toChartData(buildTrackRows(rows)), "stats-track-table")
+        drawStatsTable(toChartData(buildTrackRows(rows)), "stats-track-table", {
+            clickType: "track",
+        })
         return
     }
 
@@ -1071,17 +1138,22 @@ const renderCard = (payload, cardName) => {
         if (!document.getElementById("stats-tag-table")) return
         drawStatsTable(toChartData(buildTagRows(rows)), "stats-tag-table", {
             uniqueTotal: rows.length,
+            clickType: "tag",
         })
         return
     }
 
     if (cardName === "language") {
-        drawStatsTable(toChartData(buildLanguageRows(rows)), "stats-language-table")
+        drawStatsTable(toChartData(buildLanguageRows(rows)), "stats-language-table", {
+            clickType: "language",
+        })
         return
     }
 
     if (cardName === "state") {
-        drawStatsTable(toChartData(buildStateRows(rows)), "stats-state-table")
+        drawStatsTable(toChartData(buildStateRows(rows)), "stats-state-table", {
+            clickType: "state",
+        })
     }
 }
 

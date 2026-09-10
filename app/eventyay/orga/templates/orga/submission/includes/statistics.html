@@ -171,12 +171,14 @@
 
       {% if room_status %}
       <article class="td-analytics-card td-analytics-card-table" data-stats-card="room">
-        <div class="td-analytics-card-header">
-          <div class="td-analytics-card-title">
-            <span class="fa fa-map-marker" aria-hidden="true"></span>
-            {% translate "Sessions by room status" %}
+        <div class="td-analytics-card-header td-analytics-card-header-stack">
+          <div class="td-analytics-card-header-row">
+            <div class="td-analytics-card-title">
+              <span class="fa fa-map-marker" aria-hidden="true"></span>
+              {% translate "Sessions by room status" %}
+            </div>
           </div>
-          <span class="td-analytics-card-filter-spacer" aria-hidden="true"></span>
+          <div class="td-analytics-filter-bar td-analytics-filter-bar-placeholder" aria-hidden="true"></div>
         </div>
         <div class="td-analytics-table-wrap" id="stats-room-table">
           <table class="td-stats-table">

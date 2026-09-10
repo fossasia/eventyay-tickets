@@ -1287,6 +1287,7 @@ class SubmissionStatsMixin:
                     )
                     if submission.content_locale
                     else None,
+                    'language_code': submission.content_locale or None,
                     'accepted': submission.state in accepted_states,
                     'scheduled': submission.id in scheduled_ids,
                 }

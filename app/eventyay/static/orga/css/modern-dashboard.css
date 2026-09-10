@@ -1438,6 +1438,12 @@ body:has(.td-dashboard) #page-content {
   flex-shrink: 0;
 }
 
+/* Keeps room-status headers aligned with cards that have filter dropdowns. */
+.td-analytics-filter-bar-placeholder {
+  height: 30px;
+  flex-shrink: 0;
+}
+
 .td-analytics-top-row,
 .td-analytics-bottom-row {
   display: grid;
@@ -1604,6 +1610,8 @@ body:has(.td-dashboard) #page-content {
   background: #f9fafb;
   border-bottom: 1px solid var(--td-border);
   text-align: left;
+  vertical-align: middle;
+  line-height: 1.2;
 }
 
 .td-stats-table thead th.td-st-count,
