@@ -125,6 +125,7 @@ def test_startpage_keeps_featured_when_talks_testmode_false_and_other_true_setti
 
 @pytest.mark.django_db
 def test_upcoming_cfp_open_filter_respects_session_type_deadlines(startpage_events, client):
+    """Ensure the upcoming events 'Open calls for proposals' filter checks session-type deadlines."""
     _, _, e_upcoming, _ = startpage_events
     with scopes_disabled():
         cfp = CfP.objects.filter(event=e_upcoming).first()
@@ -142,6 +143,7 @@ def test_upcoming_cfp_open_filter_respects_session_type_deadlines(startpage_even
 
 @pytest.mark.django_db
 def test_startpage_hides_events_with_talks_testmode_true(startpage_events, client):
+    """Ensure events with talks_testmode=True are hidden from the start page."""
     _, e_featured, _, _ = startpage_events
     with scopes_disabled():
         e_featured.settings.set('talks_testmode', True)

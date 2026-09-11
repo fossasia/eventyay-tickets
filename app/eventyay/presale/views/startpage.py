@@ -158,6 +158,7 @@ class UpcomingEventsView(PaginationMixin, ListView):
     paginate_by = 20
 
     def get_queryset(self):
+        """Return a queryset of upcoming events, optionally filtered by open CfP status."""
         today_datetime = timezone.localtime().replace(hour=0, minute=0, second=0, microsecond=0)
         qs = Event.exclude_talks_testmode(
             Event.objects.select_related('organizer')
@@ -178,6 +179,7 @@ class UpcomingEventsView(PaginationMixin, ListView):
         return qs
 
     def get_context_data(self, **kwargs):
+        """Provide additional context variables for rendering the upcoming events list."""
         ctx = super().get_context_data(**kwargs)
         ctx['pagination_sizes'] = [20, 50, 100]
         ctx['cfp_open_filter'] = self.request.GET.get('cfp') == 'open'
