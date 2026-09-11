@@ -33,7 +33,7 @@
   display: none !important;
 }
 
-body.sidebar-minimized {
+body.sidebar-minimized:not(:has(.sidebar:hover)) {
   .sidebar {
     width: $sidebar-minimized-width;
     overflow: hidden;
@@ -93,7 +93,8 @@ body.sidebar-minimized {
 }
 
 // When sidebar is fully expanded (not minimized) on desktop
-body:not(.sidebar-minimized) .sidebar {
+body:not(.sidebar-minimized) .sidebar,
+body.sidebar-minimized .sidebar:hover {
   width: $sidebar-width;
 
   .nav>li>a {
