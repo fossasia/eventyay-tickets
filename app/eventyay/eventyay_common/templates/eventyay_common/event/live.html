@@ -169,12 +169,15 @@
                     </div>
                 </div>
                 <div class="card-action-col">
-                    <a href="{% url 'control:event.quick' organizer=request.organizer.slug event=request.event.slug %}" class="btn {% if ticketing_ready %}btn-default{% else %}btn-primary{% endif %} btn-custom-margin">
-                        {% trans "Set up tickets" %}
-                    </a>
-                    <a href="{% url 'control:event.products' organizer=request.organizer.slug event=request.event.slug %}" class="btn {% if ticketing_ready %}btn-primary{% else %}btn-default{% endif %} btn-custom">
-                        {% trans "Manage Tickets" %}
-                    </a>
+                    {% if has_ticket_products %}
+                        <a href="{% url 'control:event.products' organizer=request.organizer.slug event=request.event.slug %}" class="btn btn-primary btn-custom-margin">
+                            {% trans "Manage Tickets" %}
+                        </a>
+                    {% else %}
+                        <a href="{% url 'control:event.quick' organizer=request.organizer.slug event=request.event.slug %}" class="btn btn-primary btn-custom-margin">
+                            {% trans "Set up tickets" %}
+                        </a>
+                    {% endif %}
                 </div>
             </div>
             
