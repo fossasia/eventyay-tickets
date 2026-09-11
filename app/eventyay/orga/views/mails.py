@@ -238,8 +238,33 @@ class DraftToOutbox(PermissionRequired, ActionConfirmMixin, TemplateView):
 
     def post(self, request, *args, **kwargs):
         mail = self.object
-        mail.is_draft = False
-        mail.save(update_fields=['is_draft'])
+        decision = check_entitlement(
+            self.request.event.organizer,
+            'email.bulk.monthly',
+            event=self.request.event,
+            quantity=1,
+        )
+        if not decision.allowed:
+            error_msg = decision.message or _(
+                'You have reached the limit for sending bulk emails on your plan.'
+            )
+            messages.error(request, error_msg)
+            return redirect(self.request.event.orga_urls.drafts)
+
+        with transaction.atomic():
+            entitlement_usage_recorded.send(
+                sender=self.request.event.organizer,
+                capability='email.bulk.monthly',
+                quantity=1,
+                unit='emails',
+                source_type='bulk_email',
+                source_id=str(mail.pk),
+                idempotency_key=f'bulk_mail_draft_to_outbox_{mail.pk}',
+                event=self.request.event,
+            )
+            mail.is_draft = False
+            mail.save(update_fields=['is_draft'])
+
         messages.success(request, _('The draft has been moved to the outbox.'))
         return redirect(self.request.event.orga_urls.outbox)
 
@@ -628,7 +653,10 @@ class ComposeMailBaseView(EventPermissionRequired, FormView):
                 quantity=recipients_count
             )
             if not decision.allowed:
-                form.add_error(None, decision.message)
+                error_msg = decision.message or _(
+                    'You have reached the limit for sending bulk emails on your plan.'
+                )
+                form.add_error(None, error_msg)
                 return self.render_to_response(self.get_context_data(form=form))
 
         with transaction.atomic():
