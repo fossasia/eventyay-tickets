@@ -7,10 +7,12 @@ from django.http import HttpResponse, JsonResponse
 from django.shortcuts import get_object_or_404, redirect
 from django.utils.functional import cached_property
 from django.utils.html import escape
+from django.template.loader import render_to_string
 from django.utils.translation import gettext_lazy as _
 from django.utils.translation import ngettext_lazy, npgettext_lazy
 from django.views.generic import FormView, ListView, TemplateView, View
 from django_context_decorator import context
+from i18nfield.strings import LazyI18nString
 
 from eventyay.base.models.mail import MailTemplate, QueuedMail, get_prefixed_subject
 from eventyay.base.signals import entitlement_usage_recorded
@@ -471,7 +473,7 @@ class ComposeMailBaseView(EventPermissionRequired, FormView):
 
     def post(self, request, *args, **kwargs):
         form = self.get_form()
-        if request.POST.get('action') == 'test':
+        if request.POST.get('action') in ('test', 'preview'):
             for field_name in list(form.fields.keys()):
                 if field_name == 'subject' or field_name.startswith('subject_'):
                     form.fields[field_name].required = False
@@ -484,6 +486,12 @@ class ComposeMailBaseView(EventPermissionRequired, FormView):
         if form.is_valid():
             return self.form_valid(form)
         return self.form_invalid(form)
+
+    def form_invalid(self, form):
+        if self.request.POST.get('action') == 'preview' and self.request.headers.get('x-requested-with') == 'XMLHttpRequest':
+            errors = form.errors.get_json_data() if hasattr(form.errors, 'get_json_data') else dict(form.errors)
+            return JsonResponse({'success': False, 'error': True, 'errors': errors}, status=400)
+        return super().form_invalid(form)
 
     def send_test_email(self, form):
         address = form.cleaned_data.get('test_email')
@@ -566,11 +574,15 @@ class ComposeMailBaseView(EventPermissionRequired, FormView):
 
             # Very rough method to deduplicate recipients, but good enough for a preview
             self.mail_count = len({str(res) for res in result}) if result else 0
+            self.preview_warning = None
             if not result:
-                messages.warning(
-                    self.request,
-                    _('Preview generated with sample recipient data because no recipient is currently selected.'),
-                )
+                if self.request.headers.get('x-requested-with') == 'XMLHttpRequest':
+                    self.preview_warning = _('Preview generated with sample recipient data because no recipient is currently selected.')
+                else:
+                    messages.warning(
+                        self.request,
+                        _('Preview generated with sample recipient data because no recipient is currently selected.'),
+                    )
 
             for locale in self.request.event.locales:
                 with language(locale):
@@ -581,14 +593,24 @@ class ComposeMailBaseView(EventPermissionRequired, FormView):
                             content=escape(value.render_sample(self.request.event)),
                         )
 
-                    subject = nh3.clean(form.cleaned_data['subject'].localize(locale), tags=set())
+                    subject_data = form.cleaned_data.get('subject') or LazyI18nString({self.request.event.settings.locale or 'en': ''})
+                    text_data = form.cleaned_data.get('text') or LazyI18nString({self.request.event.settings.locale or 'en': ''})
+                    subject = nh3.clean(subject_data.localize(locale), tags=set())
                     preview_subject = get_prefixed_subject(self.request.event, subject.format_map(context_dict))
-                    message = form.cleaned_data['text'].localize(locale)
+                    message = text_data.localize(locale)
                     preview_text = compile_email_body(message.format_map(context_dict))
                     self.output[locale] = {
                         'subject': _('Subject: {subject}').format(subject=preview_subject),
                         'html': preview_text,
                     }
+            if self.request.headers.get('x-requested-with') == 'XMLHttpRequest':
+                html = render_to_string('orga/mails/_mail_preview.html', {
+                    'output': self.output,
+                    'mail_count': self.mail_count,
+                    'form': form,
+                    'preview_warning': self.preview_warning,
+                }, request=self.request)
+                return JsonResponse({'success': True, 'html': html})
             return self.get(self.request, *self.args, **self.kwargs)
 
         if not form.get_recipients():
