@@ -1,0 +1,41 @@
+{% load i18n %}
+<fieldset class="mt-4 mb-4">
+    <legend id="preview">{% translate "Email preview" %}</legend>
+    <div class="alert alert-info">
+        {% blocktranslate trimmed with count=mail_count %}
+            Roughly {{ count }} emails will be generated.
+        {% endblocktranslate %}
+    </div>
+    {% if preview_warning %}
+        <div class="alert alert-warning">
+            {{ preview_warning }}
+        </div>
+    {% endif %}
+    {% if form.warnings %}
+        <div class="alert alert-warning">
+            <span>
+                {% blocktranslate trimmed %}
+                    You have placeholders in your email that are either not valid or not valid for every email!
+                {% endblocktranslate %}
+                <ul>
+                    {# &#123; is the HTML entity for {, which would break django template syntax #}
+                    {% for w in form.warnings %}<li>&#123;{{ w }}}</li>{% endfor %}
+                </ul>
+                {% blocktranslate trimmed %}
+                    Emails where placeholders are invalid will <strong>not</strong> be created!
+                    For example, if you are using {session_room}, but some proposals don’t have a room yet, only emails for proposals with a scheduled room will be created.
+                {% endblocktranslate %}
+            </span>
+        </div>
+    {% endif %}
+    <div class="tab-pane mail-preview-group">
+        {% for locale, out in output.items %}
+            <div lang="{{ locale }}" class="mail-preview">
+                <strong>{{ out.subject|safe }}</strong>
+                <br>
+                <br>
+                {{ out.html|safe }}
+            </div>
+        {% endfor %}
+    </div>
+</fieldset>

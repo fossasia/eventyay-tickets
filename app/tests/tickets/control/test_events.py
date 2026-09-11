@@ -2,8 +2,9 @@ import datetime
 import json
 import time
 from decimal import Decimal
-
 from zoneinfo import ZoneInfo
+
+from bs4 import BeautifulSoup
 from django.utils.timezone import now
 from django_scopes import scopes_disabled
 from i18nfield.strings import LazyI18nString
@@ -44,6 +45,7 @@ class EventsTest(SoupTest):
             organizer=self.orga1,
             name='30C3',
             slug='30c3',
+            live=True,
             date_from=datetime.datetime(2013, 12, 26, tzinfo=datetime.timezone.utc),
             plugins='eventyay.plugins.banktransfer,tests.tickets.testdummy',
         )
@@ -86,6 +88,30 @@ class EventsTest(SoupTest):
         self.assertIn('30C3', tabletext)
         self.assertNotIn('31C3', tabletext)
         self.assertNotIn('MRMCD14', tabletext)
+
+    def test_event_name_links_to_organizer_dashboard(self):
+        expected_href = '/common/event/ccc/30c3/'
+        
+        test_cases = (
+            '/control/events/',
+            '/control/events/?query=30C3',
+            '/control/events/?status=live',
+        )
+
+        for url in test_cases:
+            with self.subTest(url=url):
+                resp = self.client.get(url, follow=True)
+                self.assertEqual(resp.status_code, 200)
+
+                doc = BeautifulSoup(resp.content, 'html.parser')
+
+                event_link = next(
+                    link
+                    for link in doc.select('a')
+                    if link.get_text(strip=True) == '30C3'
+                )
+
+                self.assertEqual(event_link['href'], expected_href)
 
     def test_convenience_organizer_redirect(self):
         resp = self.client.get('/control/event/%s/' % (self.orga1.slug))
