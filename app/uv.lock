@@ -1061,14 +1061,14 @@ wheels = [
 
 [[package]]
 name = "djangorestframework"
-version = "3.17.1"
+version = "3.18.1"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "django" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/ca/d7/c016e69fac19ff8afdc89db9d31d9ae43ae031e4d1993b20aca179b8301a/djangorestframework-3.17.1.tar.gz", hash = "sha256:a6def5f447fe78ff853bff1d47a3c59bf38f5434b031780b351b0c73a62db1a5", size = 905742, upload-time = "2026-03-24T16:58:33.705Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/8a/2e/b3ce9d449b1ed9f9dd74fb7dfbc5f20860d5f40c2b4b10a2c3eabd8ff579/djangorestframework-3.18.1.tar.gz", hash = "sha256:605d79fa2ec2f02905492e5ea13d903c2d842d0b4c915a57f7bf02ab9f3c91dd", size = 915653, upload-time = "2026-09-07T18:04:08.288Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/5a/e1/2c516bdc83652b1a60c6119366ac2c0607b479ed05cd6093f916ca8928f8/djangorestframework-3.17.1-py3-none-any.whl", hash = "sha256:c3c74dd3e83a5a3efc37b3c18d92bd6f86a6791c7b7d4dff62bb068500e76457", size = 898844, upload-time = "2026-03-24T16:58:31.845Z" },
+    { url = "https://files.pythonhosted.org/packages/e8/83/5ed615e47339d8e65f62eb1a8133f8f046492eb3a25ad40d90acb9a208b3/djangorestframework-3.18.1-py3-none-any.whl", hash = "sha256:f1409d698967aaf82d5d98d76b549c8fba8bd92ebd0d83d24454508f72168dc2", size = 901373, upload-time = "2026-09-07T18:04:06.237Z" },
 ]
 
 [[package]]
@@ -2279,11 +2279,11 @@ wheels = [
 
 [[package]]
 name = "mt-940"
-version = "5.1.0"
+version = "5.1.1"
 source = { registry = "https://pypi.org/simple" }
-sdist = { url = "https://files.pythonhosted.org/packages/83/d8/6251fc45869037d2751dec20ff73a4ed8f074df628901feaa97b9ea655bc/mt_940-5.1.0.tar.gz", hash = "sha256:6a6a3312e659b2ad7dde14b3f4b05b325dc2b3326fd16685686d46dd217e0d05", size = 35328, upload-time = "2026-09-02T23:30:15.54Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/7a/c5/df189987c640f6557a9dcf536d0e055e9aa427fb9c0ffa4837174415b224/mt_940-5.1.1.tar.gz", hash = "sha256:8257d61811c05df80236514a85c52142aa1e8403198542a6267f75158303d9cc", size = 36138, upload-time = "2026-09-07T14:51:05.621Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/c3/c1/38b35971fa72bb9b3367eb66bc5677b647de01fcbcc8adee54530f3e9a1b/mt_940-5.1.0-py3-none-any.whl", hash = "sha256:7e15ebbc8752d66d7954baf7579f8a0b3a3fda524fa0c6b81f5e222556fa8fdb", size = 38011, upload-time = "2026-09-02T23:30:14.218Z" },
+    { url = "https://files.pythonhosted.org/packages/c9/82/f143a9160b65d7dc35b91284c6c11e28a09b8565866e02efd67a96bf2df5/mt_940-5.1.1-py3-none-any.whl", hash = "sha256:fa33e23e0dacd949500b485a9b3857f414ee2f76cb5478ca0724d9fcf485cbde", size = 38423, upload-time = "2026-09-07T14:51:04.206Z" },
 ]
 
 [[package]]
@@ -2794,11 +2794,11 @@ wheels = [
 
 [[package]]
 name = "pypdf"
-version = "6.17.0"
+version = "6.18.0"
 source = { registry = "https://pypi.org/simple" }
-sdist = { url = "https://files.pythonhosted.org/packages/5d/dc/34857a5e31cf708c163929f61a9ba4bd357a8850e49fc4e846ced527b51f/pypdf-6.17.0.tar.gz", hash = "sha256:097ad0d829778ec5b615aeaa5c6da4b6cac4992f8fd80b56f98a1a8c006573bb", size = 7018352, upload-time = "2026-09-04T11:30:44.256Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/c2/c3/9fa0666f280552bd3833562d985b785fce1ddb3804937edd2fd6a3f2bdb3/pypdf-6.18.0.tar.gz", hash = "sha256:ae58b7d93c22c169ffb02c3b06321c45c4f223b4916536568adb57d789d95d01", size = 7024871, upload-time = "2026-09-07T16:48:16.444Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/c1/08/1e9731038124a9127e1d27848952b86fb32b2f45f8f1b94adc7f0817a6ac/pypdf-6.17.0-py3-none-any.whl", hash = "sha256:5bd827266a21553b74d910e350131a6227b72f2ab4209bf372814b8195fa11c5", size = 388051, upload-time = "2026-09-04T11:30:42.681Z" },
+    { url = "https://files.pythonhosted.org/packages/c7/a5/d5922a078c9a612327681d4793404f82998f4d66213add6fdc0659245856/pypdf-6.18.0-py3-none-any.whl", hash = "sha256:05b762b77bcb9dcb4a7c91fcf5dded585b25bee7269ab3d3001d7c55fa1b324b", size = 393848, upload-time = "2026-09-07T16:48:14.254Z" },
 ]
 
 [[package]]
