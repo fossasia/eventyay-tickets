@@ -168,7 +168,13 @@ class UpcomingEventsView(PaginationMixin, ListView):
             .filter(testmode=False)
         ).order_by('date_from')
         if self.request.GET.get('cfp') == 'open':
-            qs = qs.filter(Q(cfp__deadline__isnull=True) | Q(cfp__deadline__gte=timezone.now()))
+            # Mirror CfP.is_open: a session type may extend the CfP beyond the general deadline.
+            now = timezone.now()
+            qs = qs.filter(
+                Q(cfp__deadline__isnull=True)
+                | Q(cfp__deadline__gte=now)
+                | Q(submission_types__deadline__gte=now)
+            ).distinct()
         return qs
 
     def get_context_data(self, **kwargs):

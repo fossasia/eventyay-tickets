@@ -5,6 +5,8 @@ from django.utils.timezone import now
 from django_scopes import scopes_disabled
 
 from eventyay.base.models import Event, Organizer
+from eventyay.base.models.cfp import CfP
+from eventyay.base.models.type import SubmissionType
 
 
 @pytest.fixture
@@ -119,6 +121,23 @@ def test_startpage_keeps_featured_when_talks_testmode_false_and_other_true_setti
     assert upcoming.status_code == 200
     upcoming_names = [str(e.name) for e in upcoming.context['events']]
     assert 'Featured Event' in upcoming_names
+
+
+@pytest.mark.django_db
+def test_upcoming_cfp_open_filter_respects_session_type_deadlines(startpage_events, client):
+    _, _, e_upcoming, _ = startpage_events
+    with scopes_disabled():
+        cfp = CfP.objects.filter(event=e_upcoming).first()
+        cfp.deadline = now() - timedelta(days=1)
+        cfp.save()
+        for name in ('Lightning Talk', 'Workshop'):
+            SubmissionType.objects.create(event=e_upcoming, name=name, deadline=now() + timedelta(days=7))
+        assert CfP.objects.get(event=e_upcoming).is_open
+
+    response = client.get('/upcoming/?cfp=open')
+    assert response.status_code == 200
+    names = [str(e.name) for e in response.context['events']]
+    assert names.count('Upcoming Event') == 1
 
 
 @pytest.mark.django_db
