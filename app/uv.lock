@@ -2279,11 +2279,11 @@ wheels = [
 
 [[package]]
 name = "mt-940"
-version = "5.1.0"
+version = "5.1.1"
 source = { registry = "https://pypi.org/simple" }
-sdist = { url = "https://files.pythonhosted.org/packages/83/d8/6251fc45869037d2751dec20ff73a4ed8f074df628901feaa97b9ea655bc/mt_940-5.1.0.tar.gz", hash = "sha256:6a6a3312e659b2ad7dde14b3f4b05b325dc2b3326fd16685686d46dd217e0d05", size = 35328, upload-time = "2026-09-02T23:30:15.54Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/7a/c5/df189987c640f6557a9dcf536d0e055e9aa427fb9c0ffa4837174415b224/mt_940-5.1.1.tar.gz", hash = "sha256:8257d61811c05df80236514a85c52142aa1e8403198542a6267f75158303d9cc", size = 36138, upload-time = "2026-09-07T14:51:05.621Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/c3/c1/38b35971fa72bb9b3367eb66bc5677b647de01fcbcc8adee54530f3e9a1b/mt_940-5.1.0-py3-none-any.whl", hash = "sha256:7e15ebbc8752d66d7954baf7579f8a0b3a3fda524fa0c6b81f5e222556fa8fdb", size = 38011, upload-time = "2026-09-02T23:30:14.218Z" },
+    { url = "https://files.pythonhosted.org/packages/c9/82/f143a9160b65d7dc35b91284c6c11e28a09b8565866e02efd67a96bf2df5/mt_940-5.1.1-py3-none-any.whl", hash = "sha256:fa33e23e0dacd949500b485a9b3857f414ee2f76cb5478ca0724d9fcf485cbde", size = 38423, upload-time = "2026-09-07T14:51:04.206Z" },
 ]
 
 [[package]]
