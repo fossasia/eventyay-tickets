@@ -1256,7 +1256,10 @@ class FeedbackBulkAction(EventPermissionRequired, View):
         
         if not feedback_ids:
             messages.warning(request, _('No items selected.'))
-            return redirect(request.GET.get('next', request.event.orga_urls.feedback))
+            next_url = request.GET.get('next')
+            if next_url and url_has_allowed_host_and_scheme(next_url, allowed_hosts={request.get_host()}, require_https=request.is_secure()):
+                return redirect(next_url)
+            return redirect(request.event.orga_urls.feedback)
             
         feedbacks = Feedback.objects.filter(pk__in=feedback_ids, talk__event=request.event)
         
@@ -1269,8 +1272,11 @@ class FeedbackBulkAction(EventPermissionRequired, View):
         elif action == 'delete':
             count = feedbacks.exclude(status='deleted').update(status='deleted')
             messages.success(request, _('Successfully deleted %d feedback(s).') % count)
-            
-        return redirect(request.GET.get('next', request.event.orga_urls.feedback))
+
+        next_url = request.GET.get('next')
+        if next_url and url_has_allowed_host_and_scheme(next_url, allowed_hosts={request.get_host()}, require_https=request.is_secure()):
+            return redirect(next_url)
+        return redirect(request.event.orga_urls.feedback)
 
 class FeedbackUpdateStatus(EventPermissionRequired, View):
     permission_required = 'base.orga_update_submission'
@@ -1281,7 +1287,10 @@ class FeedbackUpdateStatus(EventPermissionRequired, View):
         if action == 'delete':
             from django.shortcuts import render
             return render(request, 'orga/submission/feedback_delete.html', {'object': feedback})
-        return redirect(request.GET.get('next', request.event.orga_urls.feedback))
+        next_url = request.GET.get('next')
+        if next_url and url_has_allowed_host_and_scheme(next_url, allowed_hosts={request.get_host()}, require_https=request.is_secure()):
+            return redirect(next_url)
+        return redirect(request.event.orga_urls.feedback)
 
     def post(self, request, *args, **kwargs):
         feedback = get_object_or_404(Feedback, pk=self.kwargs['pk'], talk__event=request.event)
@@ -1315,7 +1324,7 @@ class FeedbackUpdateStatus(EventPermissionRequired, View):
                 messages.error(request, _('Cannot unban anonymous user.'))
             
         next_url = request.GET.get('next')
-        if next_url and url_has_allowed_host_and_scheme(next_url, allowed_hosts=None):
+        if next_url and url_has_allowed_host_and_scheme(next_url, allowed_hosts={request.get_host()}, require_https=request.is_secure()):
             return redirect(next_url)
         return redirect(request.event.orga_urls.feedback)
 
