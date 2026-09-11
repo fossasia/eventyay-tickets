@@ -39,6 +39,7 @@ def enabled_consent_categories(settings):
 
 
 class ConsentProvider(models.TextChoices):
+    """ConsentProvider class implementation."""
     DISABLED = 'disabled', _('Disabled')
     KLARO = 'klaro', _('Built-in Eventyay consent using Klaro')
     EXTERNAL = 'external', _('External CMP script')
@@ -83,15 +84,18 @@ class ThirdPartyService(models.Model):
     )
 
     class Meta:
+        """Meta class implementation."""
         ordering = ('category', 'title')
         verbose_name = _('Third-party service')
         verbose_name_plural = _('Third-party services')
 
     def __str__(self):
+        """__str__ method."""
         return self.title
 
     @property
     def required(self):
+        """required method."""
         return self.category == ConsentCategory.NECESSARY
 
     @property

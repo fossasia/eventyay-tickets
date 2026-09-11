@@ -48,12 +48,14 @@ from eventyay.helpers.countries import CachedCountries
 
 
 def country_choice_kwargs():
+    """country_choice_kwargs method."""
     allcountries = list(CachedCountries())
     allcountries.insert(0, ('', _('Select country')))
     return {'choices': allcountries}
 
 
 def primary_font_kwargs():
+    """primary_font_kwargs method."""
     from eventyay.presale.style import SYSTEM_FONT_CHOICES, get_fonts
 
     choices = list(SYSTEM_FONT_CHOICES)
@@ -65,6 +67,7 @@ def primary_font_kwargs():
 
 
 def hex_color_field_config(label, default='', help_text=None, widget_class='colorpickerfield'):
+    """hex_color_field_config method."""
     validator = RegexValidator(
         regex='^#[0-9a-fA-F]{6}$',
         message=_('Please enter the hexadecimal code of a color, e.g. #990000.'),

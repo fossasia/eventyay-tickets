@@ -13,10 +13,12 @@ from eventyay.control.signals import (
 
 
 def _vouchers_nav_active(url) -> bool:
+    """_vouchers_nav_active method."""
     return 'event.vouchers' in url.url_name or 'event.voucher' in url.url_name
 
 
 def _vouchers_nav_item(request, url) -> dict:
+    """_vouchers_nav_item method."""
     return {
         'label': _('Vouchers'),
         'url': reverse(
@@ -31,6 +33,7 @@ def _vouchers_nav_item(request, url) -> dict:
 
 
 def get_meetup_event_navigation(request: HttpRequest):
+    """get_meetup_event_navigation method."""
     url = request.resolver_match
     if not url:
         return []
@@ -141,6 +144,7 @@ def get_meetup_event_navigation(request: HttpRequest):
 
 
 def get_event_navigation(request: HttpRequest):
+    """get_event_navigation method."""
     if is_meetup_event(request.event):
         return get_meetup_event_navigation(request)
 
@@ -485,6 +489,7 @@ def get_event_navigation(request: HttpRequest):
 
 
 def get_global_navigation(request):
+    """get_global_navigation method."""
     url = request.resolver_match
     if not url:
         return []
@@ -520,6 +525,7 @@ def get_global_navigation(request):
 
 
 def merge_in(nav, newnav):
+    """merge_in method."""
     for product in newnav:
         if 'parent' in product:
             parents = [n for n in nav if n['url'] == product['parent']]
@@ -533,6 +539,7 @@ def merge_in(nav, newnav):
 
 
 def get_admin_navigation(request):
+    """get_admin_navigation method."""
     url = request.resolver_match
     if not url:
         return []

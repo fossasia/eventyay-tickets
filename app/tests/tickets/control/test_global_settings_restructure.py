@@ -23,11 +23,13 @@ from eventyay.control.forms.global_settings import (
 
 @pytest.fixture
 def admin_user():
+    """admin_user method."""
     return User.objects.create_user('admin@example.com', 'dummy', is_staff=True)
 
 
 @pytest.fixture
 def staff_client(client, admin_user):
+    """staff_client method."""
     client.force_login(admin_user)
     admin_user.staffsession_set.create(date_start=now(), session_key=client.session.session_key)
     return client
@@ -35,7 +37,9 @@ def staff_client(client, admin_user):
 
 @pytest.mark.django_db
 class TestGlobalSettingsTabsAndSections:
+    """TestGlobalSettingsTabsAndSections class implementation."""
     def test_settings_tab_order_in_form(self):
+        """Settings tab order in form."""
         form = GlobalSettingsForm()
         group_keys = [g[0] for g in form.field_groups]
 
@@ -60,6 +64,7 @@ class TestGlobalSettingsTabsAndSections:
         assert 'cart' not in group_keys
 
     def test_settings_page_renders_expected_tabs_and_sections(self, staff_client):
+        """Settings page renders expected tabs and sections."""
         url = reverse('eventyay_admin:admin.global.settings')
         response = staff_client.get(url)
         assert response.status_code == 200
@@ -101,6 +106,7 @@ class TestGlobalSettingsTabsAndSections:
         assert 'id="tab-cart"' not in content
 
     def test_settings_save_behavior(self, staff_client):
+        """Settings save behavior."""
         url = reverse('eventyay_admin:admin.global.settings')
         post_data = {
             'region': 'DE',
@@ -135,6 +141,7 @@ class TestGlobalSettingsTabsAndSections:
 
     @patch('eventyay.control.views.global_settings.update_check.apply')
     def test_update_check_trigger_in_settings(self, mock_update_check, staff_client):
+        """Update check trigger in settings."""
         url = reverse('eventyay_admin:admin.global.settings')
         response = staff_client.post(url, {'trigger': '1'})
         assert response.status_code == 302
@@ -142,6 +149,7 @@ class TestGlobalSettingsTabsAndSections:
         mock_update_check.assert_called_once()
 
     def test_social_image_save_failure_preserves_existing_image(self):
+        """Social image save failure preserves existing image."""
         from django.core.files.base import ContentFile
         from django.core.files.storage import default_storage
         from django.core.files.uploadedfile import SimpleUploadedFile
@@ -179,7 +187,9 @@ class TestGlobalSettingsTabsAndSections:
 
 @pytest.mark.django_db
 class TestGlobalTicketingSettings:
+    """TestGlobalTicketingSettings class implementation."""
     def test_ticketing_permissions(self, client):
+        """Ticketing permissions."""
         url = reverse('eventyay_admin:admin.global.ticketing')
         # Anonymous redirected
         resp_anon = client.get(url)
@@ -193,6 +203,7 @@ class TestGlobalTicketingSettings:
         assert resp_non_staff.status_code == 403
 
     def test_ticketing_page_renders_payment_gateways_and_cart(self, staff_client):
+        """Ticketing page renders payment gateways and cart."""
         url = reverse('eventyay_admin:admin.global.ticketing')
         response = staff_client.get(url)
         assert response.status_code == 200
@@ -222,6 +233,7 @@ class TestGlobalTicketingSettings:
         assert 'billing_validation' not in content
 
     def test_ticketing_settings_save_behavior(self, staff_client):
+        """Ticketing settings save behavior."""
         url = reverse('eventyay_admin:admin.global.ticketing')
         post_data = {
             'payment_stripe_connect_client_id': 'ca_test_client_id',
@@ -247,6 +259,7 @@ class TestGlobalTicketingSettings:
         assert gs.settings.get('max_products_per_order', as_type=int) == 10
 
     def test_ticketing_paypal_endpoint_coerces_legacy_urls(self):
+        """Ticketing paypal endpoint coerces legacy urls."""
         gs = GlobalSettingsObject()
         gs.settings.set('payment_paypal_connect_endpoint', 'https://api.sandbox.paypal.com')
         form = GlobalTicketingSettingsForm()
@@ -259,6 +272,7 @@ class TestGlobalTicketingSettings:
         assert 'payment_stripe_connect_secret_key' in form.fields
 
     def test_ticketing_form_accepts_legacy_paypal_endpoint_on_save(self):
+        """Ticketing form accepts legacy paypal endpoint on save."""
         gs = GlobalSettingsObject()
         gs.settings.set('payment_paypal_connect_endpoint', 'https://api.sandbox.paypal.com')
         form = GlobalTicketingSettingsForm(
@@ -276,19 +290,23 @@ class TestGlobalTicketingSettings:
 
 @pytest.mark.django_db
 class TestLegacyUrlsAndRedirects:
+    """TestLegacyUrlsAndRedirects class implementation."""
     def test_legacy_metadata_url_redirects_to_settings_tab(self, staff_client):
+        """Legacy metadata url redirects to settings tab."""
         url = reverse('eventyay_admin:admin.global.metadata')
         response = staff_client.get(url)
         assert response.status_code == 302
         assert response['Location'] == f"{reverse('eventyay_admin:admin.global.settings')}#tab-meta-data"
 
     def test_legacy_update_url_redirects_to_settings_tab(self, staff_client):
+        """Legacy update url redirects to settings tab."""
         url = reverse('eventyay_admin:admin.global.update')
         response = staff_client.get(url)
         assert response.status_code == 302
         assert response['Location'] == f"{reverse('eventyay_admin:admin.global.settings')}#tab-update-check"
 
     def test_legacy_update_url_post_trigger_executes_update_check_and_redirects(self, staff_client):
+        """Legacy update url post trigger executes update check and redirects."""
         url = reverse('eventyay_admin:admin.global.update')
         with patch('eventyay.control.views.global_settings.update_check.apply') as mock_apply:
             response = staff_client.post(url, {'trigger': '1'})
@@ -297,6 +315,7 @@ class TestLegacyUrlsAndRedirects:
             mock_apply.assert_called_once()
 
     def test_global_settings_query_tab_redirects_for_ticketing(self, staff_client):
+        """Global settings query tab redirects for ticketing."""
         url = reverse('eventyay_admin:admin.global.settings')
 
         for tab in ('payment_gateways', 'payment-gateways', 'payment', 'gateways'):
@@ -309,6 +328,7 @@ class TestLegacyUrlsAndRedirects:
         assert response_cart['Location'] == f"{reverse('eventyay_admin:admin.global.ticketing')}#tab-cart"
 
     def test_global_settings_query_tab_redirects_for_metadata_and_update(self, staff_client):
+        """Global settings query tab redirects for metadata and update."""
         url = reverse('eventyay_admin:admin.global.settings')
 
         for tab in ('meta_data', 'metadata', 'meta-data'):
@@ -324,8 +344,11 @@ class TestLegacyUrlsAndRedirects:
 
 @pytest.mark.django_db
 class TestPluginProvidedPaymentSettingsRegression:
+    """TestPluginProvidedPaymentSettingsRegression class implementation."""
     def test_plugin_provided_payment_field_collected_in_ticketing_form_and_saved(self):
+        """Plugin provided payment field collected in ticketing form and saved."""
         def custom_payment_receiver(sender, **kwargs):
+            """custom_payment_receiver method."""
             return OrderedDict([
                 ('payment_customplugin_api_key', dj_forms.CharField(label='Custom Plugin API Key', required=False)),
                 ('customplugin_general_setting', dj_forms.CharField(label='General Plugin Setting', required=False)),
@@ -363,6 +386,7 @@ class TestPluginProvidedPaymentSettingsRegression:
 
 
 def test_paypal_connect_endpoint_choice_maps_legacy_urls():
+    """Paypal connect endpoint choice maps legacy urls."""
     assert paypal_connect_endpoint_choice(None) == 'live'
     assert paypal_connect_endpoint_choice('live') == 'live'
     assert paypal_connect_endpoint_choice('sandbox') == 'sandbox'
@@ -374,6 +398,7 @@ def test_paypal_connect_endpoint_choice_maps_legacy_urls():
 
 def test_paypal_connect_endpoint_choice_keeps_unknown_values():
     # Unknown values must not be coerced to "live"; ChoiceField has to reject them.
+    """Paypal connect endpoint choice keeps unknown values."""
     assert paypal_connect_endpoint_choice('bogus') == 'bogus'
     assert paypal_connect_endpoint_choice('https://api.evil.example.com') == 'https://api.evil.example.com'
     assert paypal_connect_endpoint_choice('https://paypal.com.evil.example.com') == (
@@ -383,6 +408,7 @@ def test_paypal_connect_endpoint_choice_keeps_unknown_values():
 
 def test_paypal_connect_endpoint_choice_keeps_malformed_urls():
     # urlparse() raises ValueError on these; they must come back unchanged, not blow up.
+    """Paypal connect endpoint choice keeps malformed urls."""
     assert paypal_connect_endpoint_choice('http://[::1') == 'http://[::1'
     assert paypal_connect_endpoint_choice('https://[') == 'https://['
     assert paypal_connect_endpoint_choice('http://[abc]') == 'http://[abc]'
@@ -390,6 +416,7 @@ def test_paypal_connect_endpoint_choice_keeps_malformed_urls():
 
 @pytest.mark.django_db
 def test_ticketing_form_rejects_unknown_submitted_paypal_endpoint():
+    """Ticketing form rejects unknown submitted paypal endpoint."""
     gs = GlobalSettingsObject()
     gs.settings.set('payment_paypal_connect_endpoint', 'sandbox')
     form = GlobalTicketingSettingsForm(
@@ -406,6 +433,7 @@ def test_ticketing_form_rejects_unknown_submitted_paypal_endpoint():
 
 @pytest.mark.django_db
 def test_ticketing_form_rejects_malformed_stored_paypal_endpoint():
+    """Ticketing form rejects malformed stored paypal endpoint."""
     gs = GlobalSettingsObject()
     gs.settings.set('payment_paypal_connect_endpoint', 'http://[::1')
     # Constructing the form must not raise, even though urlparse() cannot parse the value.
@@ -422,6 +450,7 @@ def test_ticketing_form_rejects_malformed_stored_paypal_endpoint():
 
 @pytest.mark.django_db
 def test_ticketing_form_rejects_unknown_stored_paypal_endpoint():
+    """Ticketing form rejects unknown stored paypal endpoint."""
     gs = GlobalSettingsObject()
     gs.settings.set('payment_paypal_connect_endpoint', 'https://api.evil.example.com')
     form = GlobalTicketingSettingsForm(

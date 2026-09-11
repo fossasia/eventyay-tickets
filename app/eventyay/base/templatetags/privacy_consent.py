@@ -68,12 +68,14 @@ def consent_config():
 
 @register.simple_tag
 def consent_provider():
+    """consent_provider method."""
     gs = GlobalSettingsObject()
     return gs.settings.get('privacy_consent_provider') or ConsentProvider.DISABLED
 
 
 @register.simple_tag
 def external_cmp_script():
+    """external_cmp_script method."""
     gs = GlobalSettingsObject()
     if (gs.settings.get('privacy_consent_provider') or '') != ConsentProvider.EXTERNAL:
         return ''

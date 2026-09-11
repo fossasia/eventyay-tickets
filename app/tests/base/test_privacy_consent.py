@@ -16,6 +16,7 @@ from eventyay.base.templatetags.privacy_consent import (
 
 @pytest.fixture
 def gs():
+    """gs method."""
     obj = GlobalSettingsObject()
     obj.settings.set('privacy_consent_provider', ConsentProvider.KLARO)
     obj.settings.set('privacy_cookie_policy_url', 'https://example.org/cookies')
@@ -24,6 +25,7 @@ def gs():
 
 @pytest.mark.django_db
 def test_consent_disabled_renders_nothing():
+    """Consent disabled renders nothing."""
     gso = GlobalSettingsObject()
     gso.settings.set('privacy_consent_provider', ConsentProvider.DISABLED)
     assert build_consent_config() is None
@@ -31,6 +33,7 @@ def test_consent_disabled_renders_nothing():
 
 @pytest.mark.django_db
 def test_optional_categories_are_off_by_default(gs):
+    """Optional categories are off by default."""
     config = build_consent_config()
     # Only the always-on category is present until an admin enables more.
     assert config['purposes'] == [ConsentCategory.NECESSARY.value]
@@ -39,6 +42,7 @@ def test_optional_categories_are_off_by_default(gs):
 
 @pytest.mark.django_db
 def test_enabled_category_is_advertised(gs):
+    """Enabled category is advertised."""
     gs.settings.set('privacy_category_analytics_enabled', True)
     config = build_consent_config()
     assert ConsentCategory.ANALYTICS.value in config['purposes']
@@ -47,6 +51,7 @@ def test_enabled_category_is_advertised(gs):
 
 @pytest.mark.django_db
 def test_optional_service_hidden_until_category_enabled(gs):
+    """Optional service hidden until category enabled."""
     ThirdPartyService.objects.create(
         name='google-analytics',
         title='Google Analytics',
@@ -64,6 +69,7 @@ def test_optional_service_hidden_until_category_enabled(gs):
 
 @pytest.mark.django_db
 def test_necessary_service_is_always_active(gs):
+    """Necessary service is always active."""
     ThirdPartyService.objects.create(name='stripe', title='Stripe', category=ConsentCategory.NECESSARY)
     service = build_consent_config()['services'][0]
     assert service['required'] is True
@@ -72,6 +78,7 @@ def test_necessary_service_is_always_active(gs):
 
 @pytest.mark.django_db
 def test_disabled_service_is_not_published(gs):
+    """Disabled service is not published."""
     gs.settings.set('privacy_category_analytics_enabled', True)
     ThirdPartyService.objects.create(
         name='matomo',
@@ -84,6 +91,7 @@ def test_disabled_service_is_not_published(gs):
 
 @pytest.mark.django_db
 def test_klaro_and_external_cmp_are_mutually_exclusive(gs):
+    """Klaro and external cmp are mutually exclusive."""
     gs.settings.set('privacy_consent_provider', ConsentProvider.EXTERNAL)
     gs.settings.set('privacy_cmp_script_url', 'https://cdn.example.org/cmp.js')
 
@@ -94,6 +102,7 @@ def test_klaro_and_external_cmp_are_mutually_exclusive(gs):
 
 @pytest.mark.django_db
 def test_external_script_not_emitted_in_klaro_mode(gs):
+    """External script not emitted in klaro mode."""
     gs.settings.set('privacy_cmp_script_url', 'https://cdn.example.org/cmp.js')
     assert external_cmp_script() == ''
 
@@ -126,6 +135,7 @@ def test_service_title_cannot_break_out_of_the_config_script(gs):
 
 @pytest.mark.django_db
 def test_embed_is_blocked_only_under_the_builtin_banner(gs):
+    """Embed is blocked only under the builtin banner."""
     context = consent_embed('youtube', 'https://example.org/v', 'Talk recording')
     assert context['blocked'] is True
 
@@ -162,6 +172,7 @@ def test_configured_cookie_names_reach_the_payload(gs):
 
 @pytest.mark.django_db
 def test_service_without_cookie_names_serializes_empty_list(gs):
+    """Service without cookie names serializes empty list."""
     gs.settings.set('privacy_category_analytics_enabled', True)
     ThirdPartyService.objects.create(name='plausible', title='Plausible', category=ConsentCategory.ANALYTICS)
 
