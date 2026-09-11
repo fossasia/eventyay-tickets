@@ -990,9 +990,11 @@ class EventLive(TemplateView):
     def get_context_data(self, **kwargs):
         ctx = super().get_context_data(**kwargs)
         ctx['actual_orders'] = self.request.event.orders.filter(testmode=False).exists()
-        ticketing_ready = self.request.event.products.exists() and self.request.event.quotas.exists()
+        has_ticket_products = self.request.event.products.exists()
+        ticketing_ready = has_ticket_products and self.request.event.quotas.exists()
         billing_issues = self.request.event.billing_issues()
         billing_issue_texts = {str(issue) for issue in billing_issues}
+        ctx['has_ticket_products'] = has_ticket_products
         ctx['ticketing_ready'] = ticketing_ready
         ctx['ticket_issues'] = (
             [issue for issue in self.request.event.live_issues if str(issue) not in billing_issue_texts]
