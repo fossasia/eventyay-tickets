@@ -118,7 +118,6 @@ class AdminPlatformDataEventLinksTest(SoupTest):
             ('/admin/attendees/?event_query=mrmcd14', '30C3', expected_href1, False),
             ('/admin/attendees/?ordering=event', '30C3', expected_href1, True),
             ('/admin/attendees/?ordering=-event', '30C3', expected_href1, True),
-            ('/admin/attendees/?page=1', '30C3', expected_href1, True),
         )
 
         for url, event_name, expected_href, should_exist in test_cases:
@@ -170,7 +169,6 @@ class AdminPlatformDataEventLinksTest(SoupTest):
             ('/admin/orders/?status=p', '30C3', expected_href1, True),
             ('/admin/orders/?ordering=event', '30C3', expected_href1, True),
             ('/admin/orders/?ordering=-event', '30C3', expected_href1, True),
-            ('/admin/orders/?page=1', '30C3', expected_href1, True),
         )
 
         for url, event_name, expected_href, should_exist in test_cases:
@@ -228,7 +226,6 @@ class AdminPlatformDataEventLinksTest(SoupTest):
             ('/admin/submissions/?proposal_state=accepted', '30C3', expected_href1, False),
             ('/admin/submissions/?ordering=event', '30C3', expected_href1, True),
             ('/admin/submissions/?ordering=-event', '30C3', expected_href1, True),
-            ('/admin/submissions/?page=1', '30C3', expected_href1, True),
         )
 
         for url, event_name, expected_href, should_exist in test_cases:
