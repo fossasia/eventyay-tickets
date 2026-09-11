@@ -159,12 +159,17 @@ export default {
 			this.clearStaleTranslation()
 		},
 		getLanguageForTranslation(translationConfig, languages) {
-			if (!translationConfig?.url || !languages?.length) return 'Original'
-			const matchingLanguage = languages.find(entry => (
-				entry.language !== 'Original' &&
-				normalizeAudioTranslationSource(entry.url || entry.youtube_id) === translationConfig.url &&
-				!!entry.use_video === !!translationConfig.useVideo
-			))
+			if (!languages?.length) return 'Original'
+			if (!translationConfig?.url && !translationConfig?.ttsWsUrl && !translationConfig?.whepUrl) return 'Original'
+			const matchingLanguage = languages.find(entry => {
+				if (entry.language === 'Original') return false
+				if (translationConfig.ttsWsUrl) return entry.tts_ws_url === translationConfig.ttsWsUrl
+				if (translationConfig.whepUrl) return (entry.whep_url || entry.whip_url) === translationConfig.whepUrl
+				return (
+					normalizeAudioTranslationSource(entry.url || entry.youtube_id) === translationConfig.url &&
+					!!entry.use_video === !!translationConfig.useVideo
+				)
+			})
 			return matchingLanguage?.language || null
 		},
 		clearStaleTranslation() {

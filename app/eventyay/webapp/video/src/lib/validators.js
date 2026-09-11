@@ -110,6 +110,7 @@ export function normalizeAudioTranslationSource(audioSource) {
 export function isUsableAudioTranslationEntry(entry) {
 	if (!entry?.language) return false
 	if (entry.language === 'Original') return true
+	if (entry.tts_ws_url || entry.whep_url || entry.whip_url) return true
 	return !!normalizeAudioTranslationSource(entry.url || entry.youtube_id)
 }
 

@@ -22,5 +22,17 @@ export function pluginLanguageStreams(room) {
 	const usable = Array.isArray(streams)
 		? streams.filter(entry => isUsableAudioTranslationEntry(entry))
 		: []
-	return ensureOriginalLanguageEntry(usable)
+
+	const uniqueStreams = []
+	const seenLanguages = new Set()
+
+	for (const entry of usable) {
+		// Deduplicate strictly by language so we don't show AI and Booth for the same language
+		if (!seenLanguages.has(entry.language)) {
+			seenLanguages.add(entry.language)
+			uniqueStreams.push(entry)
+		}
+	}
+
+	return ensureOriginalLanguageEntry(uniqueStreams)
 }
