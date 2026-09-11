@@ -1403,3 +1403,48 @@ def test_session_test_mail_uses_fallbacks_for_empty_subject_and_body(orga_client
     with scope(event=event):
         assert QueuedMail.objects.count() == 0
 
+
+@pytest.mark.django_db
+def test_compose_session_mail_denied_by_entitlement(
+    orga_client, event, speaker, submission
+):
+    from unittest.mock import patch
+    from eventyay.base.entitlements import EntitlementDecision
+    from eventyay.orga.forms.mails import WriteSessionMailForm
+
+    with patch(
+        "eventyay.orga.views.mails.check_entitlement",
+        return_value=EntitlementDecision(
+            allowed=False,
+            reason_code="tier_limit_exceeded",
+            message="Monthly email limit reached for this plan.",
+        ),
+    ) as mock_check, patch.object(WriteSessionMailForm, "save") as mock_save:
+        response = orga_client.post(
+            event.orga_urls.compose_mails_sessions,
+            follow=True,
+            data={
+                "state": "submitted",
+                "bcc": "",
+                "cc": "",
+                "reply_to": "",
+                "subject_0": "foo {name}",
+                "text_0": "bar {submission_title}",
+            },
+        )
+        assert response.status_code == 200
+        assert (
+            "Monthly email limit reached for this plan."
+            in response.context["form"].non_field_errors()
+        )
+        mock_check.assert_called_once_with(
+            event.organizer,
+            "email.bulk.monthly",
+            event=event,
+            quantity=1,
+        )
+        mock_save.assert_not_called()
+        with scope(event=event):
+            assert not QueuedMail.objects.filter(sent__isnull=True).exists()
+
+

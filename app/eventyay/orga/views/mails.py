@@ -14,6 +14,7 @@ from django.views.generic import FormView, ListView, TemplateView, View
 from django_context_decorator import context
 from i18nfield.strings import LazyI18nString
 
+from eventyay.base.entitlements import check_entitlement
 from eventyay.base.models.mail import MailTemplate, QueuedMail, get_prefixed_subject
 from eventyay.base.signals import entitlement_usage_recorded
 from eventyay.common.exceptions import SendMailException
@@ -617,6 +618,18 @@ class ComposeMailBaseView(EventPermissionRequired, FormView):
             message = form.empty_audience_draft_error if is_draft else form.empty_audience_error
             form.add_error(None, message)
             return self.render_to_response(self.get_context_data(form=form))
+
+        if not is_draft:
+            recipients_count = len(form.get_recipients())
+            decision = check_entitlement(
+                self.request.event.organizer,
+                'email.bulk.monthly',
+                event=self.request.event,
+                quantity=recipients_count
+            )
+            if not decision.allowed:
+                form.add_error(None, decision.message)
+                return self.render_to_response(self.get_context_data(form=form))
 
         with transaction.atomic():
             result = form.save()
