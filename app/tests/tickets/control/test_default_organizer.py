@@ -1,20 +1,11 @@
 import pytest
 from django.db import transaction
-from django.db.backends.signals import connection_created
-from django.dispatch import receiver
 from django.urls import reverse
 from django_scopes import scopes_disabled
 
 from eventyay.base.models import Organizer, Team, User
 from eventyay.control.forms.organizer_forms import OrganizerForm, OrganizerUpdateForm
 from tests.tickets.base import SoupTest, extract_form_fields
-
-
-@receiver(connection_created)
-def _enable_pg_trgm(sender, connection, **kwargs):
-    if connection.vendor == 'postgresql':
-        with connection.cursor() as cursor:
-            cursor.execute('CREATE EXTENSION IF NOT EXISTS pg_trgm;')
 
 
 @pytest.fixture

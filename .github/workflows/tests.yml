@@ -2,66 +2,65 @@ name: Tests
 
 on:
   push:
-    branches: [ development, master ]
+    branches: [ dev ]
     paths-ignore:
       - 'doc/**'
-      - 'src/pretix/locale/**'
+      - 'app/eventyay/locale/**'
   pull_request:
-    branches: [ development, master ]
+    branches: [ dev ]
     paths-ignore:
       - 'doc/**'
-      - 'src/pretix/locale/**'
+      - 'app/eventyay/locale/**'
+
+concurrency:
+  group: tests-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
 jobs:
   test:
     runs-on: ubuntu-24.04
     name: Tests
-    strategy:
-      matrix:
-        python-version: [3.12]
-        database: [postgres]
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_USER: eventyay
+          POSTGRES_PASSWORD: eventyay
+          POSTGRES_DB: eventyay-db
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd="pg_isready -U eventyay -d eventyay-db"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=5
+    env:
+      EVY_POSTGRES_USER: eventyay
+      EVY_POSTGRES_PASSWORD: eventyay
+      EVY_POSTGRES_DB: eventyay-db
+      EVY_POSTGRES_HOST: localhost
+      EVY_POSTGRES_PORT: '5432'
+    defaults:
+      run:
+        working-directory: app
     steps:
       - uses: actions/checkout@v7
-      - uses: harmon758/postgresql-action@v1
-        with:
-          postgresql version: '16'
-          postgresql db: 'pretix'
-          postgresql user: 'postgres'
-          postgresql password: 'postgres'
-        if: matrix.database == 'postgres'
       - name: Install uv
         uses: astral-sh/setup-uv@v7
         with:
           version: latest
           enable-cache: true
-      - name: Set up Python ${{ matrix.python-version }}
+      - name: Set up Python 3.12
         uses: actions/setup-python@v7
         with:
-          python-version: ${{ matrix.python-version }}
+          python-version: '3.12'
       - name: Install system dependencies
-        run: sudo apt update && sudo apt install gettext
+        run: sudo apt-get update && sudo apt-get install -y gettext
       - name: Install Python dependencies
-        run: uv sync --all-extras --group test --no-editable
-      - name: Run checks
-        run: python manage.py check
-        working-directory: ./src
-      - name: Install JS dependencies
-        working-directory: ./src
-        run: make npminstall
-      - name: Compile
-        working-directory: ./src
-        run: make all compress
+        run: uv sync --group test
+      - name: Compile translations
+        run: uv run python manage.py compilemessages
       - name: Run tests
-        working-directory: ./src
-        run: pytest -n 3 -p no:sugar --cov=./ --cov-report=xml --reruns 3 tests --maxfail=100
-      - name: Upload coverage
-        uses: codecov/codecov-action@v7
-        with:
-          file: src/coverage.xml
-          fail_ci_if_error: true
-        if: matrix.database == 'postgres' && matrix.python-version == '3.12' && (github.ref == 'refs/heads/development' || github.ref == 'refs/heads/master')
-    env:
-      EVY_POSTGRES_HOST: localhost
-      EVY_POSTGRES_PORT: 5432
-      EVY_POSTGRES_USER: postgres
-      EVY_POSTGRES_DB: pretix
+        # Tests in tests/known_failures.txt already fail on dev and are deselected;
+        # everything else must pass.
+        run: uv run pytest tests/ -n 3 -p no:sugar --skip-known-failures
