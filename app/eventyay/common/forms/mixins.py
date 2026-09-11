@@ -28,6 +28,12 @@ from eventyay.common.forms.validators import (
 from eventyay.common.forms.widgets import HtmlDateInput, HtmlDateTimeInput
 from eventyay.common.text.phrases import phrases
 from eventyay.common.utils.language import localize_event_text
+from phonenumber_field.formfields import PhoneNumberField
+from phonenumber_field.phonenumber import PhoneNumber
+from phonenumbers import NumberParseException
+from phonenumbers.data import _COUNTRY_CODE_TO_REGION_CODE
+from eventyay.base.forms.questions import WrappedPhoneNumberPrefixWidget, guess_country
+from eventyay.base.i18n import get_babel_locale, language
 from eventyay.common.session_video import exclude_session_video_from_cfp_questions
 from eventyay.common.video_embed import get_video_embed_info, parse_video_urls
 from eventyay.helpers.countries import CachedCountries
@@ -348,12 +354,6 @@ class QuestionFieldsMixin:
             field.widget.attrs['placeholder'] = ''  # XSS
             return field
         if question.variant == TalkQuestionVariant.PHONE_NUMBER:
-            from phonenumber_field.formfields import PhoneNumberField
-            from phonenumber_field.phonenumber import PhoneNumber
-            from phonenumbers import NumberParseException
-            from phonenumbers.data import _COUNTRY_CODE_TO_REGION_CODE
-            from eventyay.base.forms.questions import WrappedPhoneNumberPrefixWidget, guess_country
-            from eventyay.base.i18n import get_babel_locale, language
 
             with language(get_babel_locale()):
                 default_country = guess_country(self.event)
