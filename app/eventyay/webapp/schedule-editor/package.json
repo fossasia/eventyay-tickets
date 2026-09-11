@@ -36,7 +36,7 @@
     "@types/markdown-it": "^14.2.0",
     "@types/node": "^26.4.1",
     "@typescript-eslint/eslint-plugin": "^8.69.0",
-    "@typescript-eslint/parser": "^8.68.0",
+    "@typescript-eslint/parser": "^8.70.0",
     "@vitejs/plugin-vue": "^6.0.8",
     "@vue/eslint-config-typescript": "^14.9.0",
     "@vue/tsconfig": "^0.9.1",
