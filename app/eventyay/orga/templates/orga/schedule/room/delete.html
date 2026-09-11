@@ -1,0 +1,31 @@
+{% extends 'orga/base.html' %}
+
+{% block extra_title %}{{ generic_title }} :: {% endblock extra_title %}
+
+{% block content %}
+
+  {% if linked_talks %}
+    <h2>{{ phrases.base.delete_confirm_heading }}</h2>
+    <hr>
+    <p><strong>{{ generic_title }}</strong></p>
+    <div class='alert alert-danger'>
+      <div>
+        <p>{{ linked_talks_warning }}</p>
+        <ul>
+          {% for talk in linked_talks %}
+            <li>
+              {{ talk.submission.title }}
+              {% if talk.start %}&mdash; {{ talk.start }}{% endif %}
+            </li>
+          {% endfor %}
+        </ul>
+      </div>
+    </div>
+    <div class='submit-group'>
+      <a href='..' class='btn btn-lg btn-outline-info'>{{ phrases.base.back_button }}</a>
+    </div>
+  {% else %}
+    {% include 'common/includes/action_confirm.html' with action_object_name=generic_title %}
+  {% endif %}
+
+{% endblock content %}

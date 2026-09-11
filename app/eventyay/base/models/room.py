@@ -10,6 +10,7 @@ from django.dispatch import receiver
 from django.utils.crypto import get_random_string
 from django.utils.text import slugify
 from django.utils.translation import gettext_lazy as _
+from django_scopes import scope, scopes_disabled
 from rest_framework import serializers
 from i18nfield.fields import I18nCharField
 
@@ -45,6 +46,13 @@ UNSCHEDULED_LINKED_SUBMISSIONS_MESSAGE = _(
 UNSCHEDULED_ROOM_SCHEDULING_MESSAGE = _(
     'Unscheduled rooms cannot be linked to talk sessions.'
 )
+DELETE_LINKED_SUBMISSIONS_MESSAGE = _(
+    'This room has linked schedules/sessions. Deleting it will affect the event '
+    'schedule. Please move these sessions to another room or unschedule them first.'
+)
+DELETED_ROOM_SCHEDULING_MESSAGE = _(
+    'Deleted rooms cannot be linked to talk sessions.'
+)
 _LINKED_SUBMISSION_TALK_FILTER = {'submission__isnull': False}
 
 
@@ -56,12 +64,34 @@ def _linked_submission_talkslots(**filters):
 
 def room_has_linked_submissions(room) -> bool:
     """Return whether the room has scheduled talks linked to submissions."""
-    from django_scopes import scope
-
     if 'has_linked_sessions' in room.__dict__:
         return bool(room.has_linked_sessions)
     with scope(event=room.event):
         return _linked_submission_talkslots(room=room).exists()
+
+
+def linked_submission_talks(room):
+    """Return one talk per session scheduled in this room.
+
+    A session holds a slot in every schedule version it appears in, so the talks
+    are deduplicated by submission to list each session once. The queryset is
+    evaluated inside the event scope so that callers, such as templates, can
+    iterate over the result outside of it.
+    """
+    with scope(event=room.event):
+        talks = (
+            _linked_submission_talkslots(room=room)
+            .select_related('submission')
+            .order_by('start')
+        )
+        seen = set()
+        unique_talks = []
+        for talk in talks:
+            if talk.submission_id in seen:
+                continue
+            seen.add(talk.submission_id)
+            unique_talks.append(talk)
+        return unique_talks
 
 
 def validate_is_unscheduled_change(room) -> None:
@@ -72,8 +102,15 @@ def validate_is_unscheduled_change(room) -> None:
 
 def validate_talk_slot_room(room) -> None:
     """Raise ValidationError when a submission cannot be scheduled in this room."""
-    if room is not None and room.is_unscheduled:
+    if room is None:
+        return
+    if room.is_unscheduled:
         raise ValidationError({'room': UNSCHEDULED_ROOM_SCHEDULING_MESSAGE})
+    # Rooms are soft-deleted, so the PROTECT on TalkSlot.room never fires for them.
+    # Rejecting the assignment here keeps a deleted room free of sessions no matter
+    # which code path writes the slot.
+    if room.deleted:
+        raise ValidationError({'room': DELETED_ROOM_SCHEDULING_MESSAGE})
 
 
 def validate_talk_slot_room_from_attrs(attrs, instance) -> None:
@@ -119,8 +156,6 @@ def partial_validated_update(serializer, body):
 
 class RoomQuerySet(models.QuerySet):
     def with_has_linked_sessions(self):
-        from django_scopes import scopes_disabled
-
         # TalkSlot uses ScopedManager; the parent queryset is already event-scoped.
         with scopes_disabled():
             linked_talks = _linked_submission_talkslots(
@@ -458,8 +493,6 @@ class RoomView(models.Model):
 
 def get_room_with_linked_sessions(room):
     """Return the room annotated with has_linked_sessions when possible."""
-    from django_scopes import scope
-
     with scope(event=room.event):
         annotated = (
             room.event.rooms.filter(pk=room.pk).with_has_linked_sessions().first()

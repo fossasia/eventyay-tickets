@@ -22,7 +22,12 @@ from i18nfield.utils import I18nJSONEncoder
 from eventyay.agenda.management.commands.export_schedule_html import get_export_zip_path
 from eventyay.agenda.tasks import export_schedule_html
 from eventyay.base.models import Availability, Room, TalkSlot
-from eventyay.base.models.room import rooms_for_talk_assignment
+from eventyay.base.models.room import (
+    DELETE_LINKED_SUBMISSIONS_MESSAGE,
+    linked_submission_talks,
+    room_has_linked_submissions,
+    rooms_for_talk_assignment,
+)
 from eventyay.common.language import get_current_language_information
 from eventyay.common.text.path import safe_filename
 from eventyay.common.text.phrases import phrases
@@ -547,9 +552,32 @@ class RoomView(OrderActionMixin, OrgaCRUDView):
                 )
         return self.list(request, *args, **kwargs)
 
+    def delete_view(self, request, *args, **kwargs):
+        # The confirmation page has to name the sessions that block the deletion,
+        # instead of showing only the generic "cannot be undone" warning.
+        context = self.get_context_data(instance=self.object)
+        context['linked_talks'] = linked_submission_talks(self.object)
+        context['linked_talks_warning'] = DELETE_LINKED_SUBMISSIONS_MESSAGE
+        return self.render_to_response(context)
+
+    @transaction.atomic
     def delete_handler(self, request, *args, **kwargs):
-        # Use soft delete to sync with video component
-        obj = self.get_object()
+        # Use soft delete to sync with video component. The whole handler is atomic
+        # so the room and its break slots are never left half-deleted, and the row is
+        # locked so that a concurrent deletion cannot act on a stale linked-session
+        # check. Sessions cannot be moved into a deleted room, because
+        # validate_talk_slot_room() rejects that on every talk slot write.
+        try:
+            obj = self.get_queryset().select_for_update().get(pk=self.object.pk)
+        except Room.DoesNotExist:
+            # Another request deleted the room while we waited for the row lock.
+            return redirect(self.get_success_url())
+        # Soft deletion bypasses the PROTECT on TalkSlot.room, so the guard belongs
+        # here: without it the room disappears from the organiser UI while the
+        # sessions scheduled in it keep pointing at it.
+        if room_has_linked_submissions(obj):
+            messages.error(request, DELETE_LINKED_SUBMISSIONS_MESSAGE)
+            return redirect(self.get_success_url())
         obj.deleted = True
         obj.save(update_fields=['deleted'])
         request.event.wip_schedule.talks.filter(room=obj, submission__isnull=True).delete()
