@@ -1,3 +1,5 @@
+import { rewritePrivateIPsInSdp } from './sdpUtils.js';
+
 let nativeRTCPeerConnection = null;
 
 function getNativeRTCPeerConnection() {
@@ -94,27 +96,10 @@ export class WhepClient {
 			}
 
 			const originalAnswerSdp = await response.text();
-			// Force the IP to the browser's hostname when it is a valid private/local IPv4 address (for local dev)
-			const hostname = window.location.hostname;
-			
-			const isPrivateOrLocalIP = (ip) => {
-				if (!/^(\d{1,3}\.){3}\d{1,3}$/.test(ip)) return false;
-				const parts = ip.split('.').map(Number);
-				if (!parts.every(octet => octet <= 255)) return false;
-				return parts[0] === 10 || 
-				       (parts[0] === 172 && parts[1] >= 16 && parts[1] <= 31) ||
-				       (parts[0] === 192 && parts[1] === 168) ||
-				       parts[0] === 127 ||
-				       (parts[0] === 169 && parts[1] === 254);
-			};
-
-			const isPrivateIP = isPrivateOrLocalIP(hostname);
-			
-			const answerSdp = isPrivateIP 
-				? originalAnswerSdp.replace(/(c=IN IP4 |a=candidate:(?:[^ ]+ ){4})([0-9.]+)/g, (match, prefix, ip) => {
-					return isPrivateOrLocalIP(ip) ? prefix + hostname : match;
-				}) 
-				: originalAnswerSdp;
+			// Rewrite private/local IPs in the SDP answer for local-dev environments
+			// where the media server advertises an internal container IP the browser
+			// cannot reach.  In production this is a no-op (see sdpUtils.js).
+			const answerSdp = rewritePrivateIPsInSdp(originalAnswerSdp, window.location.hostname);
 
 			if (this.abortController.signal.aborted || !this.peerConnection) return;
 
