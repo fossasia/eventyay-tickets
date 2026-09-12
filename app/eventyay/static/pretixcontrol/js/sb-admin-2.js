@@ -96,13 +96,6 @@ $(function () {
     updateCSSVariables();
     initializeSidebar();
 
-    if (!window.location.hash) {
-        if ('scrollRestoration' in history) {
-            history.scrollRestoration = 'manual';
-        }
-        window.scrollTo(0, 0);
-    }
-
     $sidebarToggleButton.on('click', function (e) {
         e.preventDefault();
         e.stopPropagation();
@@ -143,7 +136,7 @@ $(function () {
         }, 150);
     });
 
-    $(window).bind("load resize", function (e) {
+    $(window).bind("load resize", function () {
         var topOffset = getNavbarHeight();
 
         var height = ((this.window.innerHeight > 0) ? this.window.innerHeight : this.screen.height) - 1;
@@ -151,9 +144,6 @@ $(function () {
         if (height < 1) height = 1;
         if (height > topOffset) {
             $("#page-wrapper").css("min-height", (height) + "px");
-        }
-        if (e.type === "load" && !window.location.hash) {
-            window.scrollTo(0, 0);
         }
     });
 
