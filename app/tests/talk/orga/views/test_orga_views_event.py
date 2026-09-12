@@ -1,5 +1,6 @@
 import datetime as dt
 import json
+import re
 
 import pytest
 from django.conf import settings
@@ -8,6 +9,19 @@ from django.utils.timezone import now
 from django_scopes import scope
 
 from eventyay.base.models import Event
+
+_FORM_OPEN = re.compile(r"<form(?:\s|>)", re.I)
+_FORM_CLOSE = re.compile(r"</form\s*>", re.I)
+
+
+def _max_form_nesting(html: str) -> int:
+    events = [(match.start(), 1) for match in _FORM_OPEN.finditer(html)]
+    events += [(match.start(), -1) for match in _FORM_CLOSE.finditer(html)]
+    depth = max_depth = 0
+    for _, delta in sorted(events):
+        depth += delta
+        max_depth = max(max_depth, depth)
+    return max_depth
 
 
 def get_settings_form_data(event):
@@ -838,11 +852,38 @@ def test_edit_review_settings_activate_review_phase(orga_client, event):
         assert event.review_phases.count() == 2
         phase = event.active_review_phase
         other_phase = event.review_phases.exclude(pk=phase.pk).first()
-    response = orga_client.get(other_phase.urls.activate, follow=True)
+    response = orga_client.post(other_phase.urls.activate, follow=True)
     assert response.status_code == 200
     event = Event.objects.get(slug=event.slug)
     with scope(event=event):
         assert event.active_review_phase == other_phase
+
+
+@pytest.mark.django_db
+def test_activate_review_phase_rejects_get(orga_client, event):
+    with scope(event=event):
+        phase = event.active_review_phase
+        other_phase = event.review_phases.exclude(pk=phase.pk).first()
+    response = orga_client.get(other_phase.urls.activate)
+    assert response.status_code == 405
+    event = Event.objects.get(slug=event.slug)
+    with scope(event=event):
+        assert event.active_review_phase == phase
+
+
+@pytest.mark.django_db
+def test_review_phase_activate_form_is_not_nested(orga_client, event):
+    with scope(event=event):
+        phase = event.active_review_phase
+        other_phase = event.review_phases.exclude(pk=phase.pk).first()
+        activate_url = other_phase.urls.activate
+        other_pk = other_phase.pk
+    response = orga_client.get(event.orga_urls.review_settings)
+    assert response.status_code == 200
+    html = response.content.decode()
+    assert f'id="activate-phase-{other_pk}"' in html
+    assert activate_url in html
+    assert _max_form_nesting(html) <= 1
 
 
 @pytest.mark.django_db

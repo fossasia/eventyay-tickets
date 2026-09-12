@@ -123,6 +123,24 @@ def admin_client(db, staff_client, staff_user):
 
 
 @pytest.mark.django_db
+class TestEventAdminToken:
+    def test_admin_token_rejects_get(self, admin_client, event):
+        response = admin_client.get(f'/admin/video/events/{event.pk}/admin')
+        assert response.status_code == 405
+        event.refresh_from_db()
+        assert not (event.config or {}).get('JWT_secrets')
+
+    def test_admin_token_creates_secret_on_post(self, admin_client, event):
+        from eventyay.base.models.log import LogEntry
+
+        response = admin_client.post(f'/admin/video/events/{event.pk}/admin')
+        assert response.status_code == 302
+        event.refresh_from_db()
+        assert event.config['JWT_secrets']
+        assert LogEntry.objects.filter(action_type='event.adminaccess').exists()
+
+
+@pytest.mark.django_db
 class TestGlobalSettingsEmail:
     """Test global settings email functionality."""
 

@@ -266,11 +266,12 @@
                                       {% if action != "view" %}
                                           <div class="phase-option-delete flip ml-2 d-flex">
                                               {% if not form.instance.is_active %}
-                                                  <a href="{{ form.instance.urls.activate }}"
-                                                     class="btn btn-outline-warning mr-2 keep-scroll-position"
-                                                     title="{% translate "Activate phase" %}">
+                                                  <button type="submit"
+                                                          form="activate-phase-{{ form.instance.pk }}"
+                                                          class="btn btn-outline-warning mr-2 keep-scroll-position"
+                                                          title="{% translate "Activate phase" %}">
                                                       <i class="fa fa-star"></i>
-                                                  </a>
+                                                  </button>
                                               {% else %}
                                                   <a href=""
                                                      class="btn btn-warning mr-2 keep-scroll-position"
@@ -339,4 +340,11 @@
         </section>
         {% include "orga/includes/submit_row.html" %}
     </form>
+    {% for form in phases_formset %}
+        {% if form.instance.pk and not form.instance.is_active %}
+            <form id="activate-phase-{{ form.instance.pk }}" method="post" action="{{ form.instance.urls.activate }}" hidden>
+                {% csrf_token %}
+            </form>
+        {% endif %}
+    {% endfor %}
 {% endblock settings_content %}

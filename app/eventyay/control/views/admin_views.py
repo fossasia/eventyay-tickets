@@ -257,6 +257,9 @@ class EventAdminToken(AdministratorPermissionRequiredMixin, DetailView):
             raise Http404("Event not found")
 
     def get(self, request, *args, **kwargs):
+        return self.http_method_not_allowed(request, *args, **kwargs)
+
+    def post(self, request, *args, **kwargs):
         event = self.get_object()
 
         # Ensure JWT configuration exists
