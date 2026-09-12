@@ -12,25 +12,25 @@ from eventyay.base.models.auth import StaffSession
 
 @pytest.mark.django_db
 @override_settings(SITE_URL='https://testserver')
-def test_publication_settings_rendered_in_main_settings(organizer_client, organizer, event):
-    """Test that the Publication settings fieldset is rendered on the main event settings page,
-    but startpage_visible is NOT included (it is admin-only)."""
+def test_publication_controls_removed_from_main_settings(organizer_client, organizer, event):
+    """The is_public and meta_noindex publication controls are no longer rendered on the
+    event settings page; startpage_visible remains admin-only and absent as well."""
     url = reverse('eventyay_common:event.update', kwargs={
         'organizer': organizer.slug,
         'event': event.slug
     })
     response = organizer_client.get(url)
     assert response.status_code == 200
-    assert b"Publication" in response.content
-    assert b"is_public" in response.content
-    # startpage_visible must NOT appear in the organiser settings page
+    assert b"is_public" not in response.content
+    assert b"meta_noindex" not in response.content
+    # startpage_visible must NOT appear in the organiser settings page (admin-only)
     assert b"startpage_visible" not in response.content
-    assert b"meta_noindex" in response.content
 
 @pytest.mark.django_db
 @override_settings(SITE_URL='https://testserver')
 def test_publication_settings_save_via_main_settings(organizer_client, organizer, event):
-    """Test that saving settings on the main settings page works and does NOT change startpage_visible."""
+    """Saving the main settings page works, keeps the event public by default, and does NOT
+    change startpage_visible (there are no publication toggles to submit anymore)."""
     url = reverse('eventyay_common:event.update', kwargs={
         'organizer': organizer.slug,
         'event': event.slug
@@ -50,8 +50,8 @@ def test_publication_settings_save_via_main_settings(organizer_client, organizer
     # startpage_visible should not be a field the organiser form exposes
     assert 'startpage_visible' not in form.fields
 
-    def build_post_data(enable_publication=True):
-        post_data = {
+    def build_post_data():
+        return {
             'name_0': 'Test Event',
             'slug': event.slug,
             'date_from_0': '2026-10-01',
@@ -71,12 +71,8 @@ def test_publication_settings_save_via_main_settings(organizer_client, organizer
             'footer-links-MIN_NUM_FORMS': '0',
             'footer-links-MAX_NUM_FORMS': '1000',
         }
-        if enable_publication:
-            post_data['is_public'] = 'on'
-            post_data['settings-meta_noindex'] = 'on'
-        return post_data
 
-    response = organizer_client.post(url, build_post_data(enable_publication=True), follow=True)
+    response = organizer_client.post(url, build_post_data(), follow=True)
 
     if response.status_code == 200 and not response.redirect_chain:
         assert False, (
@@ -92,10 +88,11 @@ def test_publication_settings_save_via_main_settings(organizer_client, organizer
     
     event.refresh_from_db()
     event.settings.flush()
+    # Events stay public and indexed by default even though there is no toggle to submit.
     assert event.is_public is True
+    assert event.settings.meta_noindex is False
     # startpage_visible must be unchanged — organisers cannot alter it
     assert event.startpage_visible == original_startpage_visible
-    assert event.settings.meta_noindex is True
 
 
 @pytest.mark.django_db
