@@ -1,9 +1,6 @@
 from django.db import migrations, models
 
 
-# Only the new classification fields are set here. Existing is_active,
-# enable_by_default, and show_in_organizer_list values are preserved for
-# rows that already exist.
 PLATFORM_PLUGINS = {
     # Payment providers — configured via event payment settings
     'eventyay_stripe': {

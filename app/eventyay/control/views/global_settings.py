@@ -469,8 +469,6 @@ class GlobalPluginManagementView(AdministratorPermissionRequiredMixin, TemplateV
         'platform': _('Platform'),
     }
 
-    # Known system-level modules that are always platform-managed.
-    # Plugins with visible=False or in CORE_MODULES are system plugins.
     KNOWN_SYSTEM_MODULES: frozenset[str] = frozenset({
         'eventyay.plugins.socialauth',
         'eventyay.plugins.reports',
@@ -488,9 +486,6 @@ class GlobalPluginManagementView(AdministratorPermissionRequiredMixin, TemplateV
         'eventyay.plugins.checkinlists',
     })
 
-    # Modules whose plugins are required for core platform functionality
-    # and cannot be deactivated by admins (e.g. authentication, check-in
-    # infrastructure).
     REQUIRED_MODULES: frozenset[str] = frozenset({
         'eventyay.plugins.checkinlists',
     })
