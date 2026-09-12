@@ -1158,7 +1158,6 @@ body:has(.td-dashboard) #page-content {
   flex: 1;
   width: 100%;
   border: none;
-  border-left: 6px solid var(--td-yellow);
   border-radius: 4px;
   padding: 12px;
   font-size: 13px;
