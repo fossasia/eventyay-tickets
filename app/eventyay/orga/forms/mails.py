@@ -232,6 +232,8 @@ class MailDetailForm(ScheduledAtValidationMixin, ReadOnlyFlag, forms.ModelForm):
 class WriteMailBaseForm(ScheduledAtValidationMixin, MailTemplateForm):
     empty_audience_error = _('Select at least one recipient or audience filter before sending this email.')
     empty_audience_draft_error = _('Select at least one recipient or audience filter before saving this draft.')
+    # Forms that always deliver immediately (no outbox / schedule) set this True.
+    always_send_immediately = False
 
     skip_queue = forms.BooleanField(
         label=_('Send immediately'),
@@ -289,6 +291,7 @@ class WriteMailBaseForm(ScheduledAtValidationMixin, MailTemplateForm):
 
 class WriteTeamsMailForm(WriteMailBaseForm):
     empty_audience_error = _('The selected teams have no active members with an email address.')
+    always_send_immediately = True
 
     recipients = forms.MultipleChoiceField(
         label=_('Recipient groups'),

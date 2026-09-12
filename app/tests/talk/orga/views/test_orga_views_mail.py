@@ -1116,8 +1116,11 @@ def test_teams_composer_shows_test_email_and_send_email_label(orga_client, event
     assert "Send test email" in response.text
     assert "Send email" in response.text
     assert "mail-composer" in response.text
-    assert "data-always-immediate" in response.text
+    assert 'class="form-with-placeholder mail-composer" data-always-immediate' in response.text
     assert "Save draft" not in response.text
+    assert 'id="delivery-mode-later"' not in response.text
+    assert 'id="id_skip_queue"' not in response.text
+    assert response.context["form"].always_send_immediately is True
 
 
 @pytest.mark.django_db

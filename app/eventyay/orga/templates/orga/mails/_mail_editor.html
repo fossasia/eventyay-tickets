@@ -6,7 +6,7 @@
 {% block extra_title %}{% translate "Compose email" %} :: {% endblock extra_title %}
 
 {% block mail_content %}
-    <form method="post" class="form-with-placeholder mail-composer"{% if not form.scheduled_at and not form.skip_queue %} data-always-immediate{% endif %}>
+    <form method="post" class="form-with-placeholder mail-composer"{% if form.always_send_immediately %} data-always-immediate{% endif %}>
         {% csrf_token %}
         <div class="composer-intro mb-3">
             <h2 class="composer-title">
@@ -89,12 +89,12 @@
             </div>
         </section>
 
-        {% if form.test_email or form.scheduled_at %}
+        {% if 'test_email' in form.fields or 'scheduled_at' in form.fields %}
             <section class="card mb-3">
                 <div class="card-header"><strong>{% translate "Delivery" %}</strong></div>
                 <div class="card-body">
                     <fieldset>
-                        {% if form.test_email %}
+                        {% if 'test_email' in form.fields %}
                         <div class="form-group row delivery-test">
                             <label class="col-md-3 col-form-label" for="{{ form.test_email.id_for_label }}">
                                 <span>{{ form.test_email.label }}{% if form.test_email.field.required %}<span class="d-inline text-danger"> *</span>{% endif %}</span>
@@ -118,8 +118,8 @@
                             </div>
                         </div>
                         {% endif %}
-                        {% if form.scheduled_at %}
-                        {% if form.test_email %}<hr>{% endif %}
+                        {% if 'scheduled_at' in form.fields %}
+                        {% if 'test_email' in form.fields %}<hr>{% endif %}
                         <div class="mb-3">
                             <div class="form-check form-check-inline">
                                 <input class="form-check-input" type="radio" name="delivery_mode" id="delivery-mode-now" value="now" checked>
@@ -162,7 +162,7 @@
             <div class="submit-group panel">
                 <span>{% block email_editor_actions_summary %}{% endblock email_editor_actions_summary %}</span>
                 <span class="d-flex align-items-center">
-                    {% if form.skip_queue %}
+                    {% if 'skip_queue' in form.fields %}
                         <div class="form-check d-flex align-items-center mb-0 mr-4">
                             {{ form.skip_queue }}
                             <label class="form-check-label mb-0" for="{{ form.skip_queue.id_for_label }}">
@@ -190,7 +190,7 @@
                             {% endblock send_button_label %}
                             </span>
                         </button>
-                        {% if form.scheduled_at %}
+                        {% if 'scheduled_at' in form.fields %}
                         <details class="dropdown" aria-haspopup="menu" role="menu">
                             <summary class="btn btn-primary" role="button" aria-label="{% translate 'More send options' %}">
                                 <i class="fa fa-chevron-down" aria-hidden="true"></i>
