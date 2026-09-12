@@ -360,6 +360,7 @@ class LayoutEditorView(BaseEditorView):
             Question.TYPE_DATETIME: '2026-01-01T12:00:00+00:00',
             Question.TYPE_COUNTRYCODE: 'US',
             Question.TYPE_PHONENUMBER: '+1 202 555 0123',
+            Question.TYPE_URL: 'https://example.com',
         }
 
         questions = self.request.event.questions.exclude(type=Question.TYPE_FILE).prefetch_related('options')
