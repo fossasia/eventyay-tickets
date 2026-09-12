@@ -13,6 +13,14 @@ from eventyay.agenda.feedback_access import (
 
 
 @pytest.mark.django_db
+def test_feedback_period_closed_by_default_use_feedback_disabled(past_slot, event):
+    """Verify feedback period is closed when use_feedback is disabled by default."""
+    with scope(event=event):
+        assert event.get_feature_flag('use_feedback') is False
+        assert feedback_period_open(past_slot.submission) is False
+
+
+@pytest.mark.django_db
 def test_feedback_period_open_after_session_finished(past_slot, event):
     with scope(event=event):
         event.feature_flags['use_feedback'] = True
@@ -84,9 +92,7 @@ def test_registered_user_can_give_feedback_without_ticket(past_slot, user, event
 
 
 @pytest.mark.django_db
-def test_talk_page_shows_closed_message_after_deadline(
-    django_assert_num_queries, past_slot, client, user, event
-):
+def test_talk_page_shows_closed_message_after_deadline(django_assert_num_queries, past_slot, client, user, event):
     with scope(event=event):
         event.feature_flags['use_feedback'] = True
         event.feature_flags['feedback_who_can_comment'] = 'registered'
@@ -103,9 +109,7 @@ def test_talk_page_shows_closed_message_after_deadline(
 
 
 @pytest.mark.django_db
-def test_talk_page_hides_comment_form_for_non_attendee(
-    django_assert_num_queries, past_slot, client, user, event
-):
+def test_talk_page_hides_comment_form_for_non_attendee(django_assert_num_queries, past_slot, client, user, event):
     with scope(event=event):
         event.feature_flags['use_feedback'] = True
         event.feature_flags['feedback_who_can_comment'] = 'attendees'

@@ -111,7 +111,7 @@ export default {
 			const audioSource = normalizeAudioTranslationSource(selected?.url || selected?.youtube_id)
 			const useVideo = selected?.use_video || false
 
-			this.$emit('languageChanged', { url: audioSource, useVideo })
+			this.$emit('languageChanged', { ...(selected || {}), url: audioSource, useVideo })
 		},
 		async toggleMenu() {
 			if (this.menuOpen) {
@@ -197,6 +197,7 @@ export default {
 		align-items: center
 		height: 32px
 		padding: 0 2px 0 8px
+		min-width: 120px
 		border: 1px solid $clr-grey-400
 		border-radius: 4px
 		background: $clr-white

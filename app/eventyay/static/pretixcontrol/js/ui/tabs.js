@@ -48,8 +48,11 @@ $(function () {
             i++;
         });
         var preselect = error_preselect !== null ? error_preselect : (hash_preselect !== null ? hash_preselect : 0);
+        var initial_load = true;
         $tabs.find("a").on('shown.bs.tab', function (e) {
-            history.replaceState(null, null, e.target.getAttribute("href"));
+            if (!initial_load || location.hash) {
+                history.replaceState(null, null, e.target.getAttribute("href"));
+            }
             var targetId = e.target.getAttribute("href");
             var $targetPane = $(targetId);
             var $submitGroup = $form.closest("form").find(".submit-group");
@@ -59,7 +62,8 @@ $(function () {
                 $submitGroup.show();
             }
         });
-        $tabs.find("a").get(preselect).click();
+        $tabs.find("a").eq(preselect).tab('show');
+        initial_load = false;
         $(window).on("hashchange", function () {
             if (!location.hash) return;
             var normHash = location.hash.replace(/_/g, "-");
