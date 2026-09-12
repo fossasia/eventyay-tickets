@@ -115,13 +115,16 @@ Export
 2. Use the **Feedback** export section.
 3. Download **Feedback CSV** or **Feedback JSON**.
 
-Exported fields:
+Both CSV and JSON exports include:
 
 * ``session_title``
 * ``session_code``
 * ``speaker_name`` (target speaker, if set)
 * ``rating``
 * ``review`` (comment text)
+
+JSON exports also include ``id`` (the feedback record primary key). CSV does
+not.
 
 Exports do **not** currently include author identity, publication status,
 anonymity, report counts, or timestamps. Use the organiser UI for moderation
