@@ -1,0 +1,72 @@
+{% load i18n %}
+{% load money %}
+<section class="od-section" aria-labelledby="od-kpi-title">
+  <div class="od-section-heading">
+    <h2 id="od-kpi-title" class="od-section-title">
+      <span class="fa fa-tachometer od-title-icon--blue" aria-hidden="true"></span>
+      {% trans "At a glance" %}
+    </h2>
+  </div>
+  <div class="od-kpi-grid">
+    {% for card in kpi_cards %}
+      {% if card.revenue_options %}
+        <article
+          class="od-kpi-card od-kpi-{{ card.tone }} od-kpi-sparkline od-kpi-sparkline-{{ card.tone }}"
+          title="{{ card.label }}"
+          data-od-revenue-card
+        >
+          <div class="od-kpi-top">
+            <span class="od-kpi-icon" aria-hidden="true"><span class="fa fa-{{ card.icon }}"></span></span>
+            <span class="od-kpi-label">{{ card.label }}</span>
+          </div>
+          <div class="od-kpi-value" data-od-revenue-value>
+            {% if card.value_is_money %}
+              {{ card.value|money:card.currency }}
+            {% else %}
+              {{ card.value }}
+            {% endif %}
+          </div>
+          {{ card.revenue_options|json_script:"od-revenue-options" }}
+          <div
+            id="od-revenue-filter-data"
+            class="od-is-hidden"
+            data-all-label="{{ card.revenue_all_label }}"
+          ></div>
+          <div class="od-kpi-filter">
+            <label class="sr-only" for="od-revenue-currency">{% trans "Currency" %}</label>
+            <select
+              id="od-revenue-currency"
+              class="od-filter-select"
+              data-od-revenue-filter
+              aria-label="{% trans 'Filter gross revenue by currency' %}"
+            >
+              <option value=""{% if not card.selected_currency %} selected{% endif %}>{% trans "All currencies" %}</option>
+              {% for option in card.revenue_options %}
+                <option value="{{ option.currency }}"{% if card.selected_currency == option.currency %} selected{% endif %}>{{ option.currency }}</option>
+              {% endfor %}
+            </select>
+          </div>
+          <a class="od-kpi-link" href="{{ card.url }}">{% trans "View all" %} <span aria-hidden="true">&gt;</span></a>
+        </article>
+      {% else %}
+        <a href="{{ card.url }}"
+           class="od-kpi-card od-kpi-{{ card.tone }}{% if card.tone == 'blue' or card.tone == 'green' or card.tone == 'purple' or card.tone == 'orange' %} od-kpi-sparkline od-kpi-sparkline-{{ card.tone }}{% endif %}"
+           title="{{ card.label }}">
+          <div class="od-kpi-top">
+            <span class="od-kpi-icon" aria-hidden="true"><span class="fa fa-{{ card.icon }}"></span></span>
+            <span class="od-kpi-label">{{ card.label }}</span>
+          </div>
+          <div class="od-kpi-value">
+            {% if card.value_is_money %}
+              {{ card.value|money:card.currency }}
+            {% else %}
+              {{ card.value }}
+            {% endif %}
+          </div>
+          <div class="od-kpi-hint od-kpi-hint-spacer" aria-hidden="true"></div>
+          <div class="od-kpi-link">{% trans "View all" %} <span aria-hidden="true">&gt;</span></div>
+        </a>
+      {% endif %}
+    {% endfor %}
+  </div>
+</section>

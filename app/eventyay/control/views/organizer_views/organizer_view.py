@@ -47,6 +47,7 @@ from eventyay.control.permissions import (
 from eventyay.control.signals import nav_organizer
 from eventyay.control.tasks import delete_organizer_data
 from eventyay.control.views import PaginationMixin
+from eventyay.eventyay_common.organizer_dashboard import build_organizer_dashboard_overview
 from eventyay.eventyay_common.views.organizer_analytics import OrganizerAnalyticsView
 from eventyay.helpers.stripe_utils import (
     create_setup_intent,
@@ -372,16 +373,7 @@ class OrganizerDashboard(OrganizerDetailViewMixin, OrganizerAnalyticsView):
 
     def get_context_data(self, **kwargs):
         ctx = super().get_context_data(**kwargs)
-        ctx['event_series_creation_enabled'] = is_event_series_creation_enabled(self.request)
-        ctx['meetup_creation_enabled'] = is_meetup_creation_enabled(self.request)
-        ctx['has_any_analytics'] = any([
-            ctx.get('has_orders'),
-            ctx.get('has_proposals'),
-            ctx.get('show_checkins'),
-            ctx.get('has_attendance'),
-            ctx.get('has_email_engagement'),
-            ctx.get('has_followers'),
-        ])
+        ctx.update(build_organizer_dashboard_overview(self.request, ctx))
         return ctx
 
 

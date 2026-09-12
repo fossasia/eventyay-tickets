@@ -1,0 +1,25 @@
+{% load i18n %}
+{% if recent_activity %}
+<section class="od-section" aria-labelledby="od-activity-title">
+  <div class="od-section-heading">
+    <h2 id="od-activity-title" class="od-section-title">
+      <span class="fa fa-history od-title-icon--orange" aria-hidden="true"></span>
+      {% trans "Recent activity" %}
+    </h2>
+  </div>
+  <ul class="od-activity-list">
+    {% for item in recent_activity %}
+      <li class="od-activity-item">
+        <span class="od-activity-icon od-icon-{{ item.tone }}" aria-hidden="true">
+          <span class="fa fa-{{ item.icon }}"></span>
+        </span>
+        <div class="od-activity-body">
+          <strong>{{ item.title }}</strong>
+          <span>{{ item.detail }}</span>
+        </div>
+        <time class="od-activity-when">{{ item.when }} {% trans "ago" %}</time>
+      </li>
+    {% endfor %}
+  </ul>
+</section>
+{% endif %}

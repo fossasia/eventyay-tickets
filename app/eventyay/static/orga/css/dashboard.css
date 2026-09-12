@@ -1,24 +1,23 @@
-.dashboard-list,
-.dashboard-list-metrics {
+.dashboard-list {
   padding-bottom: 20px;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: stretch;
 }
 
-.dashboard-list .dashboard-block-wrapper,
-.dashboard-list-metrics .dashboard-block-wrapper {
+.dashboard-list .dashboard-block-wrapper {
   padding: 0;
   max-width: 100%;
 }
 
-.dashboard-list .dashboard-block-wrapper > .dashboard-block,
-.dashboard-list-metrics .dashboard-block-wrapper > .dashboard-block {
+.dashboard-list .dashboard-block-wrapper > .dashboard-block {
   margin: 0;
   padding: 0;
   width: 100%;
   max-width: 100%;
 }
 
-.dashboard-list .dashboard-block-extension,
-.dashboard-list-metrics .dashboard-block-extension {
+.dashboard-list .dashboard-block-extension {
   position: absolute;
   bottom: 0;
   left: 0;
@@ -26,82 +25,64 @@
   display: flex;
 }
 
-.dashboard-list .dashboard-block-addon,
-.dashboard-list-metrics .dashboard-block-addon {
+.dashboard-list .dashboard-block-addon {
   flex: 1;
   font-weight: 400;
 }
 
-.dashboard-list .dashboard-block-addon:first-child,
-.dashboard-list-metrics .dashboard-block-addon:first-child {
+.dashboard-list .dashboard-block-addon:first-child {
   border-right: 2px solid var(--color-grey-light);
 }
 
-.dashboard-list .dashboard-block-addon:hover,
-.dashboard-list-metrics .dashboard-block-addon:hover {
+.dashboard-list .dashboard-block-addon:hover {
   background: var(--color-grey-lightest);
   color: var(--color-primary);
   text-decoration: none;
 }
 
-.dashboard-list .dashboard-block-addon-success,
-.dashboard-list-metrics .dashboard-block-addon-success {
+.dashboard-list .dashboard-block-addon-success {
   color: var(--color-grey-lightest);
   background-color: var(--color-success);
 }
 
-.dashboard-list .dashboard-block-addon-info,
-.dashboard-list-metrics .dashboard-block-addon-info {
+.dashboard-list .dashboard-block-addon-info {
   color: var(--color-grey-lightest);
   background-color: var(--color-info);
 }
 
-.dashboard-list .dashboard-block-addon-error,
-.dashboard-list-metrics .dashboard-block-addon-error {
-  color: var(--color-grey-lightest);
-  background-color: var(--color-danger);
-}
-
-.dashboard-list .dashboard-block-addon-secondary,
-.dashboard-list-metrics .dashboard-block-addon-secondary {
+.dashboard-list .dashboard-block-addon-secondary {
   color: var(--color-grey-lightest);
   background-color: var(--color-secondary);
 }
 
-.dashboard-list .dashboard-block,
-.dashboard-list-metrics .dashboard-block {
+.dashboard-list .dashboard-block {
   color: var(--color-primary);
   background: var(--color-grey-ultralight);
   overflow-wrap: break-word;
 }
 
-.dashboard-list .dashboard-block.dashboard-block-extended,
-.dashboard-list-metrics .dashboard-block.dashboard-block-extended {
+.dashboard-list .dashboard-block.dashboard-block-extended {
   min-height: 100px;
 }
 
-.dashboard-list .dashboard-block:hover,
-.dashboard-list-metrics .dashboard-block:hover {
+.dashboard-list .dashboard-block:hover {
   color: var(--color-primary-text-dark);
   background-color: var(--color-grey-pale);
   text-decoration: none;
 }
 
-.dashboard-list .dashboard-block.symbol,
-.dashboard-list-metrics .dashboard-block.symbol {
+.dashboard-list .dashboard-block.symbol {
   display: flex;
   padding: 0;
   align-items: center;
   justify-content: center;
 }
 
-.dashboard-list .dashboard-block.symbol i,
-.dashboard-list-metrics .dashboard-block.symbol i {
+.dashboard-list .dashboard-block.symbol i {
   font-size: 56px;
 }
 
-.dashboard-list .dashboard-block.symbol .icon-calendar-series-svg,
-.dashboard-list-metrics .dashboard-block.symbol .icon-calendar-series-svg {
+.dashboard-list .dashboard-block.symbol .icon-calendar-series-svg {
   display: block;
   width: 56px;
   height: 56px;
@@ -109,105 +90,26 @@
   color: inherit;
 }
 
-.dashboard-list .dashboard-block h1,
-.dashboard-list-metrics .dashboard-block h1 {
+.dashboard-list .dashboard-block h1 {
   font-size: 36px;
   font-weight: normal;
 }
 
-.dashboard-list .dashboard-block h1 .fa,
-.dashboard-list-metrics .dashboard-block h1 .fa {
+.dashboard-list .dashboard-block h1 .fa {
   padding-right: 0.3em;
 }
 
-.dashboard-list .dashboard-description,
-.dashboard-list-metrics .dashboard-description {
+.dashboard-list .dashboard-description {
   padding: 0 8px;
   font-size: 20px;
 }
 
-.dashboard-list .dashboard-description ul,
-.dashboard-list-metrics .dashboard-description ul {
+.dashboard-list .dashboard-description ul {
   text-align: left;
 }
 
-.dashboard-list {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: stretch;
-}
-
-/* Equal 4-column cards matching Tickets dashboard */
-.dashboard-list-metrics {
-  display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
-  align-items: stretch;
-  margin-left: -5px;
-  margin-right: -5px;
-}
-
-.dashboard-list-metrics > .dashboard-block,
-.dashboard-list-metrics > .dashboard-block-wrapper {
-  flex: none;
-  width: auto;
-  max-width: none;
-  min-width: 0;
-  margin: 0;
-  min-height: 160px;
-  border: 5px solid var(--color-bg, #fff);
-  border-radius: 0;
-  box-sizing: border-box;
-  user-select: none;
-  position: relative;
-  overflow: hidden;
-}
-
-/* Direct tiles (e.g. live status): keep internal padding */
-.dashboard-list-metrics > .dashboard-block {
-  padding: 15px 5px;
-}
-
-/*
- * Wrappers with status bars: no padding on wrapper so the absolute
- * blue/red extension lines share the exact left/right edges of the card.
- */
-.dashboard-list-metrics > .dashboard-block-wrapper {
-  padding: 0;
-  display: flex;
-  flex-direction: column;
-}
-
-.dashboard-list-metrics > .dashboard-block-wrapper > .dashboard-block {
-  flex: 1 1 auto;
-  width: 100%;
-  max-width: 100%;
-  margin: 0;
-  padding: 15px 5px;
-  border: none;
-  border-radius: 0;
-  box-sizing: border-box;
-  min-height: 160px;
-}
-
-.dashboard-list-metrics > .dashboard-block-wrapper > .dashboard-block.dashboard-block-extended {
-  min-height: 160px;
-  padding-bottom: 44px;
-}
-
-.dashboard-list-metrics .dashboard-block-extension {
-  left: 0;
-  right: 0;
-  bottom: 0;
-  width: 100%;
-}
-
-.dashboard-list-metrics .dashboard-block h1 {
-  font-size: 40px;
-  padding: 10px 0;
-}
-
-.dashboard-list:not(.dashboard-list-metrics) > .dashboard-block,
-.dashboard-list:not(.dashboard-list-metrics) > .dashboard-block-wrapper {
+.dashboard-list > .dashboard-block,
+.dashboard-list > .dashboard-block-wrapper {
   margin: 8px;
   padding: 12px 4px;
   min-height: 160px;
@@ -215,18 +117,6 @@
   max-width: calc(100% - 16px);
   border-radius: 4px;
   user-select: none;
-}
-
-@media (max-width: 991px) {
-  .dashboard-list-metrics {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-}
-
-@media (max-width: 767px) {
-  .dashboard-list-metrics {
-    grid-template-columns: minmax(0, 1fr);
-  }
 }
 
 .dashboard-block-wrapper,
@@ -237,19 +127,4 @@
   flex: 1 0 auto;
   position: relative;
   text-align: center;
-}
-
-.dashboard-list-metrics > .dashboard-block,
-.dashboard-list-metrics > .dashboard-block-wrapper {
-  flex: none;
-}
-
-.dashboard-live {
-  margin: 6px;
-  font-size: 22px;
-}
-
-.dashboard-live-text,
-.dashboard-live {
-  margin-top: 12px;
 }

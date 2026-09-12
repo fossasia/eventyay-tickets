@@ -6,44 +6,10 @@
     padding-bottom: 32px;
 }
 
-/* Header Styles */
-.dashboard-header-status-badge {
-    font-size: 14px;
-    font-weight: 700;
-    vertical-align: middle;
-    margin-left: 8px;
-    border-radius: 16px;
-    padding: 4px 12px;
-    display: inline-block;
-}
-
-.dashboard-header-status-badge.badge-success {
-    background-color: color-mix(in srgb, var(--color-success, #28a745) 15%, transparent);
-    color: var(--color-success, #28a745);
-}
-
-.dashboard-header-status-badge.badge-info {
-    background-color: color-mix(in srgb, var(--color-info, #17a2b8) 15%, transparent);
-    color: var(--color-info, #17a2b8);
-}
-
-.dashboard-header-status-badge.badge-default {
-    background-color: color-mix(in srgb, var(--color-grey, #6c757d) 15%, transparent);
-    color: var(--color-grey, #6c757d);
-}
-
 .dashboard-header-extra {
     font-size: 16px;
     margin-top: 8px;
     font-weight: 400;
-}
-
-.dashboard-workflow-title {
-    margin-top: 0;
-    margin-bottom: 24px;
-    font-size: 18px;
-    font-weight: 600;
-    color: var(--color-primary-text);
 }
 
 /* Timeline Container */
@@ -263,9 +229,6 @@
   --td-card-gap: 12px;
   --td-kpi-min-height: 148px;
   --td-action-min-height: 168px;
-  --td-analytics-chart-height: 220px;
-  --td-analytics-summary-height: 72px;
-  --td-analytics-footer-height: 42px;
   --td-font-display: "Titillium Web", "Open Sans", system-ui, sans-serif;
   --td-font-body: "Open Sans", "Titillium Web", system-ui, sans-serif;
   /* Match tickets / default orga content width */
@@ -710,8 +673,7 @@ body:has(.td-dashboard) #page-content {
   box-shadow: var(--td-card-shadow, var(--td-shadow));
 }
 
-.td-status-card.td-status-card-off,
-.td-status-card.td-status-card-danger {
+.td-status-card.td-status-card-off {
   background: linear-gradient(135deg, var(--td-red-soft) 0%, #fff 100%);
   border: 1px solid var(--td-red);
   box-shadow: var(--td-card-shadow, var(--td-shadow));
@@ -734,9 +696,7 @@ body:has(.td-dashboard) #page-content {
 }
 
 .td-status-card.td-status-card-off:hover,
-.td-status-card.td-status-card-off:focus,
-.td-status-card.td-status-card-danger:hover,
-.td-status-card.td-status-card-danger:focus {
+.td-status-card.td-status-card-off:focus {
   border-color: var(--td-red);
   box-shadow: var(--td-shadow-hover);
 }
@@ -768,8 +728,7 @@ body:has(.td-dashboard) #page-content {
 .td-kpi-purple .td-kpi-icon { background: var(--td-purple-soft); color: var(--td-purple); }
 .td-kpi-muted .td-kpi-icon { background: #f3f4f6; color: #6b7280; }
 
-.td-kpi-label,
-.td-status-card-label {
+.td-kpi-label {
   font-family: var(--td-font-display);
   font-size: 15px;
   font-weight: 700;

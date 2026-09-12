@@ -1,0 +1,241 @@
+{% load i18n %}
+{% load money %}
+<section class="od-section" aria-labelledby="od-analytics-title">
+  <div class="od-section-heading">
+    <h2 id="od-analytics-title" class="od-section-title">
+      <span class="fa fa-line-chart od-title-icon--purple" aria-hidden="true"></span>
+      {% trans "Analytics" %}
+    </h2>
+  </div>
+
+  {# Row 1: Ticket sales & revenue beside Check-in summary (or Proposals when no check-ins) #}
+  <div class="od-analytics-grid">
+    <article class="od-panel">
+      <div class="od-panel-head">
+        <h3>{% trans "Ticket sales & revenue" %}</h3>
+        <span class="od-badge od-badge-muted">{% trans "Last 30 days" %}</span>
+      </div>
+      <div class="od-panel-body">
+        {% if has_orders %}
+          <div
+            id="orders-over-time-data"
+            class="d-none"
+            data-series="{{ orders_over_time_json }}"
+            data-label-ordered="{% trans 'Placed' %}"
+            data-label-paid="{% trans 'Paid' %}"
+          ></div>
+          <h4 class="od-subchart od-subchart--first">{% trans "Orders over time" %}</h4>
+          <div id="orders-over-time-chart" class="od-chart-host"></div>
+
+          <div class="od-subchart">
+            <div
+              id="revenue-over-time-data"
+              class="d-none"
+              data-series="{{ revenue_over_time_json }}"
+              data-currencies="{{ currencies_json }}"
+              data-label="{% trans 'Cumulative revenue' %}"
+            ></div>
+            <h4>{% trans "Revenue over time" %}</h4>
+            <div id="revenue-over-time-chart" class="od-chart-host"></div>
+          </div>
+        {% else %}
+          <div class="od-chart-empty">
+            <span class="fa fa-bar-chart" aria-hidden="true"></span>
+            <p>
+              <strong>{% trans "No ticket sales yet." %}</strong>
+              {% trans "Ticket sales and revenue data will appear here once orders are placed." %}
+            </p>
+          </div>
+        {% endif %}
+      </div>
+    </article>
+
+    {% if show_checkins %}
+      <article class="od-panel">
+        <div class="od-panel-head">
+          <h3>{% trans "Check-in summary" %}</h3>
+          <span class="od-badge od-badge-muted">{% trans "Last 30 days" %}</span>
+        </div>
+        <div class="od-panel-body">
+          <div
+            id="checkin-rate-data"
+            class="d-none"
+            data-series="{{ checkin_rate_json }}"
+            data-label-checked-in="{% trans 'Checked in' %}"
+            data-label-total="{% trans 'Total' %}"
+          ></div>
+          <div id="checkin-rate-chart" class="od-chart-host"></div>
+          <div class="od-subchart">
+            <div
+              id="checkins-over-time-data"
+              class="d-none"
+              data-series="{{ checkins_over_time_json }}"
+              data-label="{% trans 'Check-ins' %}"
+            ></div>
+            <h4>{% trans "Check-ins over time (last 30 days)" %}</h4>
+            <div id="checkins-over-time-chart" class="od-chart-host"></div>
+          </div>
+        </div>
+      </article>
+    {% else %}
+      {% include "eventyay_common/organizers/includes/analytics_proposals.html" %}
+    {% endif %}
+  </div>
+
+  {# Row 2: Proposals (when check-ins shown) + Attendance #}
+  {% if show_checkins or has_attendance %}
+    <div class="od-analytics-grid">
+      {% if show_checkins %}
+        {% include "eventyay_common/organizers/includes/analytics_proposals.html" %}
+      {% endif %}
+
+      {% if has_attendance %}
+        <article class="od-panel">
+          <div class="od-panel-head">
+            <h3>{% trans "Attendance trends" %}</h3>
+          </div>
+          <div class="od-panel-body">
+            <div class="od-filter-bar">
+              <label class="od-filter-label" for="attendance-event">{% trans "Event" %}</label>
+              <select
+                id="attendance-event"
+                class="od-filter-select"
+                data-od-attendance-filter
+                aria-label="{% trans 'Filter attendance by event' %}"
+              >
+                <option value=""{% if not attendance_selected_event_id %} selected{% endif %}>{% trans "All events" %}</option>
+                {% for event in attendance_events %}
+                  <option value="{{ event.id }}"{% if attendance_selected_event_id == event.id %} selected{% endif %}>{{ event.name }}</option>
+                {% endfor %}
+              </select>
+            </div>
+            <div
+              id="attendance-over-time-data"
+              class="d-none"
+              data-series="{{ attendance_over_time_json }}"
+              data-label-orders="{% trans 'Orders' %}"
+              data-label-registrations="{% trans 'Registrations' %}"
+            ></div>
+            {{ attendance_daily_by_event_client|json_script:"od-attendance-daily" }}
+            {{ attendance_date_labels|json_script:"od-attendance-dates" }}
+            <div id="attendance-over-time-chart" class="od-chart-host"></div>
+          </div>
+        </article>
+      {% endif %}
+    </div>
+  {% endif %}
+
+  {# Row 3: Email engagement beside Top events by ticket sales #}
+  {% if has_email_engagement or top_events or top_event_currencies %}
+    <div class="od-analytics-grid">
+      {% if has_email_engagement %}
+        <article class="od-panel">
+          <div class="od-panel-head">
+            <h3>{% trans "Email engagement" %}</h3>
+          </div>
+          <div class="od-panel-body">
+            <div class="od-table-wrap">
+              <table class="od-table">
+                <thead>
+                  <tr>
+                    <th>{% trans "Event" %}</th>
+                    <th class="text-right">{% trans "Sent" %}</th>
+                    <th class="text-right">{% trans "Queued" %}</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {% for row in email_engagement_rows %}
+                    <tr>
+                      <td>{{ row.event_name }}</td>
+                      <td class="text-right">{{ row.sent }}</td>
+                      <td class="text-right">{{ row.queued }}</td>
+                    </tr>
+                  {% endfor %}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </article>
+      {% endif %}
+
+      {% if top_events or top_event_currencies %}
+        <article class="od-panel" data-od-top-events>
+          <div class="od-panel-head">
+            <h3>{% trans "Top events by ticket sales" %}</h3>
+            {% if top_event_currencies %}
+              <div class="od-filter-bar od-filter-bar--inline">
+                <label class="sr-only" for="top-events-currency">{% trans "Currency" %}</label>
+                <select
+                  id="top-events-currency"
+                  class="od-filter-select"
+                  data-od-revenue-filter
+                  aria-label="{% trans 'Filter ticket sales by currency' %}"
+                >
+                  <option value=""{% if not selected_revenue_currency %} selected{% endif %}>{% trans "All currencies" %}</option>
+                  {% for code in top_event_currencies %}
+                    <option value="{{ code }}"{% if selected_revenue_currency == code %} selected{% endif %}>{{ code }}</option>
+                  {% endfor %}
+                </select>
+              </div>
+            {% endif %}
+          </div>
+          <div class="od-panel-body">
+            {% if top_events %}
+              <div class="od-table-wrap" data-od-top-events-table>
+                <table class="od-table">
+                  <thead>
+                    <tr>
+                      <th>{% trans "Event" %}</th>
+                      <th class="text-right">{% trans "Total orders" %}</th>
+                      <th class="text-right">{% trans "Paid orders" %}</th>
+                      <th class="text-right">{% trans "Gross revenue" %}</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {% for event in top_events %}
+                      <tr data-currency="{{ event.currency }}">
+                        <td>{{ event.name }}</td>
+                        <td class="text-right">{{ event.total_orders }}</td>
+                        <td class="text-right">{{ event.paid_orders }}</td>
+                        <td class="text-right">{{ event.gross_revenue|money:event.currency }}</td>
+                      </tr>
+                    {% endfor %}
+                  </tbody>
+                </table>
+              </div>
+              <div class="od-chart-empty od-is-hidden" data-od-top-events-empty>
+                <span class="fa fa-bar-chart" aria-hidden="true"></span>
+                <p>{% trans "No ticket sales for this currency." %}</p>
+              </div>
+            {% else %}
+              <div class="od-chart-empty">
+                <span class="fa fa-bar-chart" aria-hidden="true"></span>
+                <p>{% trans "No ticket sales for this currency." %}</p>
+              </div>
+            {% endif %}
+          </div>
+        </article>
+      {% endif %}
+    </div>
+  {% endif %}
+
+  {% if has_followers %}
+    <div class="od-analytics-grid">
+      <article class="od-panel">
+        <div class="od-panel-head">
+          <h3>{% trans "Follower growth" %}</h3>
+        </div>
+        <div class="od-panel-body">
+          <p>{% blocktrans with total=follower_total %}Total followers: {{ total }}{% endblocktrans %}</p>
+          <div
+            id="followers-weekly-data"
+            class="d-none"
+            data-series="{{ followers_weekly_json }}"
+            data-label="{% trans 'New followers' %}"
+          ></div>
+          <div id="followers-weekly-chart" class="od-chart-host"></div>
+        </div>
+      </article>
+    </div>
+  {% endif %}
+</section>

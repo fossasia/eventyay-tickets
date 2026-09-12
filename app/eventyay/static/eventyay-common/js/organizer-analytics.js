@@ -10,7 +10,23 @@ function parseData(el, attr) {
     }
 }
 
-const PALETTE = ['#2185d0', '#21ba45', '#f2711c', '#db2828', '#a333c8', '#fbbd08', '#00b5ad']
+function cssVar(name) {
+    return getComputedStyle(document.documentElement).getPropertyValue(name).trim()
+}
+
+function chartPalette() {
+    return [
+        cssVar('--color-primary'),
+        cssVar('--color-positive'),
+        cssVar('--color-warning'),
+        cssVar('--color-danger'),
+        cssVar('--color-info'),
+        cssVar('--color-code'),
+        cssVar('--color-success'),
+    ].filter(Boolean)
+}
+
+const CHART_ANIMATIONS_ENABLED = !window.matchMedia('(prefers-reduced-motion: reduce)').matches
 
 function drawOrdersOverTime() {
     const dataEl = document.getElementById('orders-over-time-data')
@@ -20,6 +36,7 @@ function drawOrdersOverTime() {
     const series = parseData(dataEl, 'series')
     if (!series || series.length === 0) return
 
+    const palette = chartPalette()
     const labelOrdered = dataEl.dataset.labelOrdered || 'Placed'
     const labelPaid = dataEl.dataset.labelPaid || 'Paid'
 
@@ -33,9 +50,9 @@ function drawOrdersOverTime() {
             height: 220,
             redrawOnParentResize: true,
             toolbar: { show: false },
-            animations: { enabled: true }
+            animations: { enabled: CHART_ANIMATIONS_ENABLED }
         },
-        colors: [PALETTE[0], PALETTE[1]],
+        colors: [palette[0], palette[1]],
         xaxis: { type: 'datetime', tooltip: { enabled: false }, labels: { format: 'dd MMM' } },
         yaxis: { min: 0, labels: { formatter: (v) => Math.round(v) } },
         stroke: { curve: 'straight', width: 2 },
@@ -48,40 +65,6 @@ function drawOrdersOverTime() {
     new ApexCharts(chartEl, options).render()
 }
 
-function drawOrdersByStatus() {
-    const dataEl = document.getElementById('orders-by-status-data')
-    const chartEl = document.getElementById('orders-by-status-chart')
-    if (!dataEl || !chartEl) return
-
-    const series = parseData(dataEl, 'series')
-    if (!series || series.length === 0) return
-
-    const options = {
-        series: series.map((d) => d.value),
-        labels: series.map((d) => d.label),
-        chart: {
-            type: 'donut',
-            height: 220,
-            redrawOnParentResize: true,
-            animations: { enabled: true },
-        },
-        colors: PALETTE,
-        dataLabels: { enabled: false },
-        legend: {
-            position: 'bottom',
-            formatter: (val, opts) => {
-                const short = val.length > 15 ? val.slice(0, 15) + '...' : val
-                return `${short} - ${opts.w.globals.series[opts.seriesIndex]}`
-            },
-        },
-        plotOptions: {
-            pie: { donut: { labels: { show: true } } },
-        },
-        tooltip: { enabled: true },
-    }
-    new ApexCharts(chartEl, options).render()
-}
-
 function drawRevenueOverTime() {
     const dataEl = document.getElementById('revenue-over-time-data')
     const chartEl = document.getElementById('revenue-over-time-chart')
@@ -90,14 +73,15 @@ function drawRevenueOverTime() {
     const series = parseData(dataEl, 'series')
     if (!series || series.length === 0) return
 
+    const palette = chartPalette()
     const currencies = parseData(dataEl, 'currencies') || []
     const label = dataEl.dataset.label || 'Revenue'
 
     const ykeys = currencies.length > 0 ? currencies : ['y']
     const labels = currencies.length > 0 ? currencies.map(c => `${label} (${c})`) : [label]
     const lineColors = currencies.length > 0
-        ? currencies.map((_, i) => PALETTE[(1 + i) % PALETTE.length])
-        : [PALETTE[1]]
+        ? currencies.map((_, i) => palette[(1 + i) % palette.length])
+        : [palette[1]]
 
     const options = {
         series: ykeys.map((key, i) => ({
@@ -109,7 +93,7 @@ function drawRevenueOverTime() {
             height: 220,
             redrawOnParentResize: true,
             toolbar: { show: false },
-            animations: { enabled: true }
+            animations: { enabled: CHART_ANIMATIONS_ENABLED }
         },
         colors: lineColors,
         xaxis: { type: 'datetime', tooltip: { enabled: false }, labels: { format: 'dd MMM' } },
@@ -139,9 +123,9 @@ function drawProposalsByState() {
             type: 'donut',
             height: 220,
             redrawOnParentResize: true,
-            animations: { enabled: true },
+            animations: { enabled: CHART_ANIMATIONS_ENABLED },
         },
-        colors: PALETTE,
+        colors: chartPalette(),
         dataLabels: { enabled: false },
         legend: {
             position: 'bottom',
@@ -166,6 +150,7 @@ function drawProposalsOverTime() {
     const series = parseData(dataEl, 'series')
     if (!series || series.length === 0) return
 
+    const palette = chartPalette()
     const label = dataEl.dataset.label || 'New proposals'
 
     const options = {
@@ -180,11 +165,11 @@ function drawProposalsOverTime() {
             height: 220,
             redrawOnParentResize: true,
             toolbar: { show: false },
-            animations: { enabled: true },
+            animations: { enabled: CHART_ANIMATIONS_ENABLED },
         },
         xaxis: { type: 'datetime', tooltip: { enabled: false }, labels: { format: 'dd MMM' } },
         yaxis: { min: 0, labels: { formatter: (v) => Math.round(v) } },
-        colors: [PALETTE[2]],
+        colors: [palette[2] || palette[0]],
         fill: { type: 'gradient' },
         dataLabels: { enabled: false },
         stroke: { curve: 'smooth', width: 2 },
@@ -202,6 +187,7 @@ function drawCheckinRate() {
     const series = parseData(dataEl, 'series')
     if (!series || series.length === 0) return
 
+    const palette = chartPalette()
     const events = series.map((d) => d.event.length > 10 ? d.event.slice(0, 7) + '...' : d.event)
     const totals = series.map((d) => d.total)
     const checkedIn = series.map((d) => d.checked_in)
@@ -219,7 +205,7 @@ function drawCheckinRate() {
             height: 220,
             redrawOnParentResize: true,
             toolbar: { show: false },
-            animations: { enabled: true },
+            animations: { enabled: CHART_ANIMATIONS_ENABLED },
         },
         plotOptions: {
             bar: {
@@ -243,7 +229,7 @@ function drawCheckinRate() {
                 formatter: (v) => Number.isInteger(v) ? v : ''
             }
         },
-        colors: [PALETTE[1], PALETTE[0]],
+        colors: [palette[1] || palette[0], palette[0]],
         dataLabels: { enabled: false },
         legend: { position: 'top' },
         tooltip: {
@@ -278,6 +264,7 @@ function drawCheckinsOverTime() {
     const series = parseData(dataEl, 'series')
     if (!series || series.length === 0) return
 
+    const palette = chartPalette()
     const label = dataEl.dataset.label || 'Check-ins'
 
     const options = {
@@ -289,9 +276,9 @@ function drawCheckinsOverTime() {
             height: 220,
             redrawOnParentResize: true,
             toolbar: { show: false },
-            animations: { enabled: true }
+            animations: { enabled: CHART_ANIMATIONS_ENABLED }
         },
-        colors: [PALETTE[3]],
+        colors: [palette[3] || palette[0]],
         xaxis: { type: 'datetime', tooltip: { enabled: false }, labels: { format: 'dd MMM' } },
         yaxis: { min: 0, labels: { formatter: (v) => Math.round(v) } },
         stroke: { curve: 'straight', width: 2 },
@@ -304,6 +291,8 @@ function drawCheckinsOverTime() {
     new ApexCharts(chartEl, options).render()
 }
 
+let attendanceChart = null
+
 function drawAttendanceOverTime() {
     if (typeof ApexCharts === 'undefined') return
 
@@ -314,6 +303,7 @@ function drawAttendanceOverTime() {
     const series = parseData(dataEl, 'series')
     if (!Array.isArray(series) || series.length === 0) return
 
+    const palette = chartPalette()
     const labelOrders = dataEl.dataset.labelOrders || 'Orders'
     const labelRegistrations = dataEl.dataset.labelRegistrations || 'Registrations'
 
@@ -327,9 +317,9 @@ function drawAttendanceOverTime() {
             height: 220,
             redrawOnParentResize: true,
             toolbar: { show: false },
-            animations: { enabled: true }
+            animations: { enabled: CHART_ANIMATIONS_ENABLED }
         },
-        colors: [PALETTE[0], PALETTE[1]],
+        colors: [palette[0], palette[1] || palette[0]],
         xaxis: { type: 'datetime', tooltip: { enabled: false }, labels: { format: 'dd MMM' } },
         yaxis: { min: 0, labels: { formatter: (v) => Math.round(v) } },
         stroke: { curve: 'straight', width: 2 },
@@ -339,34 +329,43 @@ function drawAttendanceOverTime() {
         legend: { position: 'top' },
         tooltip: { shared: true, x: { format: 'dd MMM yyyy' } }
     }
-    new ApexCharts(chartEl, options).render()
+    attendanceChart = new ApexCharts(chartEl, options)
+    attendanceChart.render().then(() => {
+        if (window.odPendingAttendanceSeries) {
+            window.odUpdateAttendanceChart(window.odPendingAttendanceSeries)
+            window.odPendingAttendanceSeries = null
+        }
+    })
 }
 
-function drawFollowerChart(dataElId, chartElId, paletteIndex, isWeekly) {
+window.odUpdateAttendanceChart = function updateAttendanceChart(series) {
+    if (!Array.isArray(series)) return
+    if (!attendanceChart) {
+        window.odPendingAttendanceSeries = series
+        return
+    }
+    const dataEl = document.getElementById('attendance-over-time-data')
+    const labelOrders = dataEl?.dataset.labelOrders || 'Orders'
+    const labelRegistrations = dataEl?.dataset.labelRegistrations || 'Registrations'
+    attendanceChart.updateSeries([
+        { name: labelOrders, data: series.map(d => ({ x: new Date(d.x), y: d.orders || 0 })) },
+        { name: labelRegistrations, data: series.map(d => ({ x: new Date(d.x), y: d.registrations || 0 })) }
+    ])
+}
+
+function drawFollowerWeekly() {
     if (typeof ApexCharts === 'undefined') return
 
-    const dataEl = document.getElementById(dataElId)
-    const chartEl = document.getElementById(chartElId)
+    const dataEl = document.getElementById('followers-weekly-data')
+    const chartEl = document.getElementById('followers-weekly-chart')
     if (!dataEl || !chartEl) return
 
     const series = parseData(dataEl, 'series')
     if (!Array.isArray(series) || series.length === 0) return
 
+    const palette = chartPalette()
     const label = dataEl.dataset.label || 'New followers'
-    const color = PALETTE[paletteIndex] ?? PALETTE[0]
-
-    const tooltipXFormatter = isWeekly
-        ? (val) => {
-            const start = new Date(val)
-            const end = new Date(start)
-            end.setDate(end.getDate() + 6)
-            const fmt = date => date.toLocaleDateString('en-GB', { day: '2-digit', month: 'short' })
-            return `${fmt(start)} - ${fmt(end)} ${start.getFullYear()}`
-        }
-        : (val) => {
-            const start = new Date(val)
-            return start.toLocaleDateString('en-GB', { month: 'short', year: 'numeric' })
-        }
+    const color = palette[4] || palette[0]
 
     const options = {
         series: [
@@ -377,13 +376,13 @@ function drawFollowerChart(dataElId, chartElId, paletteIndex, isWeekly) {
             height: 220,
             redrawOnParentResize: true,
             toolbar: { show: false },
-            animations: { enabled: true }
+            animations: { enabled: CHART_ANIMATIONS_ENABLED }
         },
         colors: [color],
         xaxis: {
             type: 'datetime',
             tooltip: { enabled: false },
-            labels: { format: isWeekly ? 'dd MMM' : 'MMM yyyy' }
+            labels: { format: 'dd MMM' }
         },
         yaxis: { min: 0, labels: { formatter: (v) => Math.round(v) } },
         stroke: { curve: 'straight', width: 2 },
@@ -391,17 +390,20 @@ function drawFollowerChart(dataElId, chartElId, paletteIndex, isWeekly) {
         markers: { size: 4, hover: { size: 6 } },
         dataLabels: { enabled: false },
         legend: { show: false },
-        tooltip: { shared: true, x: { formatter: tooltipXFormatter } }
+        tooltip: {
+            shared: true,
+            x: {
+                formatter: (val) => {
+                    const start = new Date(val)
+                    const end = new Date(start)
+                    end.setDate(end.getDate() + 6)
+                    const fmt = date => date.toLocaleDateString(undefined, { day: '2-digit', month: 'short' })
+                    return `${fmt(start)} - ${fmt(end)} ${start.getFullYear()}`
+                }
+            }
+        }
     }
     new ApexCharts(chartEl, options).render()
-}
-
-function drawFollowerWeekly() {
-    drawFollowerChart('followers-weekly-data', 'followers-weekly-chart', 4, true)
-}
-
-function drawFollowerMonthly() {
-    drawFollowerChart('followers-monthly-data', 'followers-monthly-chart', 5, false)
 }
 
 function initCharts() {
@@ -409,10 +411,9 @@ function initCharts() {
         setTimeout(initCharts, 30)
         return
     }
-    // Yield execution to the browser layout engine to fully resolve grid column widths
+    // Yield so grid column widths settle before ApexCharts measures the hosts
     setTimeout(() => {
         drawOrdersOverTime()
-        drawOrdersByStatus()
         drawRevenueOverTime()
         drawProposalsByState()
         drawProposalsOverTime()
@@ -420,7 +421,6 @@ function initCharts() {
         drawCheckinsOverTime()
         drawAttendanceOverTime()
         drawFollowerWeekly()
-        drawFollowerMonthly()
     }, 50)
 }
 
