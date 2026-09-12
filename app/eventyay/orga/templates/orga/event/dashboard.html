@@ -24,6 +24,9 @@
             <script defer src="{% static "orga/js/stats.js" %}"></script>
         {% endcompress %}
     {% endif %}
+    {% compress js %}
+        <script defer src="{% static "orga/js/internal-note.js" %}"></script>
+    {% endcompress %}
 {% endblock scripts %}
 
 {% block content %}
@@ -108,21 +111,99 @@
         {% include "orga/submission/includes/statistics.html" %}
     {% endif %}
 
-    {% if history and can_change_settings %}
-        <div class="dashboard-history mt-4">
-            <div class="d-flex">
-                <h2>{% translate "History" %}</h2>
-                {% if can_change_settings %}
-                    <small>
-                        <a href="{{ request.event.orga_urls.history }}" class="text-muted ml-2">
-                            ({% translate "Full history" %})
-                        </a>
-                    </small>
-                {% endif %}
+    <div class="td-dashboard pt-0">
+        <div class="td-split-layout mt-4">
+        {% if recent_talk_activity and can_change_settings %}
+            <div class="td-upcoming-card td-activity-card">
+                <h3 class="td-card-title mb-3">
+                    <i class="fa fa-history td-history-icon"></i>
+                    {% translate "Recent talk activity" %}
+                </h3>
+                
+                <table class="td-activity-table">
+                    <thead>
+                        <tr>
+                            <th>{% translate "When" %}</th>
+                            <th>{% translate "User" %}</th>
+                            <th>{% translate "Type" %}</th>
+                            <th>{% translate "Reference" %}</th>
+                            <th>{% translate "Message" %}</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for log in recent_talk_activity %}
+                        <tr>
+                            <td>{{ log.timestamp|date:"M d, H:i" }}</td>
+                            <td>{% if log.person %}{{ log.person.get_full_name|default:log.person.email }}{% endif %}</td>
+                            <td>
+                                {% if "session" in log.action_type %}
+                                    <span class="td-activity-badge type-session"><i class="fa fa-file-text-o"></i> Session</span>
+                                {% elif "accept" in log.action_type %}
+                                    <span class="td-activity-badge type-accepted"><i class="fa fa-check"></i> Accepted</span>
+                                {% elif "reject" in log.action_type %}
+                                    <span class="td-activity-badge type-rejected"><i class="fa fa-times"></i> Rejected</span>
+                                {% elif "schedule" in log.action_type %}
+                                    <span class="td-activity-badge type-schedule"><i class="fa fa-calendar"></i> Schedule</span>
+                                {% elif "cfp" in log.action_type %}
+                                    <span class="td-activity-badge type-cfp"><i class="fa fa-bullhorn"></i> CFP</span>
+                                {% elif "review" in log.action_type %}
+                                    <span class="td-activity-badge type-review"><i class="fa fa-eye"></i> Review</span>
+                                {% elif "speaker" in log.action_type %}
+                                    <span class="td-activity-badge type-speaker"><i class="fa fa-user"></i> Speaker</span>
+                                {% else %}
+                                    <span class="td-activity-badge type-default"><i class="fa fa-circle"></i> Log</span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                {% if log.display_object %}
+                                    <a href="#" class="td-activity-ref">{{ log.display_object|safe }}</a>
+                                {% elif log.content_object %}
+                                    {% if log.content_type.model == 'submission' %}
+                                        <a href="{{ log.content_object.orga_urls.base }}" class="td-activity-ref">{{ log.content_object.title }}</a>
+                                    {% elif log.content_type.model == 'event' %}
+                                        <a href="{{ log.content_object.orga_urls.base }}" class="td-activity-ref">{{ log.content_object.name }}</a>
+                                    {% else %}
+                                        <a href="#" class="td-activity-ref">{{ log.content_object }}</a>
+                                    {% endif %}
+                                {% else %}
+                                    <span class="text-muted">-</span>
+                                {% endif %}
+                            </td>
+                            <td class="td-activity-msg">{{ log.display }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+                <div class="text-right mt-3">
+                    <a href="{{ request.event.orga_urls.history }}" class="td-view-all-link">
+                        {% translate "View all activity >" %}
+                    </a>
+                </div>
             </div>
-
-            {% include "common/logs.html" with entries=history %}
-
+        {% else %}
+            <div></div>
+        {% endif %}
+        
+        {% if can_change_settings %}
+            <div class="td-upcoming-card td-note-card">
+                <h3 class="td-card-title mb-3">
+                    <i class="fa fa-square td-note-icon"></i>
+                    {% translate "Internal note" %}
+                </h3>
+                <form method="post" action="" class="td-note-form">
+                    {% csrf_token %}
+                    <div class="td-note-textarea-wrapper">
+                        <textarea name="internal_note" id="internal_note_textarea" class="td-note-textarea" placeholder="{% translate 'Add notes for other organizers here...' %}" maxlength="1000">{{ request.event.comment|default:"" }}</textarea>
+                    </div>
+                    <div class="td-note-footer">
+                        <span class="td-note-counter"><span id="internal_note_counter">{{ request.event.comment|length|default:"0" }}</span>/1000</span>
+                        <button type="submit" class="td-note-btn">{% translate "Save note" %}</button>
+                    </div>
+                </form>
+            </div>
+        {% else %}
+            <div></div>
+        {% endif %}
         </div>
-    {% endif %}
+    </div>
 {% endblock content %}

@@ -157,6 +157,19 @@ class EventDashboardView(EventPermissionRequired, SubmissionStatsMixin, Template
     template_name = 'orga/event/dashboard.html'
     permission_required = 'base.talk_orga_access_event'
 
+    def post(self, request, *args, **kwargs):
+        if 'internal_note' in request.POST:
+            if not request.user.has_perm('base.change_settings.event', request.event):
+                from django.core.exceptions import PermissionDenied
+                raise PermissionDenied()
+            request.event.comment = request.POST.get('internal_note')
+            request.event.save(update_fields=['comment'])
+            from django.contrib import messages
+            from django.utils.translation import gettext as _
+            messages.success(request, _('Internal note saved.'))
+            return redirect(request.path)
+        return super().get(request, *args, **kwargs)
+
     def enhance_timeline(self, event, stages):
         from django.utils.translation import gettext as _
         from eventyay.base.models import SubmissionStates
@@ -282,8 +295,15 @@ class EventDashboardView(EventPermissionRequired, SubmissionStatsMixin, Template
         return result
 
     @context
-    def history(self):
-        return LogEntry.objects.filter(event=self.request.event).select_related('user', 'event')[:20]
+    def recent_talk_activity(self):
+        return LogEntry.objects.filter(
+            Q(action_type__contains='submission') |
+            Q(action_type__contains='speaker') |
+            Q(action_type__contains='talk') |
+            Q(action_type__contains='cfp') |
+            Q(action_type__contains='review'),
+            event=self.request.event
+        ).select_related('user', 'event')[:10]
 
     def get_context_data(self, **kwargs):
         # Tiles can have priorities
