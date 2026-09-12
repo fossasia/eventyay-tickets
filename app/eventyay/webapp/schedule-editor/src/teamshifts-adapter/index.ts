@@ -149,3 +149,98 @@ export function resolveSessionKind(mode: Mode, session: { code?: string | null }
   if (session.code == null) return 'break'
   return 'talk'
 }
+
+import type { Moment } from 'moment-timezone'
+
+interface Session {
+  id: number | string
+  room?: { id: number | string } | null
+  start?: Moment | null
+  end?: Moment | null
+}
+
+interface RoomLayout {
+  colStart: number
+  colSpan: number
+}
+
+function shiftSliceName(date: Moment): string {
+  return `slice-${date.format('MM-DD-HH-mm')}`
+}
+
+export function computeRoomMaxOverlap(roomId: number | string, sessions: Session[]): number {
+  const roomSessions = sessions
+    .filter(s => s.room?.id === roomId && s.start && s.end)
+    .sort((a, b) => {
+      const diff = a.start!.diff(b.start!)
+      return diff !== 0 ? diff : (a.id < b.id ? -1 : 1)
+    })
+  if (roomSessions.length <= 1) return 1
+  let maxOverlap = 1
+  for (let i = 0; i < roomSessions.length; i++) {
+    let count = 1
+    for (let j = i + 1; j < roomSessions.length; j++) {
+      if (roomSessions[j].start!.isBefore(roomSessions[i].end!)) count++
+    }
+    if (count > maxOverlap) maxOverlap = count
+  }
+  return maxOverlap
+}
+
+export function computeShiftColumnLayout(
+  rooms: { id: number | string }[],
+  sessions: Session[]
+): Map<number | string, RoomLayout> {
+  const layout = new Map<number | string, RoomLayout>()
+  let col = 2
+  for (const room of rooms) {
+    const span = computeRoomMaxOverlap(room.id, sessions)
+    layout.set(room.id, { colStart: col, colSpan: span })
+    col += span
+  }
+  return layout
+}
+
+export function buildShiftGridTemplateColumns(
+  rooms: { id: number | string }[],
+  sessions: Session[],
+  minColWidth = '320px'
+): string {
+  const roomCols = rooms
+    .map(room => {
+      const span = computeRoomMaxOverlap(room.id, sessions)
+      return Array(span).fill(`minmax(${minColWidth}, 1fr)`).join(' ')
+    })
+    .join(' ')
+  return `78px ${roomCols} auto`
+}
+
+export function computeShiftOverlapSubcolumn(
+  session: Session,
+  allSessions: Session[],
+  columnLayout: Map<number | string, RoomLayout>
+): { gridRow: string; gridColumn: string } | null {
+  if (!session.start || !session.end || !session.room) return null
+  const roomLayout = columnLayout.get(session.room.id)
+  if (!roomLayout || roomLayout.colSpan <= 1) return null
+
+  const overlapping = allSessions
+    .filter(s => {
+      if (!s.room || !s.start || !s.end) return false
+      if (s.room.id !== session.room!.id) return false
+      return s.start.isBefore(session.end!) && s.end.isAfter(session.start!)
+    })
+    .sort((a, b) => {
+      const diff = a.start!.diff(b.start!)
+      return diff !== 0 ? diff : (a.id < b.id ? -1 : 1)
+    })
+
+  if (overlapping.length <= 1) return null
+
+  const myIndex = overlapping.findIndex(s => s.id === session.id)
+  const subCol = roomLayout.colStart + myIndex
+  return {
+    gridRow: `${shiftSliceName(session.start)} / ${shiftSliceName(session.end)}`,
+    gridColumn: `${subCol} / ${subCol + 1}`,
+  }
+}
