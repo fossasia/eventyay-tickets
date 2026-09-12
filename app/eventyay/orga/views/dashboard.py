@@ -1,4 +1,7 @@
+from django.contrib import messages
+from django.core.exceptions import PermissionDenied
 from django.db.models import Count, Q
+from django.http import Http404, HttpResponseNotAllowed
 from django.shortcuts import redirect
 from django.template.defaultfilters import timeuntil
 from django.urls import reverse
@@ -9,8 +12,6 @@ from django.utils.translation import ngettext_lazy
 from django.views.generic import TemplateView
 from django_context_decorator import context
 from django_scopes import scope, scopes_disabled
-
-from django.http import Http404
 
 def legacy_orga_event_redirect(request, event):
     from eventyay.base.models import Event
@@ -157,6 +158,20 @@ class EventDashboardView(EventPermissionRequired, SubmissionStatsMixin, Template
     template_name = 'orga/event/dashboard.html'
     permission_required = 'base.talk_orga_access_event'
 
+    def post(self, request, *args, **kwargs):
+        if 'internal_note' in request.POST:
+            if not request.user.has_perm('base.update_event', request.event):
+                raise PermissionDenied()
+            internal_note = request.POST.get('internal_note', '')
+            if len(internal_note) > 1000:
+                messages.error(request, _('Internal note must be at most 1000 characters.'))
+                return redirect(request.path)
+            request.event.comment = internal_note
+            request.event.save(update_fields=['comment'])
+            messages.success(request, _('Internal note saved.'))
+            return redirect(request.path)
+        return HttpResponseNotAllowed(['GET', 'POST'])
+
     def enhance_timeline(self, event, stages):
         from django.utils.translation import gettext as _
         from eventyay.base.models import SubmissionStates
@@ -282,8 +297,20 @@ class EventDashboardView(EventPermissionRequired, SubmissionStatsMixin, Template
         return result
 
     @context
-    def history(self):
-        return LogEntry.objects.filter(event=self.request.event).select_related('user', 'event')[:20]
+    def recent_talk_activity(self):
+        with scope(event=self.request.event):
+            return list(
+                LogEntry.objects.filter(
+                    Q(action_type__contains='submission')
+                    | Q(action_type__contains='speaker')
+                    | Q(action_type__contains='talk')
+                    | Q(action_type__contains='cfp')
+                    | Q(action_type__contains='review'),
+                    event=self.request.event,
+                )
+                .select_related('user', 'event', 'content_type')
+                .prefetch_related('content_object')[:10]
+            )
 
     def get_context_data(self, **kwargs):
         # Tiles can have priorities
