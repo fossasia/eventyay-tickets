@@ -6,20 +6,18 @@
 {% block extra_title %}{% translate "Compose email" %} :: {% endblock extra_title %}
 
 {% block mail_content %}
-    <form method="post" class="form-with-placeholder">
+    <form method="post" class="form-with-placeholder mail-composer"{% if not form.scheduled_at and not form.skip_queue %} data-always-immediate{% endif %}>
         {% csrf_token %}
-        <div class="mb-3">
-            <h2 class="d-inline">
+        <div class="composer-intro mb-3">
+            <h2 class="composer-title">
                 {% block email_editor_title %}
                     {% translate "Compose email" %}
                 {% endblock email_editor_title %}
-            </h2>
-            <h3 class="d-inline ml-1">
-                <small class="text-muted">
+                <small class="composer-title-detail text-muted">
                     <span id="composer-type">{% block email_editor_title_detail %}{% endblock email_editor_title_detail %}</span>
                     {% block email_editor_info %}{% endblock email_editor_info %}
                 </small>
-            </h3>
+            </h2>
             {% block email_editor_description %}{% endblock email_editor_description %}
             {% include "common/forms/errors.html" %}
         </div>
@@ -91,11 +89,12 @@
             </div>
         </section>
 
-        {% if form.scheduled_at %}
+        {% if form.test_email or form.scheduled_at %}
             <section class="card mb-3">
                 <div class="card-header"><strong>{% translate "Delivery" %}</strong></div>
                 <div class="card-body">
                     <fieldset>
+                        {% if form.test_email %}
                         <div class="form-group row delivery-test">
                             <label class="col-md-3 col-form-label" for="{{ form.test_email.id_for_label }}">
                                 <span>{{ form.test_email.label }}{% if form.test_email.field.required %}<span class="d-inline text-danger"> *</span>{% endif %}</span>
@@ -118,7 +117,9 @@
                                 {% endif %}
                             </div>
                         </div>
-                        <hr>
+                        {% endif %}
+                        {% if form.scheduled_at %}
+                        {% if form.test_email %}<hr>{% endif %}
                         <div class="mb-3">
                             <div class="form-check form-check-inline">
                                 <input class="form-check-input" type="radio" name="delivery_mode" id="delivery-mode-now" value="now" checked>
@@ -134,6 +135,8 @@
                                 {{ form.scheduled_at.as_field_group }}
                             {% endblock scheduled_at %}
                         </div>
+                        {% endif %}
+                        {% block delivery_extra %}{% endblock delivery_extra %}
                     </fieldset>
                 </div>
             </section>

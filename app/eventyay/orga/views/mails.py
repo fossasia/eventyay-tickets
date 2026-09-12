@@ -619,11 +619,31 @@ class ComposeMailBaseView(EventPermissionRequired, FormView):
                             content=escape(value.render_sample(self.request.event)),
                         )
 
-                    subject_data = form.cleaned_data.get('subject') or LazyI18nString({self.request.event.settings.locale or 'en': ''})
-                    text_data = form.cleaned_data.get('text') or LazyI18nString({self.request.event.settings.locale or 'en': ''})
-                    subject = nh3.clean(subject_data.localize(locale), tags=set())
+                    subject_data = form.cleaned_data.get('subject')
+                    text_data = form.cleaned_data.get('text')
+                    subject = nh3.clean(subject_data.localize(locale), tags=set()) if subject_data else ''
+                    if not subject.strip():
+                        subject = str(_('Example Subject for {event_name}'))
                     preview_subject = get_prefixed_subject(self.request.event, subject.format_map(context_dict))
-                    message = text_data.localize(locale)
+                    message = text_data.localize(locale) if text_data else ''
+                    if not str(message).strip():
+                        if 'proposal_title' in context_dict:
+                            message = str(
+                                _(
+                                    'Hello {name},\n\n'
+                                    'This is an example preview email for your proposal "{proposal_title}" '
+                                    'at {event_name}.\n\n'
+                                    'Best regards,\nThe {event_name} team'
+                                )
+                            )
+                        else:
+                            message = str(
+                                _(
+                                    'Hello {name},\n\n'
+                                    'This is an example preview email for {event_name}.\n\n'
+                                    'Best regards,\nThe {event_name} team'
+                                )
+                            )
                     preview_text = compile_email_body(message.format_map(context_dict))
                     self.output[locale] = {
                         'subject': _('Subject: {subject}').format(subject=preview_subject),

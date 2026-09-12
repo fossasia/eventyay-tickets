@@ -301,7 +301,8 @@ class WriteTeamsMailForm(WriteMailBaseForm):
 
         # Placing reviewer emails in the outbox would lead to a **ton** of permission
         # issues: who is allowed to see them, who to edit/send them, etc.
-        # Reviewer emails are always sent immediately, no scheduling.
+        # Reviewer emails are always sent immediately, no scheduling — but test emails
+        # and preview still use the shared Delivery controls.
         self.fields.pop('skip_queue')
         self.fields.pop('scheduled_at', None)
 
