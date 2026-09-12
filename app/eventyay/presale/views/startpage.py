@@ -158,6 +158,7 @@ class UpcomingEventsView(PaginationMixin, ListView):
     paginate_by = 20
 
     def get_queryset(self):
+        """Return a queryset of upcoming events, optionally filtered by open CfP status."""
         today_datetime = timezone.localtime().replace(hour=0, minute=0, second=0, microsecond=0)
         qs = Event.exclude_talks_testmode(
             Event.objects.select_related('organizer')
@@ -168,10 +169,17 @@ class UpcomingEventsView(PaginationMixin, ListView):
             .filter(testmode=False)
         ).order_by('date_from')
         if self.request.GET.get('cfp') == 'open':
-            qs = qs.filter(Q(cfp__deadline__isnull=True) | Q(cfp__deadline__gte=timezone.now()))
+            # Mirror CfP.is_open: a session type may extend the CfP beyond the general deadline.
+            now = timezone.now()
+            qs = qs.filter(
+                Q(cfp__deadline__isnull=True)
+                | Q(cfp__deadline__gte=now)
+                | Q(submission_types__deadline__gte=now)
+            ).distinct()
         return qs
 
     def get_context_data(self, **kwargs):
+        """Provide additional context variables for rendering the upcoming events list."""
         ctx = super().get_context_data(**kwargs)
         ctx['pagination_sizes'] = [20, 50, 100]
         ctx['cfp_open_filter'] = self.request.GET.get('cfp') == 'open'
