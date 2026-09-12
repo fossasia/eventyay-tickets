@@ -15,7 +15,14 @@ class GlobalPluginConfig(models.Model):
     - Whether a plugin is active on the platform at all.
     - Whether a plugin is enabled by default for newly created events.
     - Whether a plugin appears in the organiser/event plugin list.
+    - What type of plugin it is (payment provider, system, external).
+    - Whether the plugin is required and cannot be deactivated.
     """
+
+    class PluginType(models.TextChoices):
+        PAYMENT_PROVIDER = 'payment_provider', _('Payment provider')
+        SYSTEM = 'system', _('System plugin')
+        EXTERNAL = 'external', _('External plugin')
 
     module = models.CharField(
         max_length=255,
@@ -23,10 +30,22 @@ class GlobalPluginConfig(models.Model):
         verbose_name=_('Plugin module'),
         help_text=_('The Python module path of the plugin.'),
     )
+    plugin_type = models.CharField(
+        max_length=32,
+        choices=PluginType.choices,
+        default=PluginType.EXTERNAL,
+        verbose_name=_('Plugin type'),
+        help_text=_('Classification of the plugin.'),
+    )
     is_active = models.BooleanField(
         default=True,
         verbose_name=_('Active'),
         help_text=_('Controls whether the plugin is available on the platform at all.'),
+    )
+    is_required = models.BooleanField(
+        default=False,
+        verbose_name=_('Required'),
+        help_text=_('Required plugins cannot be deactivated.'),
     )
     enable_by_default = models.BooleanField(
         default=False,
@@ -38,6 +57,13 @@ class GlobalPluginConfig(models.Model):
         verbose_name=_('Show in organizer plugin list'),
         help_text=_('Controls whether the plugin appears in the organiser/event plugin settings.'),
     )
+    configured_via = models.CharField(
+        max_length=64,
+        blank=True,
+        default='',
+        verbose_name=_('Configured via'),
+        help_text=_('Describes where this plugin is configured (e.g. payment_settings, platform).'),
+    )
 
     class Meta:
         ordering = ('module',)
@@ -46,6 +72,21 @@ class GlobalPluginConfig(models.Model):
 
     def __str__(self) -> str:
         return self.module
+
+    @property
+    def is_platform_plugin(self) -> bool:
+        return self.plugin_type in (
+            self.PluginType.PAYMENT_PROVIDER,
+            self.PluginType.SYSTEM,
+        )
+
+    @property
+    def is_organiser_toggleable(self) -> bool:
+        return self.plugin_type == self.PluginType.EXTERNAL
+
+    @property
+    def can_show_in_organiser_plugin_list(self) -> bool:
+        return self.plugin_type == self.PluginType.EXTERNAL
 
     @classmethod
     def get_config(cls, module: str) -> 'GlobalPluginConfig | None':
@@ -104,7 +145,13 @@ class GlobalPluginConfig(models.Model):
         """
         try:
             return frozenset(
-                cls.objects.filter(show_in_organizer_list=False).values_list('module', flat=True)
+                cls.objects.filter(
+                    models.Q(show_in_organizer_list=False)
+                    | models.Q(plugin_type__in=[
+                        cls.PluginType.PAYMENT_PROVIDER,
+                        cls.PluginType.SYSTEM,
+                    ])
+                ).values_list('module', flat=True)
             )
         except (ProgrammingError, OperationalError):
             logger.debug('GlobalPluginConfig table not yet available, skipping filter')
@@ -115,7 +162,8 @@ class GlobalPluginConfig(models.Model):
         try:
             return frozenset(
                 cls.objects.filter(
-                    is_active=True, show_in_organizer_list=False
+                    is_active=True,
+                    is_required=True,
                 ).values_list('module', flat=True)
             )
         except (ProgrammingError, OperationalError):

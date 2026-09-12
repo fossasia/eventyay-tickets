@@ -15,64 +15,155 @@
     {% trans "Control which plugins are available on the platform, enabled by default for new events, and visible to organisers." %}
   </p>
 
-  <form method="post" action="">
+  <ul class="nav nav-tabs" role="tablist" data-global-plugins-tabs>
+    <li role="presentation" class="{% if active_tab == 'platform' %}active{% endif %}">
+      <a href="#tab-platform" aria-controls="tab-platform" role="tab" data-toggle="tab"
+         data-tab-key="platform">
+        {% trans "Platform Plugins" %}
+      </a>
+    </li>
+    <li role="presentation" class="{% if active_tab == 'external' %}active{% endif %}">
+      <a href="#tab-external" aria-controls="tab-external" role="tab" data-toggle="tab"
+         data-tab-key="external">
+        {% trans "External Plugins" %}
+      </a>
+    </li>
+  </ul>
+
+  <form method="post" action="" data-global-plugins-form>
     {% csrf_token %}
-    <div class="table-responsive">
-      <table class="table table-striped table-hover" data-global-plugins-table>
-        <thead>
-          <tr>
-            <th>{% trans "Plugin" %}</th>
-            <th class="text-center">{% trans "Active" %}</th>
-            <th class="text-center">{% trans "Enable by default" %}</th>
-            <th class="text-center">{% trans "Show in organiser plugin list" %}</th>
-          </tr>
-        </thead>
-        <tbody>
-          {% for row in plugin_rows %}
-            <tr data-plugin-row>
-              <td>
-                <strong>{{ row.name }}</strong>
-                {% if row.version %}
-                  <span class="text-muted">({{ row.version }})</span>
-                {% endif %}
-                {% if row.description %}
-                  <p class="text-muted small">{{ row.description }}</p>
-                {% endif %}
-                <code class="small">{{ row.module }}</code>
-              </td>
-              <td class="text-center">
-                <input type="checkbox"
-                       name="is_active_{{ row.module }}"
-                       data-col="active"
-                       aria-label="{% trans 'Active' %}: {{ row.name }}"
-                       {% if row.is_active %}checked{% endif %}>
-              </td>
-              <td class="text-center">
-                <input type="checkbox"
-                       name="enable_by_default_{{ row.module }}"
-                       data-col="enable_by_default"
-                       aria-label="{% trans 'Enable by default' %}: {{ row.name }}"
-                       {% if row.enable_by_default and row.is_active %}checked{% endif %}
-                       {% if not row.is_active %}disabled{% endif %}>
-              </td>
-              <td class="text-center">
-                <input type="checkbox"
-                       name="show_in_organizer_list_{{ row.module }}"
-                       data-col="show_in_organizer_list"
-                       aria-label="{% trans 'Show in organiser plugin list' %}: {{ row.name }}"
-                       {% if row.show_in_organizer_list and row.is_active %}checked{% endif %}
-                       {% if not row.is_active %}disabled{% endif %}>
-              </td>
-            </tr>
-          {% empty %}
-            <tr>
-              <td colspan="4" class="text-center text-muted">
-                {% trans "No plugins found." %}
-              </td>
-            </tr>
-          {% endfor %}
-        </tbody>
-      </table>
+    <input type="hidden" name="active_tab" value="{{ active_tab }}" data-active-tab-field>
+    <div class="tab-content">
+
+      <div role="tabpanel"
+           class="tab-pane {% if active_tab == 'platform' %}active{% endif %}"
+           id="tab-platform">
+        <p class="help-block">
+          {% trans "Platform plugins are managed globally or through dedicated settings. They are not shown in organiser plugin lists and cannot be disabled by organisers." %}
+        </p>
+        <div class="table-responsive">
+          <table class="table table-striped table-hover" data-global-plugins-table>
+            <thead>
+              <tr>
+                <th>{% trans "Plugin" %}</th>
+                <th>{% trans "Type" %}</th>
+                <th class="text-center">{% trans "Active" %}</th>
+                <th>{% trans "Controlled by" %}</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for row in platform_plugin_rows %}
+                <tr data-plugin-row data-plugin-type="platform"
+                    data-plugin-name="{{ row.name }}"
+                    data-usage-count="{{ row.usage_count }}">
+                  <td>
+                    <strong>{{ row.name }}</strong>
+                    {% if row.version %}
+                      <span class="text-muted">({{ row.version }})</span>
+                    {% endif %}
+                    {% if row.description %}
+                      <p class="text-muted small">{{ row.description }}</p>
+                    {% endif %}
+                    <code class="small">{{ row.module }}</code>
+                  </td>
+                  <td>
+                    <span class="label label-default">{{ row.plugin_type_label }}</span>
+                  </td>
+                  <td class="text-center">
+                    <input type="checkbox"
+                           name="is_active_{{ row.module }}"
+                           data-col="active"
+                           data-was-active="{% if row.is_active %}1{% endif %}"
+                           aria-label="{% trans 'Active' %}: {{ row.name }}"
+                           {% if row.is_active %}checked{% endif %}>
+                  </td>
+                  <td>
+                    {% if row.configured_via %}
+                      <span class="text-muted small">{{ row.configured_via }}</span>
+                    {% endif %}
+                  </td>
+                </tr>
+              {% empty %}
+                <tr>
+                  <td colspan="4" class="text-center text-muted">
+                    {% trans "No platform plugins found." %}
+                  </td>
+                </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      {# ── External Plugins tab ── #}
+      <div role="tabpanel"
+           class="tab-pane {% if active_tab == 'external' %}active{% endif %}"
+           id="tab-external">
+        <p class="help-block">
+          {% trans "External plugins can be made available to organisers and optionally enabled by default for new events." %}
+        </p>
+        <div class="table-responsive">
+          <table class="table table-striped table-hover" data-global-plugins-table>
+            <thead>
+              <tr>
+                <th>{% trans "Plugin" %}</th>
+                <th class="text-center">{% trans "Active" %}</th>
+                <th class="text-center">{% trans "Enable by default" %}</th>
+                <th class="text-center">{% trans "Show in organiser plugin list" %}</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for row in external_plugin_rows %}
+                <tr data-plugin-row data-plugin-type="external"
+                    data-plugin-name="{{ row.name }}"
+                    data-usage-count="{{ row.usage_count }}">
+                  <td>
+                    <strong>{{ row.name }}</strong>
+                    {% if row.version %}
+                      <span class="text-muted">({{ row.version }})</span>
+                    {% endif %}
+                    {% if row.description %}
+                      <p class="text-muted small">{{ row.description }}</p>
+                    {% endif %}
+                    <code class="small">{{ row.module }}</code>
+                  </td>
+                  <td class="text-center">
+                    <input type="checkbox"
+                           name="is_active_{{ row.module }}"
+                           data-col="active"
+                           data-was-active="{% if row.is_active %}1{% endif %}"
+                           aria-label="{% trans 'Active' %}: {{ row.name }}"
+                           {% if row.is_active %}checked{% endif %}>
+                  </td>
+                  <td class="text-center">
+                    <input type="checkbox"
+                           name="enable_by_default_{{ row.module }}"
+                           data-col="enable_by_default"
+                           aria-label="{% trans 'Enable by default' %}: {{ row.name }}"
+                           {% if row.enable_by_default and row.is_active %}checked{% endif %}
+                           {% if not row.is_active %}disabled{% endif %}>
+                  </td>
+                  <td class="text-center">
+                    <input type="checkbox"
+                           name="show_in_organizer_list_{{ row.module }}"
+                           data-col="show_in_organizer_list"
+                           aria-label="{% trans 'Show in organiser plugin list' %}: {{ row.name }}"
+                           {% if row.show_in_organizer_list and row.is_active %}checked{% endif %}
+                           {% if not row.is_active %}disabled{% endif %}>
+                  </td>
+                </tr>
+              {% empty %}
+                <tr>
+                  <td colspan="4" class="text-center text-muted">
+                    {% trans "No external plugins found." %}
+                  </td>
+                </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+
     </div>
 
     <div class="form-group submit-group">
