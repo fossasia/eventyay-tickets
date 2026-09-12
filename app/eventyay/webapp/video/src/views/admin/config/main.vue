@@ -13,10 +13,18 @@
 				button.tab-btn(type="button", role="tab", v-if="hasStage", :class="{active: activeTab === 'stages'}", @click="activeTab = 'stages'") {{ $t('Stages & Streams') }}
 			.tab-content(v-if="hasGeneral", v-show="activeTab === 'general'")
 				h2 {{ $t('Live platform features') }}
-				bunt-checkbox(v-model="config.live_features.chat_rooms", :label="$t('Enable Chat Rooms')", name="enable_chat_rooms")
-				bunt-checkbox(v-model="config.live_features.kiosks", :label="$t('Enable Kiosks')", name="enable_kiosks")
-				bunt-checkbox(v-model="config.live_features.direct_messaging", :label="$t('Enable Direct messaging')", name="enable_direct_messaging")
-				bunt-checkbox(v-model="config.live_features.announcements", :label="$t('Allow Announcements')", name="allow_announcements")
+				bunt-checkbox(v-model="config.live_features.chat_rooms", name="enable_chat_rooms")
+					span.feature-label {{ $t('Enable Chat Rooms') }}
+					span.badge-experimental {{ $t('Experimental') }}
+				bunt-checkbox(v-model="config.live_features.kiosks", name="enable_kiosks")
+					span.feature-label {{ $t('Enable Kiosks') }}
+					span.badge-experimental {{ $t('Experimental') }}
+				bunt-checkbox(v-model="config.live_features.direct_messaging", name="enable_direct_messaging")
+					span.feature-label {{ $t('Enable Direct messaging') }}
+					span.badge-experimental {{ $t('Experimental') }}
+				bunt-checkbox(v-model="config.live_features.announcements", name="allow_announcements")
+					span.feature-label {{ $t('Allow Announcements') }}
+					span.badge-experimental {{ $t('Experimental') }}
 				h2 {{ $t('Tracking and statistics') }}
 				bunt-checkbox(v-model="config.track_room_views", :label="$t('Track room views')", name="track_room_views")
 				bunt-checkbox(v-model="config.track_video_event_views", :label="$t('Track video event views')", name="track_video_event_views")
@@ -79,7 +87,7 @@ const config = ref({
 		chat_rooms: false,
 		kiosks: false,
 		direct_messaging: false,
-		announcements: true
+		announcements: false
 	},
 	bbb_defaults: {
 		record: false,
@@ -136,7 +144,7 @@ async function fetchConfig() {
 				chat_rooms: false,
 				kiosks: false,
 				direct_messaging: false,
-				announcements: true
+				announcements: false
 			}, data.live_features || {})
 		}
 		hlsConfig.value = data.video_player?.['hls.js'] ? JSON.stringify(data.video_player['hls.js'], null, 2) : ''
@@ -179,7 +187,7 @@ async function save() {
 				chat_rooms: Boolean(config.value.live_features?.chat_rooms),
 				kiosks: Boolean(config.value.live_features?.kiosks),
 				direct_messaging: Boolean(config.value.live_features?.direct_messaging),
-				announcements: config.value.live_features?.announcements !== false
+				announcements: Boolean(config.value.live_features?.announcements)
 			}
 			if (features?.enabled('conftool')) {
 				patch.conftool_url = config.value.conftool_url || ''
@@ -248,6 +256,17 @@ async function save() {
 	.tab-content
 		display: flex
 		flex-direction: column
+	.badge-experimental
+		display: inline-block
+		margin-left: 8px
+		padding: 2px 6px
+		font-size: 11px
+		font-weight: 500
+		line-height: 1.2
+		border-radius: 4px
+		background-color: $clr-grey-200
+		color: $clr-secondary-text-light
+		vertical-align: middle
 	.ui-form-actions
 		flex: none
 		position: sticky

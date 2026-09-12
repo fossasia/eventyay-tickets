@@ -163,7 +163,7 @@ class VideoSPAView(View):
                     'chat_rooms': False,
                     'kiosks': False,
                     'direct_messaging': False,
-                    'announcements': True,
+                    'announcements': False,
                     **(cfg.get('live_features') or {}),
                 },
                 'externalAuthUrl': getattr(event, 'external_auth_url', None),
