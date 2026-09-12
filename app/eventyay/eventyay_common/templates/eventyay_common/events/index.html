@@ -5,12 +5,30 @@
 {% load bootstrap3 %}
 {% block title %}{% trans "Events management" %}{% endblock %}
 
-{% block custom_header %}
-    {{ block.super }}
-{% endblock %}
-
 {% block content %}
-    <h1>{% trans "Events" %}</h1>
+    <div class="events-page-header">
+        <h1>{% trans "Events" %}</h1>
+        <a href='{% url "eventyay_common:events.add" %}' class="btn btn-primary create-event-btn">
+            <span class="fa fa-plus"></span>
+            {% trans "Create Event" %}
+        </a>
+    </div>
+
+    <ul class="events-status-tabs">
+        <li class="tab-item {% if request.GET.status == 'live' or not request.GET.status %}active{% endif %}">
+            <a href="?{% url_replace request 'status' 'live' %}">{% trans "Live" %}</a>
+        </li>
+        <li class="tab-item {% if request.GET.status == 'draft' %}active{% endif %}">
+            <a href="?{% url_replace request 'status' 'draft' %}">{% trans "Draft" %}</a>
+        </li>
+        <li class="tab-item {% if request.GET.status == 'past' %}active{% endif %}">
+            <a href="?{% url_replace request 'status' 'past' %}">{% trans "Past" %}</a>
+        </li>
+        <li class="tab-item {% if request.GET.status == 'all' %}active{% endif %}">
+            <a href="?{% url_replace request 'status' 'all' %}">{% trans "All" %}</a>
+        </li>
+    </ul>
+
     {% if events|length == 0 and not filter_form.filtered %}
         {% url 'eventyay_common:events.add' as create_event_url %}
         {% trans "No events yet" as empty_title %}
@@ -29,155 +47,201 @@
     {% else %}
         <div class="advanced-filter-search" data-advanced-filter-search>
             <form class="filter-form advanced-filter-search-form" action="" method="get">
-                <div class="advanced-filter-search-bar">
-                    <div class="input-group advanced-filter-search-query-group">
-                        <input id="id_query" type="text" name="query" class="form-control" placeholder="{% trans 'Search events…' %}" aria-label="{% trans 'Search events…' %}" value="{{ filter_form.query.value|default_if_none:'' }}">
-                        <span class="input-group-btn">
-                            <button class="btn btn-primary" type="submit">
-                                <span class="fa fa-search" aria-hidden="true"></span>
-                                {% trans "Search" %}
-                            </button>
-                        </span>
+                <input type="hidden" name="status" value="{{ request.GET.status|default:'live' }}">
+                <div class="events-filter-bar">
+                    <div class="events-search-wrapper">
+                        <input id="id_query" type="text" name="query" class="form-control" placeholder="{% trans 'Search events...' %}" aria-label="{% trans 'Search events...' %}" value="{{ filter_form.query.value|default_if_none:'' }}">
+                        <i class="fa fa-search search-icon-inside"></i>
                     </div>
-                    <div class="advanced-filter-field advanced-filter-field--inline">
-                        {% bootstrap_field filter_form.status layout='inline' %}
-                    </div>
-                    <div class="advanced-filter-field advanced-filter-field--inline">
+                    <div class="events-organizer-wrapper">
                         {% bootstrap_field filter_form.organizer layout='inline' %}
                     </div>
-                    <div class="advanced-filter-search-actions">
+                    <div class="events-filter-actions">
                         <button class="btn btn-primary" type="submit">
                             <span class="fa fa-filter" aria-hidden="true"></span>
                             {% trans "Filter" %}
                         </button>
                         <a href="{{ request.path }}" class="btn btn-default btn-clear-filter" aria-label="{% trans 'Clear filters' %}" title="{% trans 'Clear filters' %}">
-                            <span class="fa fa-eraser" aria-hidden="true"></span>
-                            <span class="sr-only">{% trans "Clear filters" %}</span>
+                            <span class="fa fa-refresh" aria-hidden="true"></span>
+                            {% trans "Reset" %}
                         </a>
                     </div>
                 </div>
             </form>
         </div>
-        <div data-ajax-results-region>
-            <p>
-                <a href='{% url "eventyay_common:events.add" %}' class="btn btn-default">
-                    <span class="fa fa-plus"></span>
-                    {% trans "Create Event" %}
-                </a>
-                {% if event_series_creation_enabled %}
-                <a href='{% url "eventyay_common:events.add" %}?series=1' class="btn btn-default">
-                    {% include "eventyay_common/includes/icon_calendar_series.html" %}
-                    {% trans "Create Event Series" %}
-                </a>
-                {% endif %}
-                {% if meetup_creation_enabled %}
-                <a href='{% url "eventyay_common:events.add" %}?meetup=1' class="btn btn-default">
-                    <span class="fa fa-users"></span>
-                    {% trans "Create Meetup" %}
-                </a>
-                {% endif %}
-            </p>
+        <div data-ajax-results-region class="events-table-wrapper">
             <table class="table table-condensed table-hover events-table">
                 <thead>
                 <tr>
                 <th>
-                    {% trans "Event name" %}
+                    {% trans "Logo" %}
                 </th>
                 <th>
-                    {% trans "Short form" %}
+                    {% trans "Event name" %}
+                    {% if request.GET.ordering == 'name' %}
+                        <a href="?{% url_replace request 'ordering' '-name' %}" class="active-sort"><i class="fa fa-sort-asc"></i></a>
+                    {% elif request.GET.ordering == '-name' %}
+                        <a href="?{% url_replace request 'ordering' 'name' %}" class="active-sort"><i class="fa fa-sort-desc"></i></a>
+                    {% else %}
+                        <a href="?{% url_replace request 'ordering' 'name' %}"><i class="fa fa-sort"></i></a>
+                    {% endif %}
                 </th>
                 <th>
                     {% trans "Organizer" %}
-                    <a href="?{% url_replace request 'ordering' '-organizer' %}"><i class="fa fa-caret-down"></i></a>
-                    <a href="?{% url_replace request 'ordering' 'organizer' %}"><i class="fa fa-caret-up"></i></a>
+                    {% if request.GET.ordering == 'organizer' %}
+                        <a href="?{% url_replace request 'ordering' '-organizer' %}" class="active-sort"><i class="fa fa-sort-asc"></i></a>
+                    {% elif request.GET.ordering == '-organizer' %}
+                        <a href="?{% url_replace request 'ordering' 'organizer' %}" class="active-sort"><i class="fa fa-sort-desc"></i></a>
+                    {% else %}
+                        <a href="?{% url_replace request 'ordering' 'organizer' %}"><i class="fa fa-sort"></i></a>
+                    {% endif %}
                 </th>
                 <th>
                     {% trans "Start date" %}
-                    <a href="?{% url_replace request 'ordering' '-date_from' %}"><i class="fa fa-caret-down"></i></a>
-                    <a href="?{% url_replace request 'ordering' 'date_from' %}"><i class="fa fa-caret-up"></i></a>
-                    /
-                    {% trans "End date" %}
-                    <a href="?{% url_replace request 'ordering' '-date_to' %}"><i class="fa fa-caret-down"></i></a>
-                    <a href="?{% url_replace request 'ordering' 'date_to' %}"><i class="fa fa-caret-up"></i></a>
+                    {% if request.GET.ordering == 'date_from' %}
+                        <a href="?{% url_replace request 'ordering' '-date_from' %}" class="active-sort"><i class="fa fa-sort-asc"></i></a>
+                    {% elif request.GET.ordering == '-date_from' %}
+                        <a href="?{% url_replace request 'ordering' 'date_from' %}" class="active-sort"><i class="fa fa-sort-desc"></i></a>
+                    {% else %}
+                        <a href="?{% url_replace request 'ordering' '-date_from' %}"><i class="fa fa-sort"></i></a>
+                    {% endif %}
                 </th>
                 <th>
-                    {% trans "Paid tickets per quota" %}
-                    <a href="?{% url_replace request 'ordering' '-total_quota' %}"><i class="fa fa-caret-down"></i></a>
-                    <a href="?{% url_replace request 'ordering' 'total_quota' %}"><i class="fa fa-caret-up"></i></a>
+                    {% trans "End date" %}
+                    {% if request.GET.ordering == 'date_to' %}
+                        <a href="?{% url_replace request 'ordering' '-date_to' %}" class="active-sort"><i class="fa fa-sort-asc"></i></a>
+                    {% elif request.GET.ordering == '-date_to' %}
+                        <a href="?{% url_replace request 'ordering' 'date_to' %}" class="active-sort"><i class="fa fa-sort-desc"></i></a>
+                    {% else %}
+                        <a href="?{% url_replace request 'ordering' '-date_to' %}"><i class="fa fa-sort"></i></a>
+                    {% endif %}
+                </th>
+                <th>
+                    {% trans "Tickets" %} <i class="fa fa-info-circle text-muted" data-toggle="tooltip" title="{% trans 'Ticket information' %}"></i>
+                    {% if request.GET.ordering == 'total_quota' %}
+                        <a href="?{% url_replace request 'ordering' '-total_quota' %}" class="active-sort"><i class="fa fa-sort-asc"></i></a>
+                    {% elif request.GET.ordering == '-total_quota' %}
+                        <a href="?{% url_replace request 'ordering' 'total_quota' %}" class="active-sort"><i class="fa fa-sort-desc"></i></a>
+                    {% else %}
+                        <a href="?{% url_replace request 'ordering' '-total_quota' %}"><i class="fa fa-sort"></i></a>
+                    {% endif %}
+                </th>
+                <th>
+                    {% trans "Sessions" %} <i class="fa fa-info-circle text-muted" data-toggle="tooltip" title="{% trans 'Session statistics' %}"></i>
+                </th>
+                <th>
+                    {% trans "Speakers" %} <i class="fa fa-info-circle text-muted" data-toggle="tooltip" title="{% trans 'Speaker statistics' %}"></i>
+                </th>
+                <th>
+                    {% trans "Public URL" %}
                 </th>
                 <th>
                     {% trans "Shop" %}
-                    <a href="?{% url_replace request 'ordering' '-live' %}"><i class="fa fa-caret-down"></i></a>
-                    <a href="?{% url_replace request 'ordering' 'live' %}"><i class="fa fa-caret-up"></i></a>
-                </th>
-                <th class="text-right flip">
-                    {% trans "Actions" %}
+                    {% if request.GET.ordering == 'live' %}
+                        <a href="?{% url_replace request 'ordering' '-live' %}" class="active-sort"><i class="fa fa-sort-asc"></i></a>
+                    {% elif request.GET.ordering == '-live' %}
+                        <a href="?{% url_replace request 'ordering' 'live' %}" class="active-sort"><i class="fa fa-sort-desc"></i></a>
+                    {% else %}
+                        <a href="?{% url_replace request 'ordering' '-live' %}"><i class="fa fa-sort"></i></a>
+                    {% endif %}
                 </th>
                 </tr>
                 </thead>
                 <tbody>
                 {% for e in events %}
                     <tr>
-                    <td class="event-name-col" data-label="{% trans 'Event name' %}">
-                        <strong><a href='{% url "eventyay_common:event.index" organizer=e.organizer.slug event=e.slug %}'>{{ e.name }}</a></strong>
-                    </td>
-                    <td data-label="{% trans 'Short form' %}">{{ e.slug }}</td>
-                    <td data-label="{% trans 'Organizer' %}">{{ e.organizer }}</td>
-                    <td class="event-date-col" data-label="{% trans 'Date' %}">
-                        {% if e.has_subevents %}
-                            {{ e.min_from|default_if_none:""|date:"SHORT_DATETIME_FORMAT" }}
+                    <td data-label="{% trans 'Logo' %}">
+                        {% if e.logo %}
+                            <img src="{{ e.logo.url }}" alt="{% trans 'Event logo' %}" class="event-logo-img">
                         {% else %}
-                            {{ e.get_short_date_from_display }}
+                            <div class="event-logo-placeholder">
+                                <i class="fa fa-image"></i>
+                            </div>
                         {% endif %}
+                    </td>
+                    <td data-label="{% trans 'Event name' %}">
+                        <strong><a href="{% url 'control:event.index' organizer=e.organizer.slug event=e.slug %}">{{ e.name }}</a></strong>
+                    </td>
+                    <td data-label="{% trans 'Organizer' %}">
+                        {{ e.organizer.name }}
+                    </td>
+                    <td class="event-date-col" data-label="{% trans 'Start date' %}">
                         {% if e.has_subevents %}
+                            {{ e.min_from|default_if_none:""|date:"SHORT_DATE_FORMAT" }}
                             <span class="label label-default">{% trans "Series" %}</span>
-                        {% endif %}
-                        {% if e.settings.show_date_to and e.date_to %}
-                            –<br>
-                            {% if e.has_subevents %}
-                                {{ e.max_fromto|default_if_none:e.max_from|default_if_none:e.max_to|default_if_none:""|date:"SHORT_DATETIME_FORMAT" }}
-                            {% else %}
-                                {{ e.get_short_date_to_display }}
-                            {% endif %}
+                        {% else %}
+                            {{ e.date_from|default_if_none:""|date:"SHORT_DATE_FORMAT" }}
                         {% endif %}
                         {% if e.settings.timezone != request.timezone %}
                             <span class="fa fa-globe text-muted" data-toggle="tooltip" title="{{ e.timezone }}"></span>
                         {% endif %}
                     </td>
-                    <td data-label="{% trans 'Paid tickets' %}">
-                        {% for q in e.first_quotas|slice:":3" %}
-                            {% include "pretixcontrol/fragment_quota_box_paid.html" with quota=q %}
-                        {% endfor %}
-                        {% if e.first_quotas|length > 3 %}
-                            <a href="{% url 'control:event.products.quotas' organizer=e.organizer.slug event=e.slug %}"
-                               class="quotabox-more" data-toggle="tooltip" title="{% trans 'More quotas' %}"
-                               aria-label="{% trans 'More quotas' %}" data-placement="top">
-                                &middot;&middot;&middot;
-                            </a>
+                    <td class="event-date-col" data-label="{% trans 'End date' %}">
+                        {% if e.settings.show_date_to and e.date_to %}
+                            {% if e.has_subevents %}
+                                {{ e.max_fromto|default_if_none:e.max_from|default_if_none:e.max_to|default_if_none:""|date:"SHORT_DATE_FORMAT" }}
+                            {% else %}
+                                {{ e.date_to|default_if_none:""|date:"SHORT_DATE_FORMAT" }}
+                            {% endif %}
                         {% endif %}
                     </td>
-                    <td data-label="{% trans 'Shop' %}" class="events-table__cell--no-border">
-                        {% if not e.live %}
-                            <span class="label label-danger">{% trans "Shop disabled" %}</span>
-                        {% elif e.presale_has_ended %}
-                            <span class="label label-warning">{% trans "Presale over" %}</span>
-                        {% elif not e.presale_is_running %}
-                            <span class="label label-warning">{% trans "Presale not started" %}</span>
+                    <td data-label="{% trans 'Tickets' %}">
+                        {% if e.first_quotas %}
+                            <div class="quota-list-container">
+                                {% for q in e.first_quotas|slice:":4" %}
+                                    <div class="quota-item-row">
+                                        <span class="quota-name-count">{{ q.name }} ({{ q.cached_availability_paid_orders|default:0 }} / {{ q.size|default_if_none:"∞" }})</span>
+                                        {% if q.size %}
+                                            <div class="quota-bar-wrapper">
+                                                <div class="quota-bar-bg">
+                                                    <div class="quota-bar-fill {% if q.percent_paid == 100 %}quota-full{% elif q.percent_paid > 50 %}quota-high{% else %}quota-low{% endif %}" style="width: {{ q.percent_paid }}%;"></div>
+                                                </div>
+                                                <span class="quota-percent">{{ q.percent_paid }}%</span>
+                                            </div>
+                                        {% endif %}
+                                    </div>
+                                {% endfor %}
+                                {% if e.total_quota %}
+                                    <div class="quota-total-sales">
+                                        {% trans "Total Sales" %} - {{ e.total_quota }}
+                                    </div>
+                                {% endif %}
+                            </div>
                         {% else %}
-                            <span class="label label-success">{% trans "On sale" %}</span>
+                            <span class="text-muted">{% trans "No Ticket Information" %}</span>
                         {% endif %}
                     </td>
-                    <td class="text-right flip">
-                        <a href='{% url "eventyay_common:event.create_access_to_video" organizer=e.organizer.slug event=e.slug %}'
-                           class="btn btn-sm btn-default" title="{% trans "Enable video access" %}"
-                           data-toggle="tooltip">
-                            <span class="fa fa-video-camera"></span>
-                        </a>
-                        <a href='{% url "eventyay_common:event.update" organizer=e.organizer.slug event=e.slug %}'
-                           class="btn btn-sm btn-default" title="{% trans "Edit" %}"
-                           data-toggle="tooltip">
-                            <span class="fa fa-edit"></span>
-                        </a>
+                    <td data-label="{% trans 'Sessions' %}">
+                        <div>{% trans "Submitted:" %} {{ e.sessions_submitted|default:0 }}</div>
+                        <div>{% trans "Accepted:" %} {{ e.sessions_accepted|default:0 }}</div>
+                        <div>{% trans "Confirmed:" %} {{ e.sessions_confirmed|default:0 }}</div>
+                        <div>{% trans "Pending:" %} {{ e.sessions_pending|default:0 }}</div>
+                        <div>{% trans "Rejected:" %} {{ e.sessions_rejected|default:0 }}</div>
+                        <div>{% trans "Withdrawn:" %} {{ e.sessions_withdrawn|default:0 }}</div>
+                        <div>{% trans "Canceled:" %} {{ e.sessions_canceled|default:0 }}</div>
+                    </td>
+                    <td data-label="{% trans 'Speakers' %}">
+                        <div>{% trans "Total:" %} {{ e.speakers_total|default:0 }}</div>
+                        <div>{% trans "Accepted:" %} {{ e.speakers_accepted|default:0 }}</div>
+                        <div>{% trans "Confirmed:" %} {{ e.speakers_confirmed|default:0 }}</div>
+                        <div>{% trans "Pending:" %} {{ e.speakers_pending|default:0 }}</div>
+                        <div>{% trans "Rejected:" %} {{ e.speakers_rejected|default:0 }}</div>
+                        <div>{% trans "Withdrawn:" %} {{ e.speakers_withdrawn|default:0 }}</div>
+                        <div>{% trans "Canceled:" %} {{ e.speakers_canceled|default:0 }}</div>
+                    </td>
+                    <td data-label="{% trans 'Public URL' %}">
+                        <a href="{{ e.url }}" class="public-url-link">/{{ e.slug }} <i class="fa fa-external-link"></i></a>
+                    </td>
+                    <td data-label="{% trans 'Shop' %}">
+                        {% if not e.live %}
+                            <span class="shop-badge shop-badge-danger">{% trans "Shop disabled" %}</span>
+                        {% elif e.presale_has_ended %}
+                            <span class="shop-badge shop-badge-warning">{% trans "Presale over" %}</span>
+                        {% elif not e.presale_is_running %}
+                            <span class="shop-badge shop-badge-warning">{% trans "Presale not started" %}</span>
+                        {% else %}
+                            <span class="shop-badge shop-badge-success">{% trans "On sale" %}</span>
+                        {% endif %}
                     </td>
                     </tr>
                 {% endfor %}

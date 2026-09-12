@@ -17,7 +17,7 @@ from django.core.files import File
 from django.core.files.storage import default_storage
 from django.db import transaction
 from django.db.models.deletion import ProtectedError
-from django.db.models import Case, F, Max, Min, Prefetch, Q, Sum, When, IntegerField
+from django.db.models import Case, F, Max, Min, Prefetch, Q, Sum, When, IntegerField, Count, OuterRef, Subquery
 from django.db.models.functions import Coalesce, Greatest
 from django.http import HttpRequest, HttpResponseRedirect, JsonResponse
 from django.shortcuts import redirect
@@ -28,7 +28,7 @@ from django.utils.functional import cached_property
 from django.utils.timezone import get_current_timezone_name
 from django.utils.translation import gettext_lazy as _
 from django.views.generic import FormView, ListView, TemplateView
-from django_scopes import scope
+from django_scopes import scope, scopes_disabled
 from zoneinfo import ZoneInfo
 from rest_framework import views
 from django.views import View
@@ -51,6 +51,7 @@ from eventyay.base.meetup import (
     provision_meetup_event,
 )
 from eventyay.base.models import Event, EventMetaValue, GlobalPluginConfig, Organizer, Quota
+from eventyay.base.models.submission import Submission, SpeakerRole
 from eventyay.base.services.notifications import notify_organizer_followers
 from eventyay.base.models.cfp import default_fields
 from eventyay.consts import DEFAULT_PLUGINS
@@ -161,6 +162,53 @@ class EventList(PaginationMixin, ListView):
     def get_context_data(self, **kwargs):
         ctx = super().get_context_data(**kwargs)
         ctx['filter_form'] = self.filter_form
+
+        events = list(ctx['events'])
+        if events:
+            event_ids = [e.pk for e in events]
+            submissions = Submission.objects.filter(event_id__in=event_ids).values('id', 'event_id', 'state', 'pending_state')
+            speaker_roles = SpeakerRole.objects.filter(submission__event_id__in=event_ids).values('speaker_id', 'submission__event_id', 'submission__state', 'submission__pending_state')
+
+            sessions_map = {eid: {'submitted': 0, 'accepted': 0, 'confirmed': 0, 'pending': 0, 'rejected': 0, 'withdrawn': 0, 'canceled': 0} for eid in event_ids}
+            speakers_map = {eid: {'total': set(), 'accepted': set(), 'confirmed': set(), 'pending': set(), 'rejected': set(), 'withdrawn': set(), 'canceled': set()} for eid in event_ids}
+
+            for sub in submissions:
+                eid = sub['event_id']
+                st = sub['state']
+                if sub['pending_state'] is not None:
+                    sessions_map[eid]['pending'] += 1
+                elif st in sessions_map[eid]:
+                    sessions_map[eid][st] += 1
+
+            for sr in speaker_roles:
+                eid = sr['submission__event_id']
+                st = sr['submission__state']
+                spk_id = sr['speaker_id']
+                speakers_map[eid]['total'].add(spk_id)
+                if sr['submission__pending_state'] is not None:
+                    speakers_map[eid]['pending'].add(spk_id)
+                elif st in speakers_map[eid]:
+                    speakers_map[eid][st].add(spk_id)
+
+            for event in events:
+                eid = event.pk
+                sess = sessions_map.get(eid, {})
+                spk = speakers_map.get(eid, {})
+                event.sessions_submitted = sess.get('submitted', 0)
+                event.sessions_accepted = sess.get('accepted', 0)
+                event.sessions_confirmed = sess.get('confirmed', 0)
+                event.sessions_pending = sess.get('pending', 0)
+                event.sessions_rejected = sess.get('rejected', 0)
+                event.sessions_withdrawn = sess.get('withdrawn', 0)
+                event.sessions_canceled = sess.get('canceled', 0)
+
+                event.speakers_total = len(spk.get('total', set()))
+                event.speakers_accepted = len(spk.get('accepted', set()))
+                event.speakers_confirmed = len(spk.get('confirmed', set()))
+                event.speakers_pending = len(spk.get('pending', set()))
+                event.speakers_rejected = len(spk.get('rejected', set()))
+                event.speakers_withdrawn = len(spk.get('withdrawn', set()))
+                event.speakers_canceled = len(spk.get('canceled', set()))
 
         quotas = []
         for s in ctx['events']:
@@ -481,26 +529,16 @@ class EventCreateView(TemplateView):
             basics_post = legacy_data.get('basics')
             if not basics_post:
                 return redirect(request.path)
-            basics_form_class = MeetupEventWizardBasicsForm if self.is_meetup_request else EventWizardBasicsForm
-            basics_form = basics_form_class(
-                data=basics_post,
-                initial=self.get_basics_initial(foundation_form.cleaned_data),
-                prefix='basics',
-                user=self.request.user,
-                session=self.request.session,
-                organizer=foundation_form.cleaned_data['organizer'],
-                has_subevents=foundation_form.cleaned_data.get('has_subevents', False),
-                locales=foundation_form.cleaned_data.get('locales') or ['en'],
-                content_locales=foundation_form.cleaned_data.get('content_locales'),
-                is_video_creation=foundation_form.cleaned_data.get('is_video_creation', True),
-                restrict_locale_choices=False,
-            )
             copy_from_event = request.POST.get('copy-copy_from_event')
             if copy_from_event:
                 try:
                     self._clone_from = self.get_clone_queryset().get(pk=copy_from_event)
                 except Event.DoesNotExist:
                     self._clone_from = None
+            basics_form = self.get_basics_form(
+                foundation_form.cleaned_data,
+                data=basics_post,
+            )
             if basics_form.is_valid():
                 request.session.pop(self.legacy_session_key, None)
                 return self.create_event(foundation_form, basics_form)
@@ -1264,12 +1302,15 @@ class VideoAccessAuthenticator(View):
     def get(self, request, *args, **kwargs):
         """
         Check if the video configuration is complete, the plugin is enabled, and the user has permission to modify the event settings.
-        If configuration is missing, automatically set it up. Then redirect directly to the session-authenticated video organizer dashboard.
+        Require can_change_event_settings before auto-setting up video configuration. Then redirect directly to the session-authenticated video organizer dashboard.
         @param request: user request
         @param args: arguments
         @param kwargs: keyword arguments
         @return: redirect to the video organizer dashboard
         """
+        if not request.user.has_event_permission(request.organizer, request.event, 'can_change_event_settings', request=request):
+            raise PermissionDenied(_('You do not have permission to change event settings.'))
+
         # Auto-setup video configuration if missing
         self._ensure_video_configuration()
 
