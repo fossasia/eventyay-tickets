@@ -1,120 +1,223 @@
 {% load i18n %}
-{% load static %}
 
-{% if submission_timeline_data or submission_type_data or submission_track_data or submission_state_data or submission_language_data or talk_timeline_data or talk_type_data or talk_track_data or talk_state_data or talk_language_data %}
-<div id="stats" class="mt-4">
-    <div id="global-data" class="d-none" data-url="{{ request.event.orga_urls.submissions }}?" data-mapping="{{ id_mapping }}" data-annotations="{{ timeline_annotations }}"></div>
+{% if stats_payload %}
+{% translate "Total" as total_label %}
+{% translate "Total sessions" as label_total_sessions %}
+{% translate "Peak day" as label_peak_day %}
+{% translate "Accepted rate" as label_accepted_rate %}
+{% translate "Top type" as label_top_type %}
+{% translate "Top track" as label_top_track %}
+{% translate "Top tag" as label_top_tag %}
+{% translate "Total types" as label_total_types %}
+{% translate "Total tracks" as label_total_tracks %}
+{% translate "Total tags" as label_total_tags %}
+{% translate "Name" as label_name %}
+{% translate "Count" as label_count %}
+{% translate "No data" as label_no_data %}
+{% translate "Scheduled" as label_scheduled %}
+{% translate "Unscheduled" as label_unscheduled %}
+{% translate "Accepted" as label_accepted %}
+{% translate "Not accepted" as label_not_accepted %}
+{% translate "Sessions" as label_sessions %}
+{% translate "No track" as label_no_track %}
+{% translate "selected" as label_selected %}
 
-    {% if submission_timeline_data or submission_type_data or submission_track_data or submission_state_data or submission_language_data %}
-    <section class="stats-section mb-5" id="proposal-statistics">
-        <h2>{% translate "Proposal Statistics" %}</h2>
+<section class="td-section td-analytics-shell" aria-labelledby="td-analytics-title">
+  <div class="td-section-heading">
+    <h2 id="td-analytics-title" class="td-section-title">
+      <span class="fa fa-bar-chart" aria-hidden="true"></span>
+      {% translate "Analytics" %}
+    </h2>
+    <div class="td-analytics-global-filter" role="group" aria-label="{% translate 'Session status filter' %}">
+      <button type="button" class="td-analytics-scope-btn is-active" data-stats-scope-global="all">
+        {% translate "All sessions" %}
+      </button>
+      <button type="button" class="td-analytics-scope-btn td-scope-accepted" data-stats-scope-global="accepted">
+        {% translate "Accepted" %}
+      </button>
+      <button type="button" class="td-analytics-scope-btn td-scope-not-accepted" data-stats-scope-global="not_accepted">
+        {% translate "Not accepted" %}
+      </button>
+    </div>
+  </div>
+  <p class="td-analytics-help">
+    {% translate "Use the dropdowns to choose one or more filter values on each card." %}
+  </p>
 
-        {% if submission_timeline_data %}
-            <div class="card stats-timeline mb-4">
-                <div class="card-header">{% translate "Proposals by submission date" %}</div>
-                <div id="submission-timeline-data" class="d-none" data-timeline="{{ submission_timeline_data }}" data-label="{% translate "Proposals" %}"></div>
-                <div id="proposal-timeline" class="card-body"></div>
+  <div id="stats"
+       data-label-total="{{ total_label|escapejs }}"
+       data-label-total-sessions="{{ label_total_sessions|escapejs }}"
+       data-label-peak-day="{{ label_peak_day|escapejs }}"
+       data-label-accepted-rate="{{ label_accepted_rate|escapejs }}"
+       data-label-top-type="{{ label_top_type|escapejs }}"
+       data-label-top-track="{{ label_top_track|escapejs }}"
+       data-label-top-tag="{{ label_top_tag|escapejs }}"
+       data-label-total-types="{{ label_total_types|escapejs }}"
+       data-label-total-tracks="{{ label_total_tracks|escapejs }}"
+       data-label-total-tags="{{ label_total_tags|escapejs }}"
+       data-label-name="{{ label_name|escapejs }}"
+       data-label-count="{{ label_count|escapejs }}"
+       data-label-no-data="{{ label_no_data|escapejs }}"
+       data-label-scheduled="{{ label_scheduled|escapejs }}"
+       data-label-unscheduled="{{ label_unscheduled|escapejs }}"
+       data-label-accepted="{{ label_accepted|escapejs }}"
+       data-label-not-accepted="{{ label_not_accepted|escapejs }}"
+       data-label-sessions="{{ label_sessions|escapejs }}"
+       data-label-no-track="{{ label_no_track|escapejs }}"
+       data-label-selected="{{ label_selected|escapejs }}">
+    <div id="global-data" class="d-none"
+         data-url="{{ request.event.orga_urls.submissions }}?"
+         data-mapping="{{ id_mapping }}"
+         data-annotations="{{ timeline_annotations }}"></div>
+
+    {{ stats_payload|json_script:'stats-payload' }}
+
+    <div class="td-analytics-top-row" id="proposal-statistics">
+      <div class="td-analytics-card td-analytics-card-timeline" data-stats-card="timeline">
+        <div class="td-analytics-card-header td-analytics-card-header-stack">
+          <div class="td-analytics-card-header-row">
+            <div class="td-analytics-card-title">
+              <span class="fa fa-line-chart" aria-hidden="true"></span>
+              <span data-stats-timeline-title>{% translate "Submissions over time" %}</span>
             </div>
-        {% endif %}
-
-        <div class="row">
-            {% if submission_type_data %}
-                <div class="col-12 col-md-6 col-lg-4 mb-3 d-flex align-items-stretch">
-                    <div class="card w-100 m-0">
-                        <div class="card-header">{% translate "Proposals by session type" %}</div>
-                        <div id="submission-type-data" class="d-none" data-states="{{ submission_type_data }}"></div>
-                        <div id="submission-type" class="pie card-body"></div>
-                    </div>
-                </div>
-            {% endif %}
-
-            {% if submission_track_data %}
-                <div class="col-12 col-md-6 col-lg-4 mb-3 d-flex align-items-stretch">
-                    <div class="card w-100 m-0">
-                        <div class="card-header">{% translate "Proposals by track" %}</div>
-                        <div id="submission-track-data" class="d-none" data-states="{{ submission_track_data }}"></div>
-                        <div id="submission-track" class="pie card-body"></div>
-                    </div>
-                </div>
-            {% endif %}
-
-            {% if submission_state_data %}
-                <div class="col-12 col-md-6 col-lg-4 mb-3 d-flex align-items-stretch">
-                    <div class="card w-100 m-0">
-                        <div class="card-header">{% translate "Proposals by state" %}</div>
-                        <div id="submission-state-data" class="d-none" data-states="{{ submission_state_data }}"></div>
-                        <div id="submission-state" class="pie card-body"></div>
-                    </div>
-                </div>
-            {% endif %}
-
-            {% if submission_language_data %}
-                <div class="col-12 col-md-6 col-lg-4 mb-3 d-flex align-items-stretch">
-                    <div class="card w-100 m-0">
-                        <div class="card-header">{% translate "Proposals by language" %}</div>
-                        <div id="submission-language-data" class="d-none" data-states="{{ submission_language_data }}"></div>
-                        <div id="submission-language" class="pie card-body"></div>
-                    </div>
-                </div>
-            {% endif %}
+          </div>
+          {% include "orga/submission/includes/stats_filters.html" with card_name="timeline" %}
         </div>
-    </section>
-    {% endif %}
+        <div class="td-analytics-chart-wrap">
+          <div id="stats-timeline"></div>
+        </div>
+        <div class="td-analytics-summary-slot" data-summary-for="stats-timeline"></div>
+        <div class="td-analytics-card-footer" aria-hidden="true"></div>
+      </div>
 
-    {% if talk_timeline_data or talk_type_data or talk_track_data or talk_state_data or talk_language_data %}
-    <section class="stats-section mb-4" id="session-statistics">
-        <h2>{% translate "Session Statistics" %}</h2>
-
-        {% if talk_timeline_data %}
-            <div class="card stats-timeline mb-4">
-                <div class="card-header">{% translate "Sessions by submission date" %}</div>
-                <div id="talk-timeline-data" class="d-none" data-timeline="{{ talk_timeline_data }}" data-label="{{ phrases.schedule.sessions }}"></div>
-                <div id="talk-timeline" class="card-body"></div>
+      <div class="td-analytics-card" data-stats-card="type">
+        <div class="td-analytics-card-header td-analytics-card-header-stack">
+          <div class="td-analytics-card-header-row">
+            <div class="td-analytics-card-title">
+              <span class="fa fa-list-ul" aria-hidden="true"></span>
+              {% translate "Sessions by type" %}
             </div>
-        {% endif %}
-
-        <div class="row">
-            {% if talk_type_data %}
-                <div class="col-12 col-md-6 col-lg-4 mb-3 d-flex align-items-stretch">
-                    <div class="card w-100 m-0">
-                        <div class="card-header">{% translate "Sessions by session type" %}</div>
-                        <div id="talk-type-data" class="d-none" data-states="{{ talk_type_data }}"></div>
-                        <div id="talk-type" class="pie card-body"></div>
-                    </div>
-                </div>
-            {% endif %}
-
-            {% if talk_track_data %}
-                <div class="col-12 col-md-6 col-lg-4 mb-3 d-flex align-items-stretch">
-                    <div class="card w-100 m-0">
-                        <div class="card-header">{% translate "Sessions by track" %}</div>
-                        <div id="talk-track-data" class="d-none" data-states="{{ talk_track_data }}"></div>
-                        <div id="talk-track" class="pie card-body"></div>
-                    </div>
-                </div>
-            {% endif %}
-
-            {% if talk_state_data %}
-                <div class="col-12 col-md-6 col-lg-4 mb-3 d-flex align-items-stretch">
-                    <div class="card w-100 m-0">
-                        <div class="card-header">{% translate "Sessions by state" %}</div>
-                        <div id="talk-state-data" class="d-none" data-states="{{ talk_state_data }}"></div>
-                        <div id="talk-state" class="pie card-body"></div>
-                    </div>
-                </div>
-            {% endif %}
-
-            {% if talk_language_data %}
-                <div class="col-12 col-md-6 col-lg-4 mb-3 d-flex align-items-stretch">
-                    <div class="card w-100 m-0">
-                        <div class="card-header">{% translate "Sessions by language" %}</div>
-                        <div id="talk-language-data" class="d-none" data-states="{{ talk_language_data }}"></div>
-                        <div id="talk-language" class="pie card-body"></div>
-                    </div>
-                </div>
-            {% endif %}
+          </div>
+          {% include "orga/submission/includes/stats_filters.html" with card_name="type" %}
         </div>
-    </section>
-    {% endif %}
-</div>
+        <div class="td-analytics-chart-wrap td-analytics-hbar-wrap">
+          <div id="stats-type-chart"></div>
+        </div>
+        <div class="td-analytics-summary-slot" data-summary-for="stats-type-chart"></div>
+        <a href="{{ request.event.cfp.urls.types }}" class="td-analytics-view-all td-analytics-view-all-visible">{% translate "View all session types" %} <span aria-hidden="true">&gt;</span></a>
+      </div>
+    </div>
+
+    <div class="td-analytics-bottom-row" id="session-statistics">
+      {% if show_tracks %}
+      <div class="td-analytics-card td-analytics-card-table" data-stats-card="track">
+        <div class="td-analytics-card-header td-analytics-card-header-stack">
+          <div class="td-analytics-card-header-row">
+            <div class="td-analytics-card-title">
+              <span class="fa fa-road" aria-hidden="true"></span>
+              {% translate "Sessions by track" %}
+            </div>
+          </div>
+          {% include "orga/submission/includes/stats_filters.html" with card_name="track" %}
+        </div>
+        <div id="stats-track-table" class="td-analytics-table-wrap"></div>
+        <a href="{{ request.event.cfp.urls.tracks }}" class="td-analytics-view-all td-analytics-view-all-visible">{% translate "View all tracks" %} <span aria-hidden="true">&gt;</span></a>
+      </div>
+      {% endif %}
+
+      {% if show_tags %}
+      <div class="td-analytics-card td-analytics-card-table" data-stats-card="tag">
+        <div class="td-analytics-card-header td-analytics-card-header-stack">
+          <div class="td-analytics-card-header-row">
+            <div class="td-analytics-card-title">
+              <span class="fa fa-tags" aria-hidden="true"></span>
+              {% translate "Sessions by tag" %}
+            </div>
+          </div>
+          {% include "orga/submission/includes/stats_filters.html" with card_name="tag" %}
+        </div>
+        <div id="stats-tag-table" class="td-analytics-table-wrap"></div>
+        <a href="{{ request.event.orga_urls.tags }}" class="td-analytics-view-all td-analytics-view-all-visible">{% translate "View all tags" %} <span aria-hidden="true">&gt;</span></a>
+      </div>
+      {% endif %}
+
+      <div class="td-analytics-card td-analytics-card-table" data-stats-card="language">
+        <div class="td-analytics-card-header td-analytics-card-header-stack">
+          <div class="td-analytics-card-header-row">
+            <div class="td-analytics-card-title">
+              <span class="fa fa-globe" aria-hidden="true"></span>
+              {% translate "Sessions by language" %}
+            </div>
+          </div>
+          {% include "orga/submission/includes/stats_filters.html" with card_name="language" %}
+        </div>
+        <div id="stats-language-table" class="td-analytics-table-wrap"></div>
+        <a href="{{ request.event.orga_urls.submissions }}" class="td-analytics-view-all td-analytics-view-all-visible">{% translate "View all languages" %} <span aria-hidden="true">&gt;</span></a>
+      </div>
+
+      <div class="td-analytics-card td-analytics-card-table" data-stats-card="state">
+        <div class="td-analytics-card-header td-analytics-card-header-stack">
+          <div class="td-analytics-card-header-row">
+            <div class="td-analytics-card-title">
+              <span class="fa fa-tasks" aria-hidden="true"></span>
+              {% translate "Sessions by state" %}
+            </div>
+          </div>
+          {% include "orga/submission/includes/stats_filters.html" with card_name="state" %}
+        </div>
+        <div id="stats-state-table" class="td-analytics-table-wrap"></div>
+        <a href="{{ request.event.orga_urls.submissions }}" class="td-analytics-view-all td-analytics-view-all-visible">{% translate "View all sessions" %} <span aria-hidden="true">&gt;</span></a>
+      </div>
+
+      {% if room_status %}
+      <article class="td-analytics-card td-analytics-card-table" data-stats-card="room">
+        <div class="td-analytics-card-header td-analytics-card-header-stack">
+          <div class="td-analytics-card-header-row">
+            <div class="td-analytics-card-title">
+              <span class="fa fa-map-marker" aria-hidden="true"></span>
+              {% translate "Sessions by room status" %}
+            </div>
+          </div>
+          <div class="td-analytics-filter-bar td-analytics-filter-bar-placeholder" aria-hidden="true"></div>
+        </div>
+        <div class="td-analytics-table-wrap" id="stats-room-table">
+          <table class="td-stats-table">
+            <colgroup>
+              <col class="td-col-dot" />
+              <col class="td-col-name" />
+              <col class="td-col-count" />
+              <col class="td-col-pct" />
+            </colgroup>
+            <thead>
+              <tr>
+                <th colspan="2">{% translate "Name" %}</th>
+                <th class="td-st-count">{% translate "Count" %}</th>
+                <th class="td-st-pct">%</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for row in room_status.rows %}
+                <tr>
+                  <td class="td-st-dot"><span class="td-dot-{{ row.status }}"></span></td>
+                  <td class="td-st-name"><a href="{{ row.url }}">{{ row.label }}</a></td>
+                  <td class="td-st-count">{{ row.count }}</td>
+                  <td class="td-st-pct">{{ row.pct }}%</td>
+                </tr>
+              {% endfor %}
+            </tbody>
+            <tfoot>
+              <tr>
+                <td colspan="2"><strong>{% translate "Total" %}</strong></td>
+                <td class="td-st-count"><strong>{{ room_status.total }}</strong></td>
+                <td class="td-st-pct"><strong>100%</strong></td>
+              </tr>
+            </tfoot>
+          </table>
+        </div>
+        <a href="{{ room_status.schedule_url }}" class="td-analytics-view-all td-analytics-view-all-visible">{% translate "Open schedule" %} <span aria-hidden="true">&gt;</span></a>
+      </article>
+      {% endif %}
+    </div>
+  </div>
+</section>
 {% endif %}

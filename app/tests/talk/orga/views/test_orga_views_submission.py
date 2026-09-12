@@ -931,8 +931,69 @@ def test_talk_dashboard_statistics(use_tracks, slot, other_slot, orga_client):
     response = orga_client.get(slot.event.orga_urls.base)
     assert response.status_code == 200
     content = response.content.decode()
-    assert "Proposal Statistics" in content
-    assert "Session Statistics" in content
+    assert "Analytics" in content
+    assert "All sessions" in content
+    assert "Accepted" in content
+    assert "Not accepted" in content
+    assert "Pending" in content
+    assert "Not accepted" in content
+    assert 'value="confirmed"' in content
+    assert 'value="pending"' in content
+    assert 'value="not_accepted"' in content
+    assert 'id="stats-payload"' in content
+    assert 'type="application/json"' in content
+    assert "Sessions by type" in content or "Sessions by state" in content
+    assert "data-stats-dim" in content
+    assert 'data-label-scheduled="' in content
+    assert 'aria-haspopup="true"' in content
+    assert 'role="group" aria-label="' in content
+    assert "Sessions by room status" in content
+    assert "room_status=published" in content
+    assert "room_status=not_published" in content
+    assert "room_status=not_assigned" in content
+    assert "td-analytics-filter-bar-placeholder" in content
+    if use_tracks:
+        assert "All tracks" in content
+        assert "Sessions by track" in content
+
+
+@pytest.mark.django_db
+def test_submission_list_room_status_filter(
+    slot, other_confirmed_submission, room, orga_client
+):
+    event = slot.event
+    with scope(event=event):
+        published_sub = slot.submission
+        unpublished_sub = other_confirmed_submission
+        event.wip_schedule.talks.update_or_create(
+            submission=unpublished_sub,
+            defaults={
+                "room": room,
+                "is_visible": False,
+                "start": event.datetime_from + dt.timedelta(minutes=60),
+                "end": event.datetime_from + dt.timedelta(minutes=90),
+            },
+        )
+        if event.current_schedule:
+            event.current_schedule.talks.filter(submission=unpublished_sub).delete()
+
+    published_url = (
+        f"{event.orga_urls.submissions}?state=confirmed&room_status=published"
+    )
+    response = orga_client.get(published_url)
+    assert response.status_code == 200
+    content = response.content.decode()
+    assert published_sub.title in content
+    assert unpublished_sub.title not in content
+
+    not_published_url = (
+        f"{event.orga_urls.submissions}?state=confirmed&room_status=not_published"
+    )
+    response = orga_client.get(not_published_url)
+    assert response.status_code == 200
+    content = response.content.decode()
+    assert unpublished_sub.title in content
+    assert published_sub.title not in content
 
 
 @pytest.mark.django_db
