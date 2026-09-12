@@ -251,7 +251,7 @@ async function applyInterpretation(interpConfig) {
 	const updateToken = ++interpretationUpdateToken;
 	disconnectWhepTranslation();
 
-	const audioSource = interpConfig?.url || null;
+	const audioSource = interpConfig?.url || interpConfig?.youtube_id || null;
 	const requestedUseVideo = interpConfig?.useVideo || false;
 	const translationVideoId = audioSource ? normalizeYoutubeVideoId(audioSource) : null;
 	const useVideo = requestedUseVideo && !!translationVideoId;
@@ -282,6 +282,7 @@ async function applyInterpretation(interpConfig) {
 			isWhep = false;
 		}
 
+
 		if (isWhep) {
 			languageIframeUrl.value = null;
 			const client = new WhepClient(audioSource, whepAudioEl.value);
@@ -291,6 +292,9 @@ async function applyInterpretation(interpConfig) {
 				if (updateToken !== interpretationUpdateToken) {
 					client.disconnect();
 					if (whepClient === client) whepClient = null;
+				} else if (!mainPlayerPaused.value) {
+					// Autoplay often fails for async srcObject assignments. Force play.
+					resumeTranslationAudio();
 				}
 			} catch (err) {
 				console.error('Failed to connect to WHEP interpretation source', err);
@@ -988,8 +992,8 @@ defineExpose({ isPlaying });
 		transform: translate(calc(-1 * var(--chatbar-width)), 52px)
 .c-media-source .c-livestream, .c-media-source .c-januscall, .c-media-source .c-januschannelcall, .c-media-source .iframe-error, iframe.iframe-media-source
 	position: fixed
-	transition: all .3s ease
 	&.size-tiny, &.background
+		transition: all .3s ease
 		bottom: calc(var(--vh100) - 48px - 51px)
 		right: 4px + 36px + 4px
 		+below('l')
@@ -1000,7 +1004,6 @@ defineExpose({ isPlaying });
 		width: var(--mediasource-placeholder-width, 100vw)
 		height: var(--mediasource-placeholder-height, var(--mobile-media-height, 40vh))
 iframe.iframe-media-source
-	transition: all .3s ease
 	border: none
 	&.jitsi-media-source
 		// Jitsi External API writes inline width/height on the generated iframe.

@@ -2,12 +2,21 @@
 .c-room(v-if="room", :class="{'standalone-chat': modules['chat.native'] && room.modules.length === 1}")
 	.stage(v-if="modules['livestream.native'] || modules['livestream.youtube'] || modules['call.janus']")
 		media-source-placeholder
+		LiveCaptions(v-if="ccEnabled", :ws-url="selectedCcWsUrl")
 		reactions-overlay(v-if="hasLivestream")
 		upcoming-stream-countdown(:room="room")
 		.stage-tool-blocker(v-if="activeStageTool !== null", @click="activeStageTool = null")
 		.stage-tools(v-if="hasLivestream")
+			.cc-controls(v-if="showPluginLanguageDropdown")
+				.dropdown-wrapper
+					i.mdi.mdi-account-voice
+					AudioTranslationDropdown(:key="`${room.id}-plugin`", :languages="pluginLanguages", :selected-language="selectedPluginLanguage", :label="$t('Interpretation')", @languageChanged="handlePluginLanguageChange")
+				button.stage-tool.cc-toggle(:class="{active: ccEnabled}", @click="toggleCc", :title="$t('Toggle Captions')")
+					i.mdi.mdi-closed-caption
+				.dropdown-wrapper(v-if="ccEnabled")
+					i.mdi.mdi-translate
+					AudioTranslationDropdown(:key="`${room.id}-cc`", :languages="pluginLanguages", :selected-language="selectedCcLanguage", :label="$t('Caption Language')", @languageChanged="handleCcLanguageChange")
 			reactions-bar(:expanded="true", @expand="activeStageTool = 'reaction'")
-			AudioTranslationDropdown(v-if="showPluginLanguageDropdown", :key="`${room.id}-plugin`", :languages="pluginLanguages", :selected-language="selectedPluginLanguage", :label="$t('Interpretation')", @languageChanged="handlePluginLanguageChange")
 	media-source-placeholder(v-else-if="modules['call.bigbluebutton'] || modules['call.zoom'] || modules['call.jitsi']")
 	roulette(v-else-if="modules['networking.roulette'] && $features.enabled('roulette')", :module="modules['networking.roulette']", :room="room")
 	landing-page(v-else-if="modules['page.landing']", :module="modules['page.landing']")
@@ -36,9 +45,11 @@ import Polls from 'components/Polls'
 import Questions from 'components/Questions'
 import MediaSourcePlaceholder from 'components/MediaSourcePlaceholder'
 import AudioTranslationDropdown from 'components/AudioTranslationDropdown'
+import LiveCaptions from 'components/LiveCaptions'
 import UpcomingStreamCountdown from 'components/UpcomingStreamCountdown'
 import { normalizeAudioTranslationSource } from 'lib/validators'
 import { pluginLanguageStreams, roomUsesPluginLanguageStreams } from '../../interpretation-streams'
+import { interpretationApiUrl, interpretationAuthHeaders } from 'lib/interpretation-api'
 
 export default {
 	name: 'Room',
@@ -53,6 +64,7 @@ export default {
 		Questions,
 		MediaSourcePlaceholder,
 		AudioTranslationDropdown,
+		LiveCaptions,
 		UpcomingStreamCountdown,
 	},
 	props: {
@@ -69,6 +81,11 @@ export default {
 			},
 			activeStageTool: null, // reaction, qa
 			pluginLanguages: [],
+			ccEnabled: false,
+			isManualCCOverride: false,
+			selectedCcLanguage: 'Original',
+			listenerToken: null,
+			activeTranslationConfig: null,
 		}
 	},
 	computed: {
@@ -81,6 +98,14 @@ export default {
 		},
 		selectedPluginLanguage() {
 			return this.getLanguageForTranslation(this.currentInterpretation, this.pluginLanguages) || 'Original'
+		},
+		selectedCcWsUrl() {
+			if (!this.ccEnabled) return null
+			const lang = this.pluginLanguages.find(l => l.language === this.selectedCcLanguage)
+			if (lang && lang.caption_ws_url && this.listenerToken) {
+				return `${lang.caption_ws_url}${lang.caption_ws_url.includes('?') ? '&' : '?'}token=${this.listenerToken}`
+			}
+			return null
 		},
 		usesStreamPolling() {
 			return Boolean(
@@ -96,14 +121,27 @@ export default {
 				this.modules['livestream.native'] ||
 				this.modules['livestream.youtube']
 			)
-		}
+		},
+
 	},
 	watch: {
 		activeSidebarTab(tab) {
 			this.unreadTabs[tab] = false
 		},
 		room: {
-			handler: 'initializeLanguages',
+			handler(room, oldRoom) {
+				if (room?.id !== oldRoom?.id) {
+					this.$store.dispatch('stopStreamPolling')
+					this.listenerToken = null
+					if (room?.id && this.usesStreamPolling) {
+						this.$store.dispatch('startStreamPolling', room.id)
+					}
+					if (room?.id && this.showPluginLanguageDropdown) {
+						this.fetchListenerToken()
+					}
+				}
+				this.initializeLanguages()
+			},
 			immediate: true
 		},
 		'room.currentStream': {
@@ -115,12 +153,14 @@ export default {
 		'room.interpretation_use_plugin_streams': {
 			handler: 'initializeLanguages'
 		},
-		'room.id'(roomId) {
-			this.$store.dispatch('stopStreamPolling')
-			if (roomId && this.usesStreamPolling) {
-				this.$store.dispatch('startStreamPolling', roomId)
-			}
-		},
+		showPluginLanguageDropdown: {
+			handler(val) {
+				if (val && this.room?.id && !this.listenerToken) {
+					this.fetchListenerToken()
+				}
+			},
+			immediate: true
+		}
 	},
 	async created() {
 		if (this.modules['chat.native']) {
@@ -139,17 +179,64 @@ export default {
 		this.$store.dispatch('stopStreamPolling')
 	},
 	methods: {
+		async fetchListenerToken() {
+			if (!this.room?.id) return;
+			const currentRoomId = this.room.id;
+			// Use interpretationApiUrl + interpretationAuthHeaders so X-CSRFToken is included
+			const url = interpretationApiUrl(this.$store, this.room.id, 'listener-token/');
+			const headers = await interpretationAuthHeaders(true);
+			try {
+				const response = await fetch(url, { method: 'POST', headers, credentials: 'include' });
+				if (this.room?.id !== currentRoomId) return;
+				if (response.ok) {
+					const data = await response.json();
+					if (data && data.token) {
+						this.listenerToken = data.token;
+					}
+				} else {
+					console.error('listener-token failed:', response.status);
+				}
+			} catch (err) {
+				if (this.room?.id === currentRoomId) {
+					console.error('Failed to fetch listener token', err);
+				}
+			}
+		},
 		changedTabContent(tab) {
 			if (tab === this.activeSidebarTab) return
 			this.unreadTabs[tab] = true
 		},
 		handlePluginLanguageChange(translationConfig) {
 			this.updateActiveTranslation(translationConfig)
+			if (!this.isManualCCOverride && this.ccEnabled) {
+				this.selectedCcLanguage = this.getLanguageForTranslation(translationConfig, this.pluginLanguages) || 'Original'
+			}
+		},
+		handleCcLanguageChange(translationConfig) {
+			this.isManualCCOverride = true
+			this.selectedCcLanguage = this.getLanguageForTranslation(translationConfig, this.pluginLanguages) || 'Original'
+		},
+		toggleCc() {
+			this.ccEnabled = !this.ccEnabled
+			if (this.ccEnabled && !this.isManualCCOverride) {
+				this.selectedCcLanguage = this.selectedPluginLanguage
+			}
 		},
 		updateActiveTranslation(translationConfig) {
+			this.activeTranslationConfig = translationConfig;
+			this.recomputeInterpretationAudio();
+		},
+		recomputeInterpretationAudio() {
+			let finalConfig = this.activeTranslationConfig;
+			if (finalConfig && finalConfig.language === 'Original') {
+				finalConfig = null;
+			}
+			if (finalConfig && !finalConfig.url && !finalConfig.youtube_id) {
+				finalConfig = null;
+			}
 			this.$store.commit('updateInterpretationAudio', {
 				roomId: this.room?.id,
-				interpretation: translationConfig
+				interpretation: finalConfig
 			})
 		},
 		initializeLanguages() {
@@ -187,12 +274,14 @@ export default {
 	min-height: 0
 	min-width: 0
 	.stage
+		flex: auto
 		display: flex
 		flex-direction: column
-		min-height: 0
-		flex: auto
-		overflow: hidden
 		position: relative
+		min-height: 0
+		overflow: hidden
+		+below('m')
+			height: auto
 	.c-media-source-placeholder
 		flex: auto
 	.room-sidebar
@@ -225,11 +314,14 @@ export default {
 		flex: none
 		display: flex
 		min-height: 40px
-		justify-content: flex-end
+		justify-content: space-between
 		align-items: center
+		width: 100%
+		box-sizing: border-box
+		margin: 0 auto
 		flex-wrap: wrap
 		gap: 6px
-		padding: 4px 8px
+		padding: 4px 16px
 		user-select: none
 		.stage-tool
 			font-size: 16px
@@ -244,11 +336,33 @@ export default {
 			&.active::before
 				position: absolute
 				bottom: 6px
+				left: 50%
+				transform: translateX(-50%)
 				content: ''
 				display: block
 				height: 2px
 				width: calc(100% - 16px)
 				background-color: var(--clr-primary)
+		.cc-controls
+			display: flex
+			align-items: center
+			gap: 8px
+			flex-wrap: wrap
+			flex-shrink: 0
+			.dropdown-wrapper
+				display: flex
+				align-items: center
+				gap: 4px
+				.mdi
+					font-size: 20px
+					color: var(--clr-secondary-text-light)
+			.cc-toggle
+				margin: 0
+				padding: 4px
+				display: flex
+				align-items: center
+				.mdi
+					font-size: 22px
 		+below('m')
 			justify-content: space-between
 	.stage-tool-blocker
@@ -276,6 +390,6 @@ export default {
 		&:not(.standalone-chat)
 			.c-chat
 				flex: auto
-				width: 100vw
+				width: 100%
 				min-height: 0
 </style>
