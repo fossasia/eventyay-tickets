@@ -159,7 +159,7 @@ class EventDashboardView(EventPermissionRequired, SubmissionStatsMixin, Template
 
     def post(self, request, *args, **kwargs):
         if 'internal_note' in request.POST:
-            if not request.user.has_perm('base.change_settings.event', request.event):
+            if not request.user.has_perm('base.update_event', request.event):
                 from django.core.exceptions import PermissionDenied
                 raise PermissionDenied()
             request.event.comment = request.POST.get('internal_note')
