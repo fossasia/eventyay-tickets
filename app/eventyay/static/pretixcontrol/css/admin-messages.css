@@ -1,0 +1,27 @@
+.delivery-test-controls {
+  display: flex;
+  gap: 0.5rem;
+  align-items: flex-start;
+}
+
+.delivery-test-controls input {
+  flex: 1;
+}
+
+.mail-preview {
+  border: 1px solid #ddd;
+  padding: 1rem;
+  background: #fafafa;
+  border-radius: 4px;
+  margin-top: 1rem;
+}
+
+#recipient-list-dialog {
+  max-width: 700px;
+  width: 90%;
+}
+
+#recipient-list-dialog .dialog-content {
+  max-height: 70vh;
+  overflow-y: auto;
+}

@@ -5,6 +5,7 @@ from django.views.generic.base import RedirectView
 
 from eventyay.control.views import (
     admin,
+    admin_messages,
     global_settings,
     gmail_oauth,
     pages,
@@ -86,4 +87,17 @@ urlpatterns = [
     path('config/', admin.SystemConfigView.as_view(), name='admin.config'),
     path('update/', admin.UpdateCheckView.as_view(), name='admin.update'),
     path('video/', include(('eventyay.control.video.urls', 'video_admin'))),
+
+    # --- Admin Message Center ---
+    path('messages/outbox/', admin_messages.AdminMessageOutboxView.as_view(), name='admin.messages.outbox'),
+    path('messages/compose/', admin_messages.AdminMessageComposeView.as_view(), name='admin.messages.compose'),
+    path('messages/drafts/', admin_messages.AdminMessageDraftsView.as_view(), name='admin.messages.drafts'),
+    path('messages/sent/', admin_messages.AdminMessageSentView.as_view(), name='admin.messages.sent'),
+    path('messages/templates/', admin_messages.AdminMessageTemplatesView.as_view(), name='admin.messages.templates'),
+    path('messages/templates/<str:role>/', admin_messages.AdminMessageTemplateDetailView.as_view(), name='admin.messages.template_detail'),
+    path('messages/recipients/', admin_messages.AdminMessageRecipientsView.as_view(), name='admin.messages.recipients'),
+    path('messages/<int:pk>/send/', admin_messages.AdminMessageSendView.as_view(), name='admin.messages.send'),
+    path('messages/<int:pk>/cancel/', admin_messages.AdminMessageCancelView.as_view(), name='admin.messages.cancel'),
+    path('messages/<int:pk>/delete/', admin_messages.AdminMessageDeleteView.as_view(), name='admin.messages.delete'),
+    path('messages/<int:pk>/duplicate/', admin_messages.AdminMessageDuplicateView.as_view(), name='admin.messages.duplicate'),
 ]
