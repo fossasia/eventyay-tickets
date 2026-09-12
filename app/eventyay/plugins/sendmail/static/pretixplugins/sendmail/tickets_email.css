@@ -46,7 +46,62 @@
 .mail-composer .composer-filters .select2-selection--single {
   border-color: var(--color-border);
   border-radius: var(--composer-border-radius);
+  box-shadow: none;
   min-height: var(--composer-control-height);
+}
+
+.mail-composer .composer-filters .select2-container--bootstrap .select2-selection--multiple {
+  height: auto;
+  max-height: none;
+  min-height: var(--composer-control-height);
+  overflow-y: visible;
+  padding: 2px 5px;
+}
+
+.mail-composer .composer-filters .select2-container--bootstrap .select2-selection--multiple .select2-selection__rendered {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  padding: 0;
+}
+
+.mail-composer .composer-filters .select2-container--bootstrap .select2-selection--multiple .select2-search--inline .select2-search__field {
+  margin-top: 0;
+  min-height: calc(var(--composer-control-height) - 6px);
+  padding: 4px 0;
+}
+
+.mail-composer .composer-filters .select2-container--bootstrap.select2-container--focus .select2-selection,
+.mail-composer .composer-filters .select2-container--bootstrap.select2-container--open .select2-selection {
+  border-color: var(--color-primary-light, var(--color-primary));
+  box-shadow: var(--shadow-focus, 0 0 0 0.2rem rgb(33 133 208 / 0.25));
+}
+
+.mail-composer .composer-filters .select2-container--bootstrap.select2-container--open .select2-selection--multiple,
+.mail-composer .composer-filters .select2-container--bootstrap.select2-container--open .select2-selection--single {
+  border-bottom-left-radius: 0;
+  border-bottom-right-radius: 0;
+}
+
+/* Select2 appends the menu to body; keep it aligned with composer controls. */
+body > .select2-container .select2-dropdown {
+  border-color: var(--color-border, #ccc);
+  border-radius: 0 0 var(--composer-border-radius, 8px) var(--composer-border-radius, 8px);
+  box-shadow: none;
+  margin-top: -1px;
+  overflow: hidden;
+}
+
+body > .select2-container .select2-dropdown--above {
+  border-radius: var(--composer-border-radius, 8px) var(--composer-border-radius, 8px) 0 0;
+  margin-bottom: -1px;
+  margin-top: 0;
+}
+
+body > .select2-container .select2-results__option {
+  border-radius: 0;
+  font-size: var(--composer-font-size, 14px);
+  padding: 8px 12px;
 }
 
 .mail-composer .col-md-9 > .eventyay-file-pick-wrapper label {

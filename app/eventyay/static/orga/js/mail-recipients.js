@@ -105,9 +105,9 @@ const clearFilters = (form) => {
             select.selectedIndex = 0
         }
         if (select.choices) {
-            if (select.multiple) {
-                select.choices.removeActiveItems()
-            } else {
+            select.choices.removeActiveItems()
+            if (!select.multiple) {
+                // Restores the empty option when it was kept as a real choice.
                 select.choices.setChoiceByValue("")
             }
         }

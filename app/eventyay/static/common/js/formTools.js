@@ -688,6 +688,7 @@ const initSelect = (element) => {
     }
     const realPlaceholder = element.getAttribute("placeholder")
     showPlaceholder = showPlaceholder || (realPlaceholder && realPlaceholder.length > 0)
+    const placeholderValue = showPlaceholder ? (element.title || realPlaceholder) : null
     const choicesOptions = {
         removeItems: !element.readonly,
         removeItemButton:
@@ -698,7 +699,8 @@ const initSelect = (element) => {
         searchResultLimit: -1,
         resetScrollPosition: false,
         shouldSort: false,
-        placeholderValue: showPlaceholder ? (element.title || realPlaceholder) : null,
+        placeholder: true,
+        placeholderValue,
         itemSelectText: "",
         addItemText: "",
         removeItemLabelText: "×",
@@ -737,7 +739,13 @@ const initSelect = (element) => {
             }
         })
     }
-    new Choices(element, choicesOptions)
+    const instance = new Choices(element, choicesOptions)
+    element.choices = instance
+    // placeholderValue turns the empty <option> into a normal list item; drop it so
+    // the placeholder text is only shown in the closed control, not as a choice.
+    if (placeholderValue) {
+        instance.removeChoice("")
+    }
 }
 
 const originalData = {}
