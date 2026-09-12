@@ -1,0 +1,294 @@
+{% extends "eventyay_common/event/settings_base.html" %}
+{% load i18n %}
+{% load static %}
+{% load bootstrap3 %}
+{% block inside %}
+  {% trans "API" as header_title %}
+  {% include "common/includes/header_nav.html" with header_title=header_title header_component_link="eventyay_common/event/component_link.html" %}
+
+  <p class="help-block">
+    {% blocktrans trimmed %}
+      Manage API endpoints, access levels, and tokens for this event in one place.
+      Existing API URLs and tokens continue to work unchanged.
+    {% endblocktrans %}
+  </p>
+
+  <div class="tabbed-form">
+    <fieldset id="overview">
+      <legend>{% translate "API overview" %}</legend>
+      <p>
+        {% blocktrans trimmed %}
+          Use the base URLs below with an API token where authentication is required.
+          Replace <code>&lt;your-token&gt;</code> with a team token or a personal Talk API token.
+        {% endblocktrans %}
+      </p>
+      <dl class="dl-horizontal">
+        <dt>{% translate "Tickets API base" %}</dt>
+        <dd>
+          <code id="tickets-api-base">{{ tickets_api_base }}</code>
+          <button type="button" class="btn btn-default btn-xs btn-clipboard" data-clipboard-text="{{ tickets_api_base }}" title="{% translate 'Copy' %}">
+            <i class="fa fa-clipboard" aria-hidden="true"></i>
+            {% translate "Copy" %}
+          </button>
+        </dd>
+        <dt>{% translate "Talks API base" %}</dt>
+        <dd>
+          <code id="talks-api-base">{{ talks_api_base }}</code>
+          <button type="button" class="btn btn-default btn-xs btn-clipboard" data-clipboard-text="{{ talks_api_base }}" title="{% translate 'Copy' %}">
+            <i class="fa fa-clipboard" aria-hidden="true"></i>
+            {% translate "Copy" %}
+          </button>
+        </dd>
+      </dl>
+      <pre class="api-example">curl -H "Authorization: Token &lt;your-token&gt;" {{ talks_api_base }}</pre>
+      <p>
+        <a class="btn btn-info" href="{{ docs_urls.reference }}" target="_blank" rel="noopener noreferrer">
+          <i class="fa fa-book"></i> {% translate "API documentation" %}
+        </a>
+        <a class="btn btn-default" href="{{ docs_urls.swagger }}" target="_blank" rel="noopener noreferrer">
+          {% translate "Swagger UI" %}
+        </a>
+      </p>
+    </fieldset>
+
+    <fieldset id="access-levels">
+      <legend>{% translate "Access levels" %}</legend>
+      <div class="table-responsive">
+        <table class="table table-condensed">
+          <thead>
+            <tr>
+              <th>{% translate "Level" %}</th>
+              <th>{% translate "Description" %}</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for level in access_levels %}
+              <tr>
+                <td><strong>{{ level.label }}</strong></td>
+                <td>{{ level.description }}</td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </fieldset>
+
+    <fieldset id="endpoints">
+      <legend>{% translate "Available endpoints" %}</legend>
+      <p class="help-block">
+        {% blocktrans trimmed %}
+          Only endpoints relevant to enabled components and your permissions are listed.
+        {% endblocktrans %}
+      </p>
+      {% for group in endpoint_groups %}
+        <h4 id="endpoints-{{ group.key }}">{{ group.label }}</h4>
+        <p class="text-muted">{{ group.description }}</p>
+        <div class="table-responsive">
+          <table class="table table-hover">
+            <thead>
+              <tr>
+                <th>{% translate "Endpoint" %}</th>
+                <th>{% translate "Access" %}</th>
+                <th>{% translate "Methods" %}</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for endpoint in group.endpoints %}
+                <tr>
+                  <td>
+                    <strong>{{ endpoint.name }}</strong>
+                    <div class="text-muted small">{{ endpoint.description }}</div>
+                    <code class="small">{{ endpoint.url }}</code>
+                  </td>
+                  <td>
+                    <span class="label label-{% if endpoint.access == 'public' %}success{% elif endpoint.access == 'authenticated' %}info{% else %}warning{% endif %}">
+                      {% if endpoint.access == 'public' %}
+                        {% translate "Public" %}
+                      {% elif endpoint.access == 'authenticated' %}
+                        {% translate "Authenticated" %}
+                      {% else %}
+                        {% translate "Restricted" %}
+                      {% endif %}
+                    </span>
+                    {% if endpoint.write_permission %}
+                      <div class="small text-muted">{% translate "Write access requires matching team permissions." %}</div>
+                    {% endif %}
+                  </td>
+                  <td><code>{{ endpoint.methods }}</code></td>
+                  <td class="text-right">
+                    <button type="button" class="btn btn-default btn-sm btn-clipboard" data-clipboard-text="{{ endpoint.url }}" title="{% translate 'Copy URL' %}">
+                      <i class="fa fa-clipboard" aria-hidden="true"></i>
+                      {% translate "Copy URL" %}
+                    </button>
+                  </td>
+                </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      {% empty %}
+        <div class="alert alert-info">
+          {% translate "No API endpoints are available for your current permissions." %}
+        </div>
+      {% endfor %}
+    </fieldset>
+
+    <fieldset id="tokens">
+      <legend>{% translate "Token management" %}</legend>
+      <p>
+        {% blocktrans trimmed %}
+          Team API tokens authenticate against the tickets API and inherit the team’s
+          event permissions. Personal Talk API tokens can be scoped to events and endpoints.
+        {% endblocktrans %}
+      </p>
+
+      <h4>{% translate "Organiser team tokens" %}</h4>
+      {% if can_manage_team_tokens %}
+        {% for team in event_teams %}
+          <div class="panel panel-default">
+            <div class="panel-heading">
+              <strong>{{ team.name }}</strong>
+              <span class="text-muted">
+                —
+                {% if team.all_events %}
+                  {% translate "All events" %}
+                {% else %}
+                  {% translate "Selected events" %}
+                {% endif %}
+              </span>
+            </div>
+            <div class="panel-body">
+              <form method="post" action="{% url 'eventyay_common:event.api' organizer=request.event.organizer.slug event=request.event.slug %}#tokens">
+                {% csrf_token %}
+                <input type="hidden" name="token_action" value="revoke">
+                <input type="hidden" name="team_id" value="{{ team.pk }}">
+                <table class="table table-condensed">
+                  <thead>
+                    <tr>
+                      <th>{% translate "Name" %}</th>
+                      <th>{% translate "Access level / scope" %}</th>
+                      <th class="text-right"></th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {% for token in team.active_token_list %}
+                      <tr>
+                        <td>{{ token.name }}</td>
+                        <td>
+                          {% translate "Organiser team token" %}
+                          · {% translate "Inherits team permissions for this event" %}
+                        </td>
+                        <td class="text-right">
+                          <button type="submit" name="token_id" value="{{ token.pk }}" class="btn btn-danger btn-sm">
+                            <i class="fa fa-times"></i> {% translate "Revoke" %}
+                          </button>
+                        </td>
+                      </tr>
+                    {% empty %}
+                      <tr>
+                        <td colspan="3" class="text-muted">{% translate "No active tokens for this team." %}</td>
+                      </tr>
+                    {% endfor %}
+                  </tbody>
+                </table>
+              </form>
+              <form method="post" class="form-inline" action="{% url 'eventyay_common:event.api' organizer=request.event.organizer.slug event=request.event.slug %}#tokens">
+                {% csrf_token %}
+                <input type="hidden" name="token_action" value="create">
+                <input type="hidden" name="team_id" value="{{ team.pk }}">
+                {% bootstrap_field team.token_form.name layout='inline' %}
+                <button type="submit" class="btn btn-primary btn-sm">
+                  <i class="fa fa-plus"></i> {% translate "Create token" %}
+                </button>
+              </form>
+            </div>
+          </div>
+        {% empty %}
+          <div class="alert alert-info">
+            {% translate "No teams have access to this event yet." %}
+          </div>
+        {% endfor %}
+        <p>
+          <a href="{{ teams_url }}">{% translate "Open organiser Teams &amp; permissions" %}</a>
+        </p>
+      {% else %}
+        <div class="alert alert-info">
+          {% blocktrans trimmed %}
+            You can view API endpoints for this event, but only users with permission to
+            change teams can create or revoke organiser API tokens.
+          {% endblocktrans %}
+          <a href="{{ teams_url }}">{% translate "Go to Teams" %}</a>
+        </div>
+      {% endif %}
+
+      <h4>{% translate "Personal Talk API tokens" %}</h4>
+      <p>
+        {% blocktrans trimmed %}
+          Talk API tokens are managed in your user settings. Tokens listed here include
+          this event in their scope.
+        {% endblocktrans %}
+      </p>
+      <table class="table table-condensed">
+        <thead>
+          <tr>
+            <th>{% translate "Name" %}</th>
+            <th>{% translate "Access level / scope" %}</th>
+            <th>{% translate "Valid until" %}</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for token in user_api_tokens %}
+            <tr>
+              <td>{{ token.name }}</td>
+              <td>
+                {% translate "Talk user token" %}
+                · {% translate "Endpoint permissions configured on the token" %}
+              </td>
+              <td>{{ token.expires|date:"SHORT_DATETIME_FORMAT"|default:"—" }}</td>
+            </tr>
+          {% empty %}
+            <tr>
+              <td colspan="3" class="text-muted">{% translate "You have no personal API tokens for this event." %}</td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+      <p>
+        <a class="btn btn-default" href="{{ user_token_settings_url }}#create-token">
+          <i class="fa fa-key"></i> {% translate "Manage personal API tokens" %}
+        </a>
+      </p>
+    </fieldset>
+
+    <fieldset id="examples">
+      <legend>{% translate "Examples" %}</legend>
+      {% if not is_meetup %}
+        <h4>{% translate "Talk speakers" %}</h4>
+        <pre class="api-example">curl -H "Authorization: Token &lt;your-token&gt;" {{ talks_api_base }}speakers/</pre>
+        <button type="button" class="btn btn-default btn-sm btn-clipboard" data-clipboard-text="{{ talks_api_base }}speakers/" title="{% translate 'Copy URL' %}">
+          <i class="fa fa-clipboard"></i> {% translate "Copy speakers URL" %}
+        </button>
+
+        <h4>{% translate "Talk sessions" %}</h4>
+        <pre class="api-example">curl -H "Authorization: Token &lt;your-token&gt;" {{ talks_api_base }}submissions/</pre>
+        <button type="button" class="btn btn-default btn-sm btn-clipboard" data-clipboard-text="{{ talks_api_base }}submissions/" title="{% translate 'Copy URL' %}">
+          <i class="fa fa-clipboard"></i> {% translate "Copy sessions URL" %}
+        </button>
+
+        <h4>{% translate "Talk reviews" %}</h4>
+        <pre class="api-example">curl -H "Authorization: Token &lt;your-token&gt;" {{ talks_api_base }}reviews/</pre>
+        <button type="button" class="btn btn-default btn-sm btn-clipboard" data-clipboard-text="{{ talks_api_base }}reviews/" title="{% translate 'Copy URL' %}">
+          <i class="fa fa-clipboard"></i> {% translate "Copy reviews URL" %}
+        </button>
+      {% endif %}
+
+      <h4>{% translate "Ticket orders" %}</h4>
+      <pre class="api-example">curl -H "Authorization: Token &lt;your-token&gt;" {{ tickets_api_base }}orders/</pre>
+      <button type="button" class="btn btn-default btn-sm btn-clipboard" data-clipboard-text="{{ tickets_api_base }}orders/" title="{% translate 'Copy URL' %}">
+        <i class="fa fa-clipboard"></i> {% translate "Copy orders URL" %}
+      </button>
+    </fieldset>
+  </div>
+
+{% endblock %}

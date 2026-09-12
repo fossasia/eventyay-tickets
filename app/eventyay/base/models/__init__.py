@@ -4,6 +4,7 @@ from .access_code import SubmitterAccessCode
 from .announcement import Announcement
 from .audit import AuditLog
 from .auth import U2FDevice, User, WebAuthnDevice
+from .auth_token import UserApiToken
 from .availability import Availability
 from .base import CachedFile, LoggedModel, cachedfile_name
 from .bbb import BBBCall, BBBServer
@@ -244,6 +245,7 @@ __all__ = [
     'TurnServer',
     'U2FDevice',
     'User',
+    'UserApiToken',
     'Voucher',
     'WaitingListEntry',
     'WebAuthnDevice',
