@@ -114,11 +114,13 @@
     <div class="td-dashboard pt-0">
         <div class="td-split-layout mt-4">
         {% if recent_talk_activity and can_change_settings %}
-            <div class="td-upcoming-card td-activity-card">
-                <h3 class="td-card-title mb-3">
-                    <i class="fa fa-history td-history-icon"></i>
-                    {% translate "Recent talk activity" %}
-                </h3>
+            <section class="td-section d-flex flex-column">
+                <div class="td-section-heading">
+                    <h2 class="td-section-title">
+                        <i class="fa fa-history td-history-icon"></i>
+                        {% translate "Recent talk activity" %}
+                    </h2>
+                </div>
                 
                 <table class="td-activity-table">
                     <thead>
@@ -179,17 +181,19 @@
                         {% translate "View all activity >" %}
                     </a>
                 </div>
-            </div>
+            </section>
         {% else %}
             <div></div>
         {% endif %}
         
         {% if can_change_settings %}
-            <div class="td-upcoming-card td-note-card">
-                <h3 class="td-card-title mb-3">
-                    <i class="fa fa-square td-note-icon"></i>
-                    {% translate "Internal note" %}
-                </h3>
+            <section class="td-section d-flex flex-column">
+                <div class="td-section-heading">
+                    <h2 class="td-section-title">
+                        <i class="fa fa-sticky-note td-note-icon"></i>
+                        {% translate "Internal note" %}
+                    </h2>
+                </div>
                 <form method="post" action="" class="td-note-form">
                     {% csrf_token %}
                     <div class="td-note-textarea-wrapper">
@@ -200,7 +204,7 @@
                         <button type="submit" class="td-note-btn">{% translate "Save note" %}</button>
                     </div>
                 </form>
-            </div>
+            </section>
         {% else %}
             <div></div>
         {% endif %}

@@ -1066,25 +1066,6 @@ body:has(.td-dashboard) #page-content {
   align-items: stretch;
 }
 
-.td-activity-card {
-  background: #fff;
-  border: 1px solid var(--td-border);
-  border-radius: var(--td-radius);
-  padding: 20px;
-  box-shadow: var(--td-shadow);
-  display: flex;
-  flex-direction: column;
-}
-
-.td-note-card {
-  background: #fff;
-  border: 1px solid var(--td-border);
-  border-radius: var(--td-radius);
-  padding: 20px;
-  box-shadow: var(--td-shadow);
-  display: flex;
-  flex-direction: column;
-}
 
 .td-activity-table {
   width: 100%;
