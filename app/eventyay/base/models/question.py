@@ -46,6 +46,7 @@ class TalkQuestionVariant(Choices):
     MULTIPLE = 'multiple_choice'
     SELECT = 'select'
     COUNTRY = 'country'
+    PHONE_NUMBER = 'tel'
 
     valid_choices = [
         (NUMBER, _('Number')),
@@ -61,6 +62,7 @@ class TalkQuestionVariant(Choices):
         (MULTIPLE, _('Checkbox (Choose one or several options)')),
         (SELECT, _('Select (one option)')),
         (COUNTRY, _('Country List')),
+        (PHONE_NUMBER, _('Phone number')),
     ]
 
 
@@ -111,7 +113,7 @@ class TalkQuestion(OrderedModel, PretalxModel):
 
     :param variant: Can be any of 'number', 'string', 'text', 'url', 'video',
         'date', 'datetime', 'boolean', 'file', 'choices', 'multiple_choice',
-        'select', or 'country'. Defined in the ``TalkQuestionVariant`` class.
+        'select', 'country', or 'tel'. Defined in the ``TalkQuestionVariant`` class.
     :param target: Can be any of 'submission', 'speaker', or 'reviewer'.
         Defined in the ``TalkQuestionTarget`` class.
     :param deadline: Datetime field. This field is required for 'after deadline' and 'freeze after' options of
@@ -465,7 +467,7 @@ class Answer(PretalxModel):
 
     @property
     def answer_string(self):
-        if self.question.variant in ('number', 'string', 'text', 'url', 'video'):
+        if self.question.variant in ('number', 'string', 'text', 'url', 'video', 'tel'):
             return self.answer or ''
         if self.question.variant == 'boolean':
             if self.boolean_answer is True:
