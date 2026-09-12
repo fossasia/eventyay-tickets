@@ -159,21 +159,11 @@ class GlobalPluginConfig(models.Model):
 
     @classmethod
     def get_platform_managed_modules(cls) -> frozenset[str]:
-        """
-        Returns plugin modules that are active but hidden from organisers,
-        including all platform-type plugins.  These plugins are force-enabled
-        on every event by the signal layer.
-        """
         try:
             return frozenset(
                 cls.objects.filter(
                     is_active=True,
-                ).filter(
-                    models.Q(show_in_organizer_list=False)
-                    | models.Q(plugin_type__in=[
-                        cls.PluginType.PAYMENT_PROVIDER,
-                        cls.PluginType.SYSTEM,
-                    ])
+                    is_required=True,
                 ).values_list('module', flat=True)
             )
         except (ProgrammingError, OperationalError):
