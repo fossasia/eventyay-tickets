@@ -88,8 +88,9 @@ def test_publication_settings_save_via_main_settings(organizer_client, organizer
     
     event.refresh_from_db()
     event.settings.flush()
-    # Events stay public by default even though there is no toggle to submit.
+    # Events stay public and indexed by default even though there is no toggle to submit.
     assert event.is_public is True
+    assert event.settings.meta_noindex is False
     # startpage_visible must be unchanged — organisers cannot alter it
     assert event.startpage_visible == original_startpage_visible
 
