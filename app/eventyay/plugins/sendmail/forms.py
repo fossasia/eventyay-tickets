@@ -246,7 +246,7 @@ class MailForm(ScheduledAtValidationMixin, forms.Form):
         self.fields['scheduled_at'].widget.widgets[0].attrs['placeholder'] = ''
         self.fields['scheduled_at'].widget.widgets[1].attrs['placeholder'] = ''
 
-        recp_choices = [('', _('Recipient type'))]
+        recp_choices = [('', '')]
         recp_choices.append(('orders', _('Everyone who created a ticket order')))
         if event.settings.attendee_emails_asked:
             recp_choices += [

@@ -1,7 +1,7 @@
 /* Shared mail composer layout (orga talks + ticket sendmail). */
 
 .mail-composer {
-  --composer-border-radius: 4px;
+  --composer-border-radius: 8px;
   --composer-control-height: 40px;
   --composer-font-size: 16px;
   --composer-small-control-height: 32px;
@@ -12,7 +12,30 @@
 }
 
 .mail-composer > .alert {
+  border-radius: var(--composer-border-radius);
   margin-bottom: 20px;
+}
+
+.mail-composer .mail-preview,
+.mail-composer .mail-preview-group div[lang] {
+  border-radius: var(--composer-border-radius);
+}
+
+.mail-composer .mail-preview-group div[lang]:first-child {
+  border-top-left-radius: var(--composer-border-radius);
+  border-top-right-radius: var(--composer-border-radius);
+}
+
+.mail-composer .mail-preview-group div[lang]:last-child {
+  border-bottom-left-radius: var(--composer-border-radius);
+  border-bottom-right-radius: var(--composer-border-radius);
+}
+
+.mail-composer .composer-actions > .btn,
+.mail-composer .composer-send-group > .btn,
+.mail-composer .composer-send-group > details > summary.btn {
+  min-height: var(--composer-control-height);
+  padding: 8px 16px;
 }
 
 .mail-composer .composer-intro {

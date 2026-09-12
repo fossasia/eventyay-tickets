@@ -150,6 +150,7 @@ textarea {
   }
 
   &[aria-invalid],
+  &.is-invalid,
   &:user-invalid {
     border-color: var(--color-danger);
   }

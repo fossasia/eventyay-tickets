@@ -55,6 +55,7 @@ const initTestEmailValidation = () => {
         if (!isValid) {
             e.preventDefault()
             emailInput.classList.add("is-invalid")
+            emailInput.setAttribute("aria-invalid", "true")
 
             if (container) {
                 container.querySelectorAll(".invalid-feedback").forEach(el => el.remove())
@@ -70,6 +71,7 @@ const initTestEmailValidation = () => {
             }
         } else {
             emailInput.classList.remove("is-invalid")
+            emailInput.removeAttribute("aria-invalid")
             if (container) {
                 container.querySelectorAll(".invalid-feedback").forEach(el => el.remove())
             }
@@ -80,6 +82,7 @@ const initTestEmailValidation = () => {
     if (emailInput) {
         emailInput.addEventListener("input", () => {
             emailInput.classList.remove("is-invalid")
+            emailInput.removeAttribute("aria-invalid")
             const container = emailInput.closest(".col-md-9")
             if (container) {
                 container.querySelectorAll(".invalid-feedback").forEach(el => el.remove())

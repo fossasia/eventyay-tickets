@@ -12,20 +12,20 @@
     </p>
 {% endblock email_editor_description %}
 
-{% block skip_queue %}
-    <div class="alert alert-info mt-3" role="alert">
+{% block delivery_extra %}
+    <div class="alert alert-info mt-3 mb-0" role="alert">
         {% blocktranslate trimmed %}
             Reviewer and team member emails are sent directly and are not placed in the outbox first.
             They will appear in the Sent email list after sending.
         {% endblocktranslate %}
     </div>
-{% endblock skip_queue %}
+{% endblock delivery_extra %}
 
 {% block recipient_form %}
     {{ form.recipients.as_field_group }}
 {% endblock recipient_form %}
 
-{% block send_button_label %}{{ phrases.base.send }}{% endblock send_button_label %}
+{% block send_button_label %}{% translate "Send email" %}{% endblock send_button_label %}
 
 {# These emails are always sent out directly, so there is nothing to draft. #}
 {% block draft_button %}{% endblock draft_button %}

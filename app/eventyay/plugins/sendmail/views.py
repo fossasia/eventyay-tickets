@@ -264,11 +264,21 @@ class SenderView(EventPermissionRequiredMixin, CopyDraftMixin, BulkReplyToMixin,
                     context_dict = build_email_preview_context(
                         self.request.event, ['event', 'order', 'position_or_address']
                     )
-                    subject_val = form.cleaned_data.get('subject') or LazyI18nString({self.request.event.settings.locale or 'en': ''})
-                    subject = nh3.clean(subject_val.localize(l), tags=set())
+                    subject_val = form.cleaned_data.get('subject')
+                    subject = nh3.clean(subject_val.localize(l), tags=set()) if subject_val else ''
+                    if not subject.strip():
+                        subject = str(_('Example Subject for {event_name}'))
                     preview_subject = nh3.clean(subject.format_map(context_dict), tags=set())
-                    text_val = form.cleaned_data.get('text') or LazyI18nString({self.request.event.settings.locale or 'en': ''})
-                    message = text_val.localize(l)
+                    text_val = form.cleaned_data.get('text')
+                    message = text_val.localize(l) if text_val else ''
+                    if not str(message).strip():
+                        message = str(
+                            _(
+                                'Hello {attendee_name},\n\n'
+                                'This is an example preview email for {event_name}.\n\n'
+                                'Best regards,\nThe {event_name} team'
+                            )
+                        )
                     message_preview = expand_email_variable_chips(
                         message.format_map(context_dict), dict(context_dict)
                     )
@@ -670,25 +680,41 @@ class EditEmailQueueView(EventPermissionRequiredMixin, UpdateView):
 
             if form.instance.composing_for == ComposingFor.TEAMS:
                 base_placeholders = ['event', 'user', 'team']
+                sample_body = _(
+                    'Hello {name},\n\n'
+                    'This is an example preview email for {event_name}.\n\n'
+                    'Best regards,\nThe {event_name} team'
+                )
             else:
                 base_placeholders = ['event', 'order', 'position_or_address']
+                sample_body = _(
+                    'Hello {attendee_name},\n\n'
+                    'This is an example preview email for {event_name}.\n\n'
+                    'Best regards,\nThe {event_name} team'
+                )
 
             for l in event.settings.locales:
                 with language(l, event.settings.region):
                     context_dict = build_email_preview_context(event, base_placeholders)
 
+                    subject_text = subject.localize(l) if subject else ''
+                    if not str(subject_text).strip():
+                        subject_text = str(_('Example Subject for {event_name}'))
                     try:
                         subject_preview = nh3.clean(
-                            subject.localize(l).format_map(context_dict),
+                            subject_text.format_map(context_dict),
                             tags=set(),
                         )
                     except KeyError as e:
                         form.add_error('subject', _('Invalid placeholder(s): {}').format(str(e)))
                         return self.form_invalid(form)
 
+                    message_text = message.localize(l) if message else ''
+                    if not str(message_text).strip():
+                        message_text = str(sample_body)
                     try:
                         message_preview = expand_email_variable_chips(
-                            message.localize(l).format_map(context_dict),
+                            message_text.format_map(context_dict),
                             dict(context_dict),
                         )
                     except KeyError as e:
@@ -1011,26 +1037,38 @@ class ComposeTeamsMail(EventPermissionRequiredMixin, CopyDraftMixin, BulkReplyTo
                 messages.error(self.request, _('Failed to send test email: {error}').format(error=str(e)))
 
             return self.render_to_response(self.get_context_data(form=form))
-        subject = form.cleaned_data.get('subject') or LazyI18nString({self.request.event.settings.locale or 'en': ''})
-        message = form.cleaned_data.get('message') or LazyI18nString({self.request.event.settings.locale or 'en': ''})
+        subject = form.cleaned_data.get('subject')
+        message = form.cleaned_data.get('message')
 
         self.output = {}
         for l in event.settings.locales:
             with language(l, event.settings.region):
                 context_dict = build_email_preview_context(event, ['event', 'user', 'team'])
 
+                subject_text = subject.localize(l) if subject else ''
+                if not str(subject_text).strip():
+                    subject_text = str(_('Example Subject for {event_name}'))
                 try:
                     subject_preview = nh3.clean(
-                        subject.localize(l).format_map(context_dict),
+                        subject_text.format_map(context_dict),
                         tags=set(),
                     )
                 except KeyError as e:
                     form.add_error('subject', _('Invalid placeholder(s): {}').format(str(e)))
                     return self.form_invalid(form)
 
+                message_text = message.localize(l) if message else ''
+                if not str(message_text).strip():
+                    message_text = str(
+                        _(
+                            'Hello {name},\n\n'
+                            'This is an example preview email for {event_name}.\n\n'
+                            'Best regards,\nThe {event_name} team'
+                        )
+                    )
                 try:
                     message_preview = expand_email_variable_chips(
-                        message.localize(l).format_map(context_dict),
+                        message_text.format_map(context_dict),
                         dict(context_dict),
                     )
                 except KeyError as e:

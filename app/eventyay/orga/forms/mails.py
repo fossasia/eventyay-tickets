@@ -232,6 +232,8 @@ class MailDetailForm(ScheduledAtValidationMixin, ReadOnlyFlag, forms.ModelForm):
 class WriteMailBaseForm(ScheduledAtValidationMixin, MailTemplateForm):
     empty_audience_error = _('Select at least one recipient or audience filter before sending this email.')
     empty_audience_draft_error = _('Select at least one recipient or audience filter before saving this draft.')
+    # Forms that always deliver immediately (no outbox / schedule) set this True.
+    always_send_immediately = False
 
     skip_queue = forms.BooleanField(
         label=_('Send immediately'),
@@ -289,6 +291,7 @@ class WriteMailBaseForm(ScheduledAtValidationMixin, MailTemplateForm):
 
 class WriteTeamsMailForm(WriteMailBaseForm):
     empty_audience_error = _('The selected teams have no active members with an email address.')
+    always_send_immediately = True
 
     recipients = forms.MultipleChoiceField(
         label=_('Recipient groups'),
@@ -301,7 +304,8 @@ class WriteTeamsMailForm(WriteMailBaseForm):
 
         # Placing reviewer emails in the outbox would lead to a **ton** of permission
         # issues: who is allowed to see them, who to edit/send them, etc.
-        # Reviewer emails are always sent immediately, no scheduling.
+        # Reviewer emails are always sent immediately, no scheduling — but test emails
+        # and preview still use the shared Delivery controls.
         self.fields.pop('skip_queue')
         self.fields.pop('scheduled_at', None)
 

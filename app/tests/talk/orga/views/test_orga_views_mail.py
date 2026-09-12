@@ -1095,15 +1095,32 @@ def test_session_mail_preview_works_without_a_selection(orga_client, event, spea
             "action": "preview",
             "bcc": "",
             "reply_to": "",
-            "subject_0": "foo",
-            "text_0": "bar",
+            "subject_0": "",
+            "text_0": "",
         },
     )
     assert response.status_code == 200
     assert "Roughly 0 emails will be generated" in response.text
     assert "sample recipient data" in response.text
+    assert "Example Subject" in response.text
+    assert "example preview email" in response.text.lower()
     with scope(event=event):
         assert not QueuedMail.objects.exists()
+
+
+@pytest.mark.django_db
+def test_teams_composer_shows_test_email_and_send_email_label(orga_client, event):
+    response = orga_client.get(event.orga_urls.compose_mails_teams, follow=True)
+    assert response.status_code == 200
+    assert 'name="test_email"' in response.text or 'id="id_test_email"' in response.text
+    assert "Send test email" in response.text
+    assert "Send email" in response.text
+    assert "mail-composer" in response.text
+    assert 'class="form-with-placeholder mail-composer" data-always-immediate' in response.text
+    assert "Save draft" not in response.text
+    assert 'id="delivery-mode-later"' not in response.text
+    assert 'id="id_skip_queue"' not in response.text
+    assert response.context["form"].always_send_immediately is True
 
 
 @pytest.mark.django_db
