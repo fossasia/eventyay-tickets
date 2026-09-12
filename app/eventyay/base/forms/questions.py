@@ -766,6 +766,13 @@ class BaseQuestionsForm(forms.Form):
                     required=False,
                 )
                 field.widget.attrs['type'] = 'description'
+            elif q.type == Question.TYPE_URL:
+                field = forms.URLField(
+                    label=label,
+                    required=required,
+                    help_text=help_text,
+                    initial=initial.answer if initial else None,
+                )
             field.question = q
             if answers:
                 field.answer = answers[0]
