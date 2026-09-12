@@ -6,7 +6,7 @@ from django.db import models
 from django.urls import reverse
 from django.utils.timezone import now
 from django.utils.translation import gettext_lazy as _
-from i18nfield.fields import I18nTextField
+from i18nfield.fields import I18nCharField, I18nTextField
 
 from eventyay.base.email import get_email_context
 from eventyay.mail.context import get_mail_context
@@ -19,6 +19,82 @@ from eventyay.common.exceptions import SendMailException
 
 
 logger = logging.getLogger(__name__)
+
+
+class TicketMailTemplate(models.Model):
+    """
+    Organiser-defined reusable email template for the Ticket message center.
+
+    Distinct from transactional ``event.settings`` mail texts (order placed,
+    paid, etc.) and from Talk's ``MailTemplate`` (session/proposal context).
+    """
+
+    event = models.ForeignKey(
+        Event,
+        on_delete=models.CASCADE,
+        related_name='ticket_mail_templates',
+    )
+    subject = I18nCharField(
+        max_length=200,
+        verbose_name=_('Subject'),
+    )
+    text = I18nTextField(
+        verbose_name=_('Message'),
+    )
+    reply_to = models.CharField(
+        max_length=200,
+        blank=True,
+        default='',
+        verbose_name=_('Reply-To'),
+        help_text=_('Change the Reply-To address if you do not want to use the default organiser address'),
+    )
+    bcc = models.CharField(
+        max_length=1000,
+        blank=True,
+        default='',
+        verbose_name=_('BCC'),
+        help_text=_(
+            'Enter comma separated addresses. Will receive a blind copy of every mail sent from this template. '
+            'This may be a LOT!'
+        ),
+    )
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        ordering = ['-updated_at', '-pk']
+
+    def __str__(self):
+        return f'TicketMailTemplate(event={self.event.slug}, pk={self.pk})'
+
+    def get_absolute_url(self):
+        return reverse(
+            'control:event.mail.custom_templates.edit',
+            kwargs={
+                'organizer': self.event.organizer.slug,
+                'event': self.event.slug,
+                'pk': self.pk,
+            },
+        )
+
+    def get_delete_url(self):
+        return reverse(
+            'control:event.mail.custom_templates.delete',
+            kwargs={
+                'organizer': self.event.organizer.slug,
+                'event': self.event.slug,
+                'pk': self.pk,
+            },
+        )
+
+    def get_compose_url(self):
+        return reverse(
+            'control:event.mail.send',
+            kwargs={
+                'organizer': self.event.organizer.slug,
+                'event': self.event.slug,
+            },
+        ) + f'?template={self.pk}'
 
 
 class ComposingFor(models.TextChoices):

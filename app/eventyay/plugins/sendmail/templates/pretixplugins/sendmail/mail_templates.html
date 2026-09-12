@@ -1,68 +1,111 @@
-{% extends "pretixcontrol/event/settings_base.html" %}
+{% extends 'pretixcontrol/event/base.html' %}
 {% load i18n %}
-{% load bootstrap3 %}
 {% load static %}
+
 {% block title %}{% translate "Email templates" %}{% endblock %}
+
+{% block custom_header %}
+  {{ block.super }}
+  <link rel="stylesheet" href="{% static 'common/css/base.css' %}">
+  <link rel="stylesheet" href="{% static 'pretixplugins/sendmail/tickets_email.css' %}">
+  <script defer src="{% static 'common/js/modalDialog.js' %}"></script>
+{% endblock %}
+
 {% block content %}
-    <nav id="event-nav" class="header-nav">
-        <div class="navigation">
-            <div class="navigation-title">
-                <h1>{% translate "Email templates" %}</h1>
-            </div>
-            {% include "pretixcontrol/event/component_link.html" %}
-        </div>
-    </nav>
-    {% block inside %}
-        <form action="" method="post" class="form-horizontal" enctype="multipart/form-data"
-                mail-preview-url="{% url 'control:event.settings.mail.preview' event=request.event.slug organizer=request.event.organizer.slug %}">
-            {% csrf_token %}
-            {% bootstrap_form_errors form %}
-            <div class="form">
-                <div class="panel-group" id="questions_group">
-                    {% blocktrans asvar title_placed_order %}Placed order{% endblocktrans %}
-                    {% include "pretixcontrol/event/mail_settings_fragment.html" with pid="order_placed" title=title_placed_order items="mail_text_order_placed,mail_send_order_placed_attendee,mail_text_order_placed_attendee" exclude="mail_send_order_placed_attendee" %}
+  {# Component switcher only — title lives on the next row like Talks #}
+  <nav id="event-nav" class="header-nav mail-templates-nav">
+    <div class="navigation">
+      {% include "pretixcontrol/event/component_link.html" %}
+    </div>
+  </nav>
 
-                    {% blocktrans asvar title_paid_order %}Paid order{% endblocktrans %}
-                    {% include "pretixcontrol/event/mail_settings_fragment.html" with pid="order_paid" title=title_paid_order items="mail_text_order_paid,mail_send_order_paid_attendee,mail_text_order_paid_attendee" exclude="mail_send_order_paid_attendee" %}
+  <div class="mail-templates-title-row d-flex flex-wrap align-items-center mb-3">
+    <h2 class="mail-templates-title d-flex align-items-center mr-auto mb-2 mb-md-0">
+      {% translate "Email templates" %}
+      <button type="button" class="mail-templates-help-trigger" data-dialog-target="#info-dialog" data-toggle="dialog"
+              title="{% translate 'About email templates' %}" aria-label="{% translate 'About email templates' %}">
+        <i class="fa fa-question-circle-o" aria-hidden="true"></i>
+      </button>
+    </h2>
+    {% if can_manage_custom_templates %}
+      <a class="btn btn-lg btn-success mb-2 mb-md-0" href="{% url 'control:event.mail.custom_templates.create' organizer=request.event.organizer.slug event=request.event.slug %}">
+        <i class="fa fa-plus"></i>
+        {% translate "New custom template" %}
+      </a>
+    {% endif %}
+  </div>
 
-                    {% if is_meetup_event %}
-                        {% blocktrans asvar title_meetup_registration %}Meetup registration{% endblocktrans %}
-                        {% include "pretixcontrol/event/mail_settings_fragment.html" with pid="meetup_registration" title=title_meetup_registration items="mail_text_meetup_registration,mail_send_meetup_registration_attendee,mail_text_meetup_registration_attendee" exclude="mail_send_meetup_registration_attendee" %}
-                    {% else %}
-                        {% blocktrans asvar title_free_order %}Free order{% endblocktrans %}
-                        {% include "pretixcontrol/event/mail_settings_fragment.html" with pid="order_free" title=title_free_order items="mail_text_order_free,mail_send_order_free_attendee,mail_text_order_free_attendee" exclude="mail_send_order_free_attendee" %}
-                    {% endif %}
+  <dialog id="info-dialog" class="mail-templates-info-dialog" aria-label="{% translate 'About email templates' %}">
+    <div class="mail-templates-info-dialog__card">
+      <div class="mail-templates-info-dialog__icon" aria-hidden="true">
+        <i class="fa fa-info-circle"></i>
+      </div>
+      <div class="mail-templates-info-dialog__body">
+        <p>
+          {% blocktranslate trimmed %}
+            You can edit the default templates and your custom templates for emails here.
+            If you want to send emails to some or all of your attendees, head over to the
+            "Compose" tab. Mails queued for sending are in the "Outbox" tab.
+          {% endblocktranslate %}
+        </p>
+        <p>
+          {% blocktranslate trimmed %}
+            There are different placeholders available depending on the template type.
+            They are explained in detail once you start editing a template.
+          {% endblocktranslate %}
+        </p>
+      </div>
+    </div>
+  </dialog>
 
-                    {% blocktrans asvar title_resend_link %}Resend link{% endblocktrans %}
-                    {% include "pretixcontrol/event/mail_settings_fragment.html" with pid="resend_link" title=title_resend_link items="mail_text_resend_link,mail_text_resend_all_links" %}
+  <div class="table-responsive-sm">
+    <table class="table table-sm table-flip table-sticky">
+      <thead>
+        <tr>
+          <th>{% translate "Template" %}</th>
+          <th>{% translate "Subject" %}</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for row in system_templates %}
+          <tr>
+            <td>
+              <a href="{{ row.edit_url }}">
+                <span class="badge {{ row.badge_class }}">{{ row.label }}</span>
+              </a>
+            </td>
+            <td>{{ row.subject }}</td>
+            <td class="text-right mail-templates-actions">
+              <a href="{{ row.edit_url }}" class="btn btn-info" title="{% translate 'Edit' %}" aria-label="{% translate 'Edit' %}">
+                <i class="fa fa-edit" aria-hidden="true"></i>
+              </a>
+            </td>
+          </tr>
+        {% endfor %}
 
-                    {% blocktrans asvar title_order_changed %}Order changed{% endblocktrans %}
-                    {% include "pretixcontrol/event/mail_settings_fragment.html" with pid="order_changed" title=title_order_changed items="mail_text_order_changed" %}
-
-                    {% blocktrans asvar title_payment_reminder %}Payment reminder{% endblocktrans %}
-                    {% include "pretixcontrol/event/mail_settings_fragment.html" with pid="order_expires" title=title_payment_reminder items="mail_days_order_expire_warning,mail_text_order_expire_warning" exclude="mail_days_order_expire_warning" %}
-
-                    {% blocktrans asvar title_waiting_list_notification %}Waiting list notification{% endblocktrans %}
-                    {% include "pretixcontrol/event/mail_settings_fragment.html" with pid="waiting_list" title=title_waiting_list_notification items="mail_text_waiting_list" %}
-
-                    {% blocktrans asvar title_order_canceled %}Order canceled{% endblocktrans %}
-                    {% include "pretixcontrol/event/mail_settings_fragment.html" with pid="order_canceled" title=title_order_canceled items="mail_text_order_canceled" %}
-
-                    {% blocktrans asvar title_order_custom_mail %}Order custom mail{% endblocktrans %}
-                    {% include "pretixcontrol/event/mail_settings_fragment.html" with pid="custom_mail" title=title_order_custom_mail items="mail_text_order_custom_mail" %}
-
-                    {% blocktrans asvar title_download_tickets_reminder %}Reminder to download tickets{% endblocktrans %}
-                    {% include "pretixcontrol/event/mail_settings_fragment.html" with pid="ticket_reminder" title=title_download_tickets_reminder items="mail_days_download_reminder,mail_text_download_reminder,mail_send_download_reminder_attendee,mail_text_download_reminder_attendee,mail_sales_channel_download_reminder" exclude="mail_days_download_reminder,mail_send_download_reminder_attendee,mail_sales_channel_download_reminder" %}
-
-                    {% blocktrans asvar title_require_approval %}Order approval process{% endblocktrans %}
-                    {% include "pretixcontrol/event/mail_settings_fragment.html" with pid="order_approval" title=title_require_approval  items="mail_text_order_placed_require_approval,mail_text_order_approved,mail_text_order_approved_free,mail_text_order_denied" %}
-                </div>
-            </div>
-            <div class="form-group submit-group">
-                <button type="submit" class="btn btn-primary btn-save">
-                    {% translate "Save" %}
-                </button>
-            </div>
-        </form>
-    {% endblock %}
+        {% for template in custom_templates %}
+          <tr>
+            <td>
+              <a href="{{ template.get_absolute_url }}">
+                <span class="badge color-secondary">{% translate "Custom Mail" %}</span>
+              </a>
+            </td>
+            <td>{{ template.subject }}</td>
+            <td class="text-right mail-templates-actions">
+              {% if can_manage_custom_templates %}
+                <a href="{{ template.get_compose_url }}" class="btn btn-success nowrap">{% translate "Send mails" %}</a>
+                <a href="{{ template.get_delete_url }}" class="btn btn-danger" title="{% translate 'Delete' %}" aria-label="{% translate 'Delete' %}">
+                  <i class="fa fa-trash" aria-hidden="true"></i>
+                </a>
+                <a href="{{ template.get_absolute_url }}" class="btn btn-info" title="{% translate 'Edit' %}" aria-label="{% translate 'Edit' %}">
+                  <i class="fa fa-edit" aria-hidden="true"></i>
+                </a>
+              {% endif %}
+            </td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
 {% endblock %}

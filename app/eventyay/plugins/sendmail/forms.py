@@ -3,6 +3,7 @@ from collections import defaultdict
 from django import forms
 from django.conf import settings
 from django.core.exceptions import ValidationError
+from django.core.validators import EmailValidator
 from django.db.models import Exists, OuterRef, Q
 from django.urls import reverse
 from django.utils.functional import cached_property
@@ -16,7 +17,7 @@ from i18nfield.forms import I18nFormField, I18nTextarea, I18nTextInput
 from eventyay.base.channels import get_all_sales_channels
 from eventyay.base.email import get_available_placeholders
 from eventyay.mail.context import get_available_placeholders as get_talk_placeholders
-from eventyay.base.forms import PlaceholderValidator, SettingsForm
+from eventyay.base.forms import I18nModelForm, PlaceholderValidator, SettingsForm
 from eventyay.base.forms.widgets import SplitDateTimePickerWidget
 from eventyay.base.meetup import is_meetup_event
 from eventyay.base.models.auth import User
@@ -35,10 +36,146 @@ from eventyay.control.forms import CachedFileField, SplitDateTimeField
 from eventyay.control.forms.widgets import Select2, Select2Multiple
 from eventyay.helpers.timezone import attach_timezone_to_naive_clock_time, get_browser_timezone
 from eventyay.orga.forms.mails import TalkSplitDateTimePickerWidget
-from eventyay.plugins.sendmail.models import ComposingFor, EmailQueue, EmailQueueToUser
+from eventyay.plugins.sendmail.models import ComposingFor, EmailQueue, EmailQueueToUser, TicketMailTemplate
 
 
 MAIL_SEND_ORDER_PLACED_ATTENDEE_HELP = _( 'If the order contains attendees with email addresses different from the person who orders the ' 'tickets, the following email will be sent out to the attendees.' )
+
+# Talk-style single-template edit: each key is one row on the templates list.
+SYSTEM_MAIL_TEMPLATES = {
+    'order_placed': {
+        'label': _('Placed order'),
+        'badge_class': 'color-info',
+        'preview_key': 'mail_text_order_placed',
+        'fields': (
+            'mail_text_order_placed',
+            'mail_send_order_placed_attendee',
+            'mail_text_order_placed_attendee',
+        ),
+        'exclude': ('mail_send_order_placed_attendee',),
+    },
+    'order_paid': {
+        'label': _('Paid order'),
+        'badge_class': 'color-success',
+        'preview_key': 'mail_text_order_paid',
+        'fields': (
+            'mail_text_order_paid',
+            'mail_send_order_paid_attendee',
+            'mail_text_order_paid_attendee',
+        ),
+        'exclude': ('mail_send_order_paid_attendee',),
+    },
+    'order_free': {
+        'label': _('Free order'),
+        'badge_class': 'color-info',
+        'preview_key': 'mail_text_order_free',
+        'fields': (
+            'mail_text_order_free',
+            'mail_send_order_free_attendee',
+            'mail_text_order_free_attendee',
+        ),
+        'exclude': ('mail_send_order_free_attendee',),
+        'meetup': False,
+    },
+    'meetup_registration': {
+        'label': _('Meetup registration'),
+        'badge_class': 'color-info',
+        'preview_key': 'mail_text_meetup_registration',
+        'fields': (
+            'mail_text_meetup_registration',
+            'mail_send_meetup_registration_attendee',
+            'mail_text_meetup_registration_attendee',
+        ),
+        'exclude': ('mail_send_meetup_registration_attendee',),
+        'meetup': True,
+    },
+    'resend_link': {
+        'label': _('Resend link'),
+        'badge_class': 'color-info',
+        'preview_key': 'mail_text_resend_link',
+        'fields': ('mail_text_resend_link', 'mail_text_resend_all_links'),
+        'exclude': (),
+    },
+    'order_changed': {
+        'label': _('Order changed'),
+        'badge_class': 'color-warning',
+        'preview_key': 'mail_text_order_changed',
+        'fields': ('mail_text_order_changed',),
+        'exclude': (),
+    },
+    'order_expires': {
+        'label': _('Payment reminder'),
+        'badge_class': 'color-warning',
+        'preview_key': 'mail_text_order_expire_warning',
+        'fields': ('mail_days_order_expire_warning', 'mail_text_order_expire_warning'),
+        'exclude': ('mail_days_order_expire_warning',),
+    },
+    'waiting_list': {
+        'label': _('Waiting list notification'),
+        'badge_class': 'color-info',
+        'preview_key': 'mail_text_waiting_list',
+        'fields': ('mail_text_waiting_list',),
+        'exclude': (),
+    },
+    'order_canceled': {
+        'label': _('Order canceled'),
+        'badge_class': 'color-danger',
+        'preview_key': 'mail_text_order_canceled',
+        'fields': ('mail_text_order_canceled',),
+        'exclude': (),
+    },
+    'custom_mail': {
+        'label': _('Order custom mail'),
+        'badge_class': 'color-secondary',
+        'preview_key': 'mail_text_order_custom_mail',
+        'fields': ('mail_text_order_custom_mail',),
+        'exclude': (),
+    },
+    'ticket_reminder': {
+        'label': _('Reminder to download tickets'),
+        'badge_class': 'color-info',
+        'preview_key': 'mail_text_download_reminder',
+        'fields': (
+            'mail_days_download_reminder',
+            'mail_text_download_reminder',
+            'mail_send_download_reminder_attendee',
+            'mail_text_download_reminder_attendee',
+            'mail_sales_channel_download_reminder',
+        ),
+        'exclude': (
+            'mail_days_download_reminder',
+            'mail_send_download_reminder_attendee',
+            'mail_sales_channel_download_reminder',
+        ),
+    },
+    'order_approval': {
+        'label': _('Order approval process'),
+        'badge_class': 'color-info',
+        'preview_key': 'mail_text_order_placed_require_approval',
+        'fields': (
+            'mail_text_order_placed_require_approval',
+            'mail_text_order_approved',
+            'mail_text_order_approved_free',
+            'mail_text_order_denied',
+        ),
+        'exclude': (),
+    },
+}
+
+
+def get_system_mail_template_defs(event):
+    """Return system template defs visible for this event (meetup vs ticket)."""
+    meetup = is_meetup_event(event)
+    result = {}
+    for key, meta in SYSTEM_MAIL_TEMPLATES.items():
+        meetup_only = meta.get('meetup')
+        if meetup_only is True and not meetup:
+            continue
+        if meetup_only is False and meetup:
+            continue
+        result[key] = meta
+    return result
+
 
 def contains_web_channel_validate(value):
     if 'web' not in value:
@@ -782,6 +919,7 @@ class MailContentSettingsForm(SettingsForm):
 
     def __init__(self, *args, **kwargs):
         self.event = kwargs.get('obj')
+        self.template_key = kwargs.pop('template_key', None)
         super().__init__(*args, **kwargs)
         self.base_context = dict(self.base_context)
 
@@ -790,6 +928,15 @@ class MailContentSettingsForm(SettingsForm):
                           'mail_text_meetup_registration_attendee'):
                 self.fields.pop(field, None)
                 self.base_context.pop(field, None)
+
+        if self.template_key:
+            meta = get_system_mail_template_defs(self.event).get(self.template_key)
+            if not meta:
+                raise ValueError(f'Unknown system mail template: {self.template_key}')
+            keep = set(meta['fields'])
+            for name in list(self.fields.keys()):
+                if name not in keep:
+                    self.fields.pop(name)
 
         for k, v in self.base_context.items():
             if k in self.fields:
@@ -1156,3 +1303,99 @@ class TeamMailRecipientsForm(TeamMailForm):
         super().__init__(*args, **kwargs)
         for name in ('subject', 'message', 'attachment', 'reply_to', 'bcc', 'scheduled_at', 'test_email'):
             self.fields.pop(name, None)
+
+
+TICKET_CUSTOM_TEMPLATE_PLACEHOLDERS = ('event', 'order', 'position_or_address')
+
+
+class TicketMailTemplateForm(I18nModelForm):
+    """Create/edit organiser custom templates for the Ticket message center."""
+
+    default_renderer = TabularFormRenderer
+
+    def __init__(self, *args, **kwargs):
+        # BaseI18nModelForm pops ``event`` and assigns ``self.event``.
+        super().__init__(*args, **kwargs)
+        if not self.event and getattr(self.instance, 'event_id', None):
+            self.event = self.instance.event
+
+        locales = []
+        if self.event:
+            locales = self.event.settings.get('locales') or [self.event.locale or 'en']
+            if isinstance(locales, str):
+                locales = [locales]
+
+        self.fields['subject'].required = True
+        placeholder_names = sorted(
+            get_available_placeholders(self.event, list(TICKET_CUSTOM_TEMPLATE_PLACEHOLDERS)).keys()
+        )
+        text_field = self.fields['text']
+        self.fields['text'] = I18nEmailBodyFormField(
+            label=text_field.label,
+            help_text=text_field.help_text,
+            widget=I18nEmailEditorWidget,
+            widget_kwargs={'placeholders': placeholder_names},
+            required=True,
+            locales=locales,
+        )
+        phs = [f'{{{p}}}' for p in placeholder_names]
+        self.fields['subject'].validators.append(PlaceholderValidator(phs))
+        self.fields['text'].validators.append(PlaceholderValidator(phs))
+
+        reply_to_field = self.fields['reply_to']
+        self.fields['reply_to'] = forms.EmailField(
+            label=reply_to_field.label,
+            help_text=reply_to_field.help_text,
+            required=False,
+            widget=forms.EmailInput(),
+        )
+
+    def clean_bcc(self):
+        value = (self.cleaned_data.get('bcc') or '').strip()
+        if not value:
+            return ''
+        addresses = [part.strip() for part in value.split(',') if part.strip()]
+        validator = EmailValidator()
+        invalid = []
+        for address in addresses:
+            try:
+                validator(address)
+            except ValidationError:
+                invalid.append(address)
+        if invalid:
+            raise ValidationError(
+                _('Please enter valid email addresses separated by commas. Invalid: %(emails)s'),
+                code='invalid',
+                params={'emails': ', '.join(invalid)},
+            )
+        return ', '.join(addresses)
+
+    @cached_property
+    def grouped_placeholders(self):
+        placeholders = get_available_placeholders(self.event, list(TICKET_CUSTOM_TEMPLATE_PLACEHOLDERS))
+        grouped = defaultdict(list)
+        specificity = (
+            ('position_or_address', 'ticket'),
+            ('position', 'ticket'),
+            ('invoice_address', 'invoice'),
+            ('order', 'order'),
+            ('event', 'event'),
+        )
+        for placeholder in placeholders.values():
+            if getattr(placeholder, 'is_visible', True) is False:
+                continue
+            placeholder.rendered_sample = escape(placeholder.render_sample(self.event))
+            for arg, group in specificity:
+                if arg in placeholder.required_context:
+                    grouped[group].append(placeholder)
+                    break
+            else:
+                grouped['other'].append(placeholder)
+        return grouped
+
+    class Meta:
+        model = TicketMailTemplate
+        fields = ['subject', 'text', 'reply_to', 'bcc']
+        widgets = {
+            'bcc': forms.TextInput(),
+        }

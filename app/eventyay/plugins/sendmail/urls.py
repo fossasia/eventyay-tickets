@@ -23,4 +23,24 @@ urlpatterns = [
     path('sendmail/', views.SenderView.as_view(), name='event.mail.send'),
     path('sendmail/sent/', views.SentMailView.as_view(), name='event.mail.sent'),
     path('sendmail/templates/', views.MailTemplatesView.as_view(), name='event.mail.templates'),
+    path(
+        'sendmail/templates/system/<slug:template_key>/',
+        views.MailSystemTemplateUpdateView.as_view(),
+        name='event.mail.templates.system',
+    ),
+    path(
+        'sendmail/templates/custom/new/',
+        views.TicketMailTemplateCreateView.as_view(),
+        name='event.mail.custom_templates.create',
+    ),
+    path(
+        'sendmail/templates/custom/<int:pk>/',
+        views.TicketMailTemplateUpdateView.as_view(),
+        name='event.mail.custom_templates.edit',
+    ),
+    path(
+        'sendmail/templates/custom/<int:pk>/delete/',
+        views.TicketMailTemplateDeleteView.as_view(),
+        name='event.mail.custom_templates.delete',
+    ),
 ]

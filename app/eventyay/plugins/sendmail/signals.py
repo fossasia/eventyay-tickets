@@ -102,7 +102,15 @@ def control_nav_import(sender, request=None, **kwargs):
                             'organizer': request.event.organizer.slug,
                         },
                     ),
-                    'active': (url.url_name == 'event.mail.templates'),
+                    'active': (
+                        url.url_name in {
+                            'event.mail.templates',
+                            'event.mail.templates.system',
+                            'event.mail.custom_templates.create',
+                            'event.mail.custom_templates.edit',
+                            'event.mail.custom_templates.delete',
+                        }
+                    ),
                 },
             ],
         },
@@ -115,6 +123,9 @@ def pretixcontrol_logentry_display(sender, logentry, **kwargs):
         'eventyay.plugins.sendmail.sent': _('Email was sent'),
         'eventyay.plugins.sendmail.order.email.sent': _('The order received a mass email.'),
         'eventyay.plugins.sendmail.order.email.sent.attendee': _('A ticket holder of this order received a mass email.'),
+        'eventyay.plugins.sendmail.ticket_mail_template.created': _('Custom email template was created.'),
+        'eventyay.plugins.sendmail.ticket_mail_template.changed': _('Custom email template was changed.'),
+        'eventyay.plugins.sendmail.ticket_mail_template.deleted': _('Custom email template was deleted.'),
     }
     if logentry.action_type in plains:
         return plains[logentry.action_type]
