@@ -1066,12 +1066,24 @@ body:has(.td-dashboard) #page-content {
   align-items: stretch;
 }
 
+.td-activity-table-wrap {
+  width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
 
 .td-activity-table {
   width: 100%;
+  min-width: 520px;
   border-collapse: collapse;
   margin-top: 10px;
   font-size: 13px;
+}
+
+@media (max-width: 991px) {
+  .td-split-layout {
+    grid-template-columns: 1fr;
+  }
 }
 
 .td-activity-table th {
