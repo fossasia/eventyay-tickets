@@ -104,7 +104,7 @@ html.rtl {
     border-right: 0;
   }
 
-  .sidebar-minimized .sidebar .nav > li > a .fa, body.sidebar-minimized .sidebar .nav > li > a svg{
+  .sidebar-minimized:not(:has(.sidebar:hover)) .sidebar .nav > li > a .fa, body.sidebar-minimized:not(:has(.sidebar:hover)) .sidebar .nav > li > a svg{
     margin : auto;
   }
 
@@ -150,7 +150,7 @@ html.rtl {
   html.rtl #page-wrapper {
     margin: 0 $sidebar-width 0 0;
   }
-  html.rtl body.sidebar-minimized #page-wrapper {
+  html.rtl body.sidebar-minimized:not(:has(.sidebar:hover)) #page-wrapper {
       margin: 0 $sidebar-minimized-width 0 0;
   }
 }
