@@ -156,14 +156,14 @@
                             </td>
                             <td>
                                 {% if log.display_object %}
-                                    <a href="#" class="td-activity-ref">{{ log.display_object|safe }}</a>
+                                    <span class="td-activity-ref">{{ log.display_object|safe }}</span>
                                 {% elif log.content_object %}
                                     {% if log.content_type.model == 'submission' %}
                                         <a href="{{ log.content_object.orga_urls.base }}" class="td-activity-ref">{{ log.content_object.title }}</a>
                                     {% elif log.content_type.model == 'event' %}
                                         <a href="{{ log.content_object.orga_urls.base }}" class="td-activity-ref">{{ log.content_object.name }}</a>
                                     {% else %}
-                                        <a href="#" class="td-activity-ref">{{ log.content_object }}</a>
+                                        <span class="td-activity-ref">{{ log.content_object }}</span>
                                     {% endif %}
                                 {% else %}
                                     <span class="text-muted">-</span>

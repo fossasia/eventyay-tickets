@@ -162,13 +162,15 @@ class EventDashboardView(EventPermissionRequired, SubmissionStatsMixin, Template
             if not request.user.has_perm('base.update_event', request.event):
                 from django.core.exceptions import PermissionDenied
                 raise PermissionDenied()
-            request.event.comment = request.POST.get('internal_note')
+            internal_note = request.POST.get('internal_note', '')[:1000]
+            request.event.comment = internal_note
             request.event.save(update_fields=['comment'])
             from django.contrib import messages
             from django.utils.translation import gettext as _
             messages.success(request, _('Internal note saved.'))
             return redirect(request.path)
-        return super().get(request, *args, **kwargs)
+        from django.http import HttpResponseNotAllowed
+        return HttpResponseNotAllowed(['GET', 'POST'])
 
     def enhance_timeline(self, event, stages):
         from django.utils.translation import gettext as _
