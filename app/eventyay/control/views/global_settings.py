@@ -25,6 +25,7 @@ from eventyay.base.forms import SECRET_REDACTED
 from eventyay.base.services.mail import get_mail_backend
 from eventyay.base.services.turnstile import test_turnstile_connection
 from eventyay.base.services.update_check import check_result_table, update_check
+from eventyay.base.models.privacy import ThirdPartyService, enabled_consent_categories
 from eventyay.base.settings import GlobalSettingsObject
 from eventyay.common.sanitizers import sanitize_rich_text
 from eventyay.control.forms.global_settings import (
@@ -32,6 +33,7 @@ from eventyay.control.forms.global_settings import (
     GlobalSettingsForm,
     GlobalTicketingSettingsForm,
     SSOConfigForm,
+    PrivacySettingsForm,
 )
 from eventyay.control.permissions import (
     AdministratorPermissionRequiredMixin,
@@ -43,10 +45,12 @@ logger = logging.getLogger(__name__)
 
 
 class GlobalSettingsView(AdministratorPermissionRequiredMixin, FormView):
+    """GlobalSettingsView class implementation."""
     template_name = 'pretixcontrol/global_settings.html'
     form_class = GlobalSettingsForm
 
     def get(self, request, *args, **kwargs):
+        """get method."""
         tab = request.GET.get('tab', '').lower()
         if tab in ('vouchers', 'event_vouchers'):
             return redirect(reverse('eventyay_admin:admin.vouchers'))
@@ -64,6 +68,7 @@ class GlobalSettingsView(AdministratorPermissionRequiredMixin, FormView):
         return super().get(request, *args, **kwargs)
 
     def post(self, request, *args, **kwargs):
+        """post method."""
         if 'trigger' in request.POST:
             update_check.apply()
             messages.success(request, _('Update check has been performed.'))
@@ -71,6 +76,7 @@ class GlobalSettingsView(AdministratorPermissionRequiredMixin, FormView):
         return super().post(request, *args, **kwargs)
 
     def get_context_data(self, **kwargs):
+        """get_context_data method."""
         from eventyay.base.gmail.models import GmailOAuthCredential
 
         context = super().get_context_data(**kwargs)
@@ -89,81 +95,101 @@ class GlobalSettingsView(AdministratorPermissionRequiredMixin, FormView):
         return context
 
     def form_valid(self, form):
+        """form_valid method."""
         form.save()
         messages.success(self.request, _('Your changes have been saved.'))
         return super().form_valid(form)
 
     def form_invalid(self, form):
+        """form_invalid method."""
         messages.error(self.request, _('Your changes have not been saved, see below for errors.'))
         return super().form_invalid(form)
 
     def get_success_url(self):
+        """get_success_url method."""
         return reverse('eventyay_admin:admin.global.settings')
 
 
 class GlobalTicketingSettingsView(AdministratorPermissionRequiredMixin, FormView):
+    """GlobalTicketingSettingsView class implementation."""
     template_name = 'pretixcontrol/admin/ticketing_settings.html'
     form_class = GlobalTicketingSettingsForm
 
     def form_valid(self, form):
+        """form_valid method."""
         form.save()
         messages.success(self.request, _('Your changes have been saved.'))
         return super().form_valid(form)
 
     def form_invalid(self, form):
+        """form_invalid method."""
         messages.error(self.request, _('Your changes have not been saved, see below for errors.'))
         return super().form_invalid(form)
 
     def get_success_url(self):
+        """get_success_url method."""
         return reverse('eventyay_admin:admin.global.ticketing')
 
 
 class GlobalBusinessSettingsView(AdministratorPermissionRequiredMixin, FormView):
+    """GlobalBusinessSettingsView class implementation."""
     template_name = 'pretixcontrol/admin/business_settings.html'
     form_class = GlobalBusinessSettingsForm
 
     def form_valid(self, form):
+        """form_valid method."""
         form.save()
         messages.success(self.request, _('Your changes have been saved.'))
         return super().form_valid(form)
 
     def form_invalid(self, form):
+        """form_invalid method."""
         messages.error(self.request, _('Your changes have not been saved, see below for errors.'))
         return super().form_invalid(form)
 
     def get_success_url(self):
+        """get_success_url method."""
         return reverse('eventyay_admin:admin.global.business')
 
 
 class MetaDataSettingsView(AdministratorPermissionRequiredMixin, View):
+    """MetaDataSettingsView class implementation."""
     def get(self, request, *args, **kwargs):
+        """get method."""
         return redirect(reverse('eventyay_admin:admin.global.settings') + '#tab-meta-data')
 
     def post(self, request, *args, **kwargs):
+        """post method."""
         return redirect(reverse('eventyay_admin:admin.global.settings') + '#tab-meta-data')
 
 
 class UpdateRedirectView(StaffMemberRequiredMixin, View):
+    """UpdateRedirectView class implementation."""
     def get(self, request, *args, **kwargs):
+        """get method."""
         return redirect(reverse('eventyay_admin:admin.global.settings') + '#tab-update-check')
 
     def post(self, request, *args, **kwargs):
+        """post method."""
         if request.POST.get('trigger') == '1':
             update_check.apply()
         return redirect(reverse('eventyay_admin:admin.global.settings') + '#tab-update-check')
 
 
 class SSOView(AdministratorPermissionRequiredMixin, FormView):
+    """SSOView class implementation."""
     template_name = 'pretixcontrol/global_sso.html'
     form_class = SSOConfigForm
 
     def get_context_data(self, **kwargs):
+        """get_context_data method."""
         context = super().get_context_data(**kwargs)
         oauth_applications = OAuthApplication.objects.all()
         context['oauth_applications'] = oauth_applications
         return context
 
     def form_valid(self, form):
+        """form_valid method."""
         url = form.cleaned_data['redirect_url']
 
         try:
@@ -176,13 +202,16 @@ class SSOView(AdministratorPermissionRequiredMixin, FormView):
         return self.render_to_response(self.get_context_data(form=form, result=result))
 
     def form_invalid(self, form):
+        """form_invalid method."""
         messages.error(self.request, _('Your changes have not been saved, see below for errors.'))
         return super().form_invalid(form)
 
     def get_success_url(self):
+        """get_success_url method."""
         return reverse('eventyay_admin:admin.global.sso')
 
     def create_oauth_application(self, redirect_uris):
+        """create_oauth_application method."""
         application, created = OAuthApplication.objects.get_or_create(
             redirect_uris=redirect_uris,
             defaults={
@@ -209,11 +238,13 @@ class SSOView(AdministratorPermissionRequiredMixin, FormView):
 
 
 class DeleteOAuthApplicationView(AdministratorPermissionRequiredMixin, DeleteView):
+    """DeleteOAuthApplicationView class implementation."""
     model = OAuthApplication
     success_url = reverse_lazy('eventyay_admin:admin.global.sso')
 
 
 class MessageView(AdministratorPermissionRequiredMixin, TemplateView):
+    """MessageView class implementation."""
     template_name = 'pretixcontrol/global_message.html'
 
 
@@ -233,6 +264,7 @@ class GlobalSettingsTestEmailView(AdministratorPermissionRequiredMixin, View):
         return redirect(reverse('eventyay_admin:admin.global.settings') + self.EMAIL_TAB_HASH)
 
     def post(self, request, *args, **kwargs):
+        """post method."""
         recipients_raw = request.POST.get('test_email', '').strip()
         recipients = [r.strip() for r in recipients_raw.split(',') if r.strip()]
 
@@ -432,6 +464,7 @@ class GlobalSettingsTestTurnstileView(AdministratorPermissionRequiredMixin, View
         return redirect(reverse('eventyay_admin:admin.global.settings') + self.SECURITY_TAB_HASH)
 
     def post(self, request, *args, **kwargs):
+        """post method."""
         gs = GlobalSettingsObject()
         secret = request.POST.get('turnstile_secret_key', '').strip()
         if not secret or secret == SECRET_REDACTED:
@@ -453,7 +486,9 @@ class GlobalSettingsTestTurnstileView(AdministratorPermissionRequiredMixin, View
 
 
 class LogDetailView(AdministratorPermissionRequiredMixin, View):
+    """LogDetailView class implementation."""
     def get(self, request, *args, **kwargs):
+        """get method."""
         le = get_object_or_404(LogEntry, pk=request.GET.get('pk'))
         data = le.parsed_data
         if data is None:
@@ -462,9 +497,11 @@ class LogDetailView(AdministratorPermissionRequiredMixin, View):
 
 
 class GlobalPluginManagementView(AdministratorPermissionRequiredMixin, TemplateView):
+    """GlobalPluginManagementView class implementation."""
     template_name = 'pretixcontrol/global_plugins.html'
 
     def get_context_data(self, **kwargs):
+        """get_context_data method."""
         context = super().get_context_data(**kwargs)
         all_plugins = get_all_plugins(include_inactive=True)
 
@@ -492,6 +529,7 @@ class GlobalPluginManagementView(AdministratorPermissionRequiredMixin, TemplateV
         return context
 
     def post(self, request, *args, **kwargs):
+        """post method."""
         all_plugins = get_all_plugins(include_inactive=True)
         known_modules = {p.module for p in all_plugins}
         newly_disabled = set()
@@ -532,6 +570,7 @@ class GlobalPluginManagementView(AdministratorPermissionRequiredMixin, TemplateV
 
     @staticmethod
     def _strip_disabled_from_events(disabled_modules: set[str]):
+        """_strip_disabled_from_events method."""
         for event in Event.objects.exclude(plugins='').exclude(plugins__isnull=True).iterator():
             current = [p for p in event.plugins.split(',') if p]
             filtered = [p for p in current if p not in disabled_modules]
@@ -541,6 +580,7 @@ class GlobalPluginManagementView(AdministratorPermissionRequiredMixin, TemplateV
 
     @staticmethod
     def _ensure_enabled_on_all_events(modules: set[str]):
+        """_ensure_enabled_on_all_events method."""
         for event in Event.objects.iterator():
             current = [p for p in (event.plugins or '').split(',') if p]
             missing = [m for m in modules if m not in current]
@@ -550,13 +590,17 @@ class GlobalPluginManagementView(AdministratorPermissionRequiredMixin, TemplateV
 
 
 class PaymentDetailView(AdministratorPermissionRequiredMixin, View):
+    """PaymentDetailView class implementation."""
     def get(self, request, *args, **kwargs):
+        """get method."""
         p = get_object_or_404(OrderPayment, pk=request.GET.get('pk'))
         return JsonResponse({'data': p.info_data})
 
 
 class RefundDetailView(AdministratorPermissionRequiredMixin, View):
+    """RefundDetailView class implementation."""
     def get(self, request, *args, **kwargs):
+        """get method."""
         p = get_object_or_404(OrderRefund, pk=request.GET.get('pk'))
         return JsonResponse({'data': p.info_data})
 
@@ -565,6 +609,7 @@ class GlobalSettingsPagePreviewView(AdministratorPermissionRequiredMixin, View):
     """AJAX endpoint for previewing multi-lingual rich text page content."""
 
     def post(self, request, *args, **kwargs):
+        """post method."""
         content_type = request.content_type or ''
         if 'application/json' in content_type:
             try:
@@ -595,3 +640,49 @@ class GlobalSettingsPagePreviewView(AdministratorPermissionRequiredMixin, View):
 
         return JsonResponse({'previews': previews})
 
+
+class PrivacySettingsView(AdministratorPermissionRequiredMixin, FormView):
+    """PrivacySettingsView class implementation."""
+    template_name = 'pretixcontrol/admin/privacy_settings.html'
+    form_class = PrivacySettingsForm
+
+    def get_context_data(self, **kwargs):
+        """get_context_data method."""
+        context = super().get_context_data(**kwargs)
+        gs = GlobalSettingsObject()
+        services = ThirdPartyService.objects.all()
+
+        context['services'] = services
+        context['provider'] = gs.settings.get('privacy_consent_provider', 'disabled')
+        # Surfaced as warnings on the overview so misconfiguration is visible
+        # rather than silently shipping a banner that blocks nothing.
+        #
+        # `category` is non-null and defaulted, so an enabled service is always
+        # classified. What an administrator can still get wrong is enabling a
+        # service whose category is switched off: it is dropped from the consent
+        # config entirely, so the banner never mentions or blocks it.
+        enabled_categories = enabled_consent_categories(gs.settings)
+        context['unpublished_services'] = [
+            service
+            for service in services
+            if service.enabled
+            and not service.required
+            and service.category not in enabled_categories
+        ]
+        context['missing_cookie_policy'] = not gs.settings.get('privacy_cookie_policy_url')
+        return context
+
+    def form_valid(self, form):
+        """form_valid method."""
+        form.save()
+        messages.success(self.request, _('Your changes have been saved.'))
+        return super().form_valid(form)
+
+    def form_invalid(self, form):
+        """form_invalid method."""
+        messages.error(self.request, _('Your changes have not been saved, see below for errors.'))
+        return super().form_invalid(form)
+
+    def get_success_url(self):
+        """get_success_url method."""
+        return reverse('eventyay_admin:admin.global.privacy')

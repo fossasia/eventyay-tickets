@@ -48,12 +48,14 @@ from eventyay.helpers.countries import CachedCountries
 
 
 def country_choice_kwargs():
+    """country_choice_kwargs method."""
     allcountries = list(CachedCountries())
     allcountries.insert(0, ('', _('Select country')))
     return {'choices': allcountries}
 
 
 def primary_font_kwargs():
+    """primary_font_kwargs method."""
     from eventyay.presale.style import SYSTEM_FONT_CHOICES, get_fonts
 
     choices = list(SYSTEM_FONT_CHOICES)
@@ -65,6 +67,7 @@ def primary_font_kwargs():
 
 
 def hex_color_field_config(label, default='', help_text=None, widget_class='colorpickerfield'):
+    """hex_color_field_config method."""
     validator = RegexValidator(
         regex='^#[0-9a-fA-F]{6}$',
         message=_('Please enter the hexadecimal code of a color, e.g. #990000.'),
@@ -3189,3 +3192,64 @@ COUNTRIES_WITH_STATE = {
     'MX': (['State', 'Federal District'], 'short'),
     'US': (['State', 'Outlying area', 'District'], 'short'),
 }
+
+
+# --- Privacy & Compliance -------------------------------------------------
+# Consent is opt-in: every optional category defaults to False so that no
+# non-essential script can run before the visitor has actively accepted it.
+DEFAULT_SETTINGS.update(
+    {
+        'privacy_consent_provider': {
+            'default': 'disabled',
+            'type': str,
+            'form_class': forms.ChoiceField,
+            'serializer_class': serializers.ChoiceField,
+            'form_kwargs': dict(
+                label=_('Consent provider'),
+                help_text=_('Existing deployments stay disabled until an administrator opts in.'),
+            ),
+        },
+        'privacy_cmp_provider_name': {
+            'default': '',
+            'type': str,
+            'form_class': forms.CharField,
+            'serializer_class': serializers.CharField,
+            'form_kwargs': dict(required=False, label=_('External CMP provider name')),
+        },
+        'privacy_cmp_script_url': {
+            'default': '',
+            'type': str,
+            'form_class': forms.URLField,
+            'serializer_class': serializers.URLField,
+            'form_kwargs': dict(required=False, label=_('External CMP script URL')),
+        },
+        'privacy_policy_url': {
+            'default': '',
+            'type': str,
+            'form_class': forms.CharField,
+            'serializer_class': serializers.CharField,
+            'form_kwargs': dict(required=False, label=_('Privacy Policy URL')),
+        },
+        'privacy_cookie_policy_url': {
+            'default': '',
+            'type': str,
+            'form_class': forms.CharField,
+            'serializer_class': serializers.CharField,
+            'form_kwargs': dict(required=False, label=_('Cookie Policy URL')),
+        },
+    }
+)
+
+for _category, _label in (
+    ('functional', _('Functional')),
+    ('analytics', _('Analytics')),
+    ('marketing', _('Marketing')),
+    ('embed', _('Embedded content')),
+):
+    DEFAULT_SETTINGS[f'privacy_category_{_category}_enabled'] = {
+        'default': 'False',
+        'type': bool,
+        'form_class': forms.BooleanField,
+        'serializer_class': serializers.BooleanField,
+        'form_kwargs': dict(required=False, label=_label),
+    }

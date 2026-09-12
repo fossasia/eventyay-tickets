@@ -1,0 +1,24 @@
+{% load i18n %}
+{% if blocked %}
+    {# The wrapper is never replaced, so withdrawing consent can still find the
+       embed and tear it down again. #}
+    <div class="consent-embed"
+         data-consent-embed="{{ service }}"
+         data-consent-src="{{ src }}"
+         data-consent-title="{{ title }}">
+        <div class="consent-embed-placeholder" data-consent-placeholder>
+            <p>
+                {% blocktrans trimmed %}
+                    This content is provided by an external service. To view it, allow embedded
+                    content in Privacy settings.
+                {% endblocktrans %}
+            </p>
+            <button type="button" class="btn btn-default" data-privacy-settings>
+                {% trans "Allow embedded content" %}
+            </button>
+        </div>
+    </div>
+{% else %}
+    {# No built-in banner is active, so nothing would ever swap a placeholder in. #}
+    <iframe src="{{ src }}" title="{{ title }}" loading="lazy" allowfullscreen></iframe>
+{% endif %}
